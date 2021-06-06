@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">ريك تك</string>
+    <string name="map_api_key">AIzaSyAnjvMAJEmiAv3yeCDUXWv-PboXiT_uaoQ</string>
     <string name="field_required">الحقل مطلوب</string>
     <string name="inv_email">ايميل خاطئ</string>
     <string name="phone">رقم الجوال</string>
@@ -57,4 +58,26 @@
     <string name="username">إسم المستخدم</string>
     <string name="password">كلمة المرور</string>
     <string name="forgot_password">نسيت كلمة المرور ؟</string>
+    <string name="field_req">الحقل مطلوب</string>
+    <string name="password_short">كلمة المرور قصيرة جدا</string>
+    <string name="create_account"><![CDATA[ليس لدي حساب بالفعل؟ <font color="#FF4D00">إنشاء حساب</font>]]></string>
+    <string name="email_address">البريد الالكتروني</string>
+    <string name="next">التالي</string>
+    <string name="please_enter_your_email">من فضلك ادخل البريد الالكتروني</string>
+    <string name="re_password">تأكيد كلمة المرور</string>
+    <string name="sign_up">إنشاء حساب</string>
+    <string name="pas_not_match">كلمة المرور غير متطابقة</string>
+    <string name="have_account"><![CDATA[لدي حساب بالفعل؟ <font color="#FF4D00">تسجيل دخول</font>]]></string>
+    <string name="ship_to">التوصيل الى :</string>
+    <string name="location_details">تفاصيل العنوان:</string>
+    <string name="it_will_be_shipped_by">* التوصيل عن طريق</string>
+    <string name="order_summary">ملخص الطلب:</string>
+    <string name="subtotal">إجمالي المنتجات:</string>
+    <string name="shipping_fee">رسوم التوصيل:</string>
+    <string name="total">الإجمالى:</string>
+    <string name="more_details_town_street">تفاصيل إضافية(المدينة/الشارع/الحي)</string>
+    <string name="select_the_address">حدد موقعك على الخريطة</string>
+    <string name="accessories">إكسسوارات</string>
+
+
 </resources>

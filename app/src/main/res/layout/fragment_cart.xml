@@ -38,7 +38,7 @@
             android:textColor="@color/white"
             android:textSize="18sp"
             android:text="@string/checkout"
-            android:visibility="gone"
+            android:visibility="visible"
             />
     </LinearLayout>
 </layout>

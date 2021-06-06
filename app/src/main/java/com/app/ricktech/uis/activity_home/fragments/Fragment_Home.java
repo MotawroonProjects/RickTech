@@ -1,5 +1,6 @@
 package com.app.ricktech.uis.activity_home.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.app.ricktech.databinding.FragmentHomeBinding;
 import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
+import com.app.ricktech.uis.activity_accessories.AccessoriesActivity;
 import com.app.ricktech.uis.activity_home.HomeActivity;
 
 import java.util.ArrayList;
@@ -62,6 +64,11 @@ public class Fragment_Home extends Fragment {
         Paper.init(activity);
         lang = Paper.book().read("lang", "ar");
         binding.setLang(lang);
+
+        binding.cardAccessories.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, AccessoriesActivity.class);
+            startActivity(intent);
+        });
         getSlider();
     }
 

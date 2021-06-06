@@ -11,7 +11,7 @@
 
         <variable
             name="model"
-            type="com.app.ricktech.models.LoginModel" />
+            type="com.app.ricktech.models.SignUpModel" />
 
 
     </data>
@@ -48,8 +48,8 @@
                     android:id="@+id/logo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/logo1"
-                    android:padding="30dp"
+                    android:src="@drawable/image_phone"
+                    android:padding="20dp"
                     />
 
             </FrameLayout>
@@ -98,8 +98,50 @@
                         android:paddingEnd="22dp"
                         android:textColorHint="@color/gray6"
                         android:singleLine="true"
-                        android:text="@={model.user_name}"
-                        error="@{model.error_user_name}"
+                        android:text="@={model.name}"
+                        error="@{model.error_name}"
+                        />
+
+
+
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/gray4"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/transparent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    >
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_mail"
+                        android:padding="3dp"
+                        app:tint="@color/black"
+                        />
+                    <EditText
+                        android:id="@+id/edtEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:hint="@string/email_address"
+                        android:paddingStart="22dp"
+                        android:paddingEnd="22dp"
+                        android:textColorHint="@color/gray6"
+                        android:singleLine="true"
+                        android:inputType="textEmailAddress"
+                        android:text="@={model.email}"
+                        error="@{model.error_email}"
                         />
 
 
@@ -138,15 +180,35 @@
                     android:layout_height="1px"
                     android:background="@color/gray4"/>
 
-                <TextView
-                    android:id="@+id/tvForgetPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@color/colorPrimary"
-                    android:text="@string/forgot_password"
-                    android:layout_marginTop="20dp"
-                    />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    app:hintEnabled="false"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/black"
+                    android:layout_marginTop="5dp"
+                    app:startIconDrawable="@drawable/ic_lock"
+                    app:startIconTint="@color/black"
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:inputType="textPassword"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:hint="@string/re_password"
+                        android:singleLine="true"
+                        android:text="@={model.re_password}"
+                        error="@{model.error_re_password}"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/gray4"/>
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -161,17 +223,17 @@
                 >
 
                 <Button
-                    android:id="@+id/btnLogin"
+                    android:id="@+id/btnSignUp"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/small_rounded_primary"
-                    android:text="@string/login"
+                    android:text="@string/sign_up"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvSignUp"
+                    android:id="@+id/tvLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"

@@ -79,7 +79,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginBottom="20dp"
-                            android:text="@string/pc_building"
+                            android:text="@string/laptops_gaming"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
                     </FrameLayout>
@@ -137,7 +137,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginBottom="20dp"
-                            android:text="@string/laptops_gaming"
+                            android:text="@string/pc_building"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
                     </FrameLayout>
@@ -160,6 +160,7 @@
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardAccessories"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_marginStart="8dp"

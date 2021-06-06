@@ -1,4 +1,4 @@
-package com.app.ricktech.uis.activity_login;
+package com.app.ricktech.uis.activity_sign_up;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -6,26 +6,26 @@ import androidx.databinding.DataBindingUtil;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.Html;
-import android.text.TextWatcher;
 
 import com.app.ricktech.R;
 import com.app.ricktech.databinding.ActivityLoginBinding;
+import com.app.ricktech.databinding.ActivitySignUpBinding;
 import com.app.ricktech.language.Language;
 import com.app.ricktech.models.LoginModel;
+import com.app.ricktech.models.SignUpModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.share.Common;
 import com.app.ricktech.uis.activity_forget_password.ForgetPasswordActivity;
 import com.app.ricktech.uis.activity_home.HomeActivity;
-import com.app.ricktech.uis.activity_sign_up.SignUpActivity;
+import com.app.ricktech.uis.activity_login.LoginActivity;
 
 import io.paperdb.Paper;
 
-public class LoginActivity extends AppCompatActivity {
-    private ActivityLoginBinding binding;
+public class SignUpActivity extends AppCompatActivity {
+    private ActivitySignUpBinding binding;
     private String lang;
-    private LoginModel loginModel;
+    private SignUpModel model;
     private Preferences preferences;
 
 
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_login);
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_sign_up);
         initView();
     }
 
@@ -46,40 +46,37 @@ public class LoginActivity extends AppCompatActivity {
         Paper.init(this);
         lang = Paper.book().read("lang","ar");
         binding.setLang(lang);
-        loginModel = new LoginModel();
-        binding.setModel(loginModel);
-        binding.tvSignUp.setText(Html.fromHtml(getString(R.string.create_account)));
-
-        binding.btnLogin.setOnClickListener(view -> {
-            if (loginModel.isDataValid(this)) {
+        model = new SignUpModel();
+        binding.setModel(model);
+        binding.tvLogin.setText(Html.fromHtml(getString(R.string.have_account)));
+        binding.btnSignUp.setOnClickListener(view -> {
+            if (model.isDataValid(this)) {
                 Common.CloseKeyBoard(this, binding.edtUsername);
-                login();
+                signUp();
             }
         });
-
-
-        binding.tvSignUp.setOnClickListener(view -> {
-            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-            startActivity(intent);
-            finish();
+        binding.tvLogin.setOnClickListener(view -> {
+         navigateToLoginActivity();
         });
 
-        binding.tvForgetPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
-            startActivity(intent);
-        });
+
 
 
 
     }
 
-    private void login() {
-        navigateToHomeActivity();
+    private void signUp() {
+
     }
 
-    private void navigateToHomeActivity() {
-        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+    private void navigateToLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        navigateToLoginActivity();
     }
 }

@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">RickTech</string>
+    <string name="map_api_key">AIzaSyAnjvMAJEmiAv3yeCDUXWv-PboXiT_uaoQ</string>
     <string name="field_required">Field Required</string>
     <string name="inv_email">Inviald Email</string>
     <string name="phone">Phone</string>
     <string name="login">Login</string>
-    <string name="please_enter_code_sent_to">Please Enter Code Sent To You</string>
+    <string name="please_enter_code_sent_to">Please Enter Code Sent To </string>
     <string name="resend">Resend</string>
     <string name="confirm">Confirm</string>
     <string name="notifications">Notifications</string>
@@ -54,16 +55,29 @@
     <string name="saved_buildings">Saved Buildings</string>
     <string name="edit_profile">Edit profile</string>
     <string name="change_language">Change language</string>
-    <string name="title_activity_language">LanguageActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password ?</string>
+    <string name="field_req">Field required</string>
+    <string name="password_short">Password too short</string>
+
+    <string name="create_account"><![CDATA[I don\'t have account <font color="#FF4D00">Sign Up</font>]]></string>
+    <string name="email_address">Email address</string>
+    <string name="next">Next</string>
+    <string name="please_enter_your_email">Please enter your email</string>
+    <string name="re_password">Confirm Password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="pas_not_match">Password not match</string>
+    <string name="have_account"><![CDATA[Already have an account <font color="#FF4D00">Log In</font>]]></string>
+    <string name="ship_to">Ship to:</string>
+    <string name="location_details">Location details:</string>
+    <string name="it_will_be_shipped_by">* it will be shipped by</string>
+    <string name="order_summary">Order Summary:</string>
+    <string name="subtotal">Subtotal:</string>
+    <string name="shipping_fee">Shipping Fee:</string>
+    <string name="total">Total:</string>
+    <string name="more_details_town_street">More details(Town-street)</string>
+    <string name="select_the_address">Select location on map</string>
+    <string name="accessories">Accessories</string>
+
 </resources>
