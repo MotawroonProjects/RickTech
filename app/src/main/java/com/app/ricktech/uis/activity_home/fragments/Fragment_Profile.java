@@ -94,11 +94,7 @@ public class Fragment_Profile extends Fragment {
         });
     }
 
-    private void navigateToWebView(String url) {
-       /* Intent intent = new Intent(activity, ViewActivity.class);
-        intent.putExtra("url", url);
-        startActivity(intent);*/
-    }
+
 
 
 }
