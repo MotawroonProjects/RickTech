@@ -54,4 +54,7 @@
     <string name="saved_buildings">التجميعات المحفوظة</string>
     <string name="edit_profile">تحديث حسابي</string>
     <string name="change_language">تغيير اللغة</string>
+    <string name="username">إسم المستخدم</string>
+    <string name="password">كلمة المرور</string>
+    <string name="forgot_password">نسيت كلمة المرور ؟</string>
 </resources>

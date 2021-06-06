@@ -25,7 +25,8 @@
         android:theme="@style/Theme.RickTech"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".uis.activity_language.LanguageActivity"></activity>
+        <activity android:name=".uis.activity_login.LoginActivity"></activity>
+        <activity android:name=".uis.activity_language.LanguageActivity" />
         <activity
             android:name=".ui.login.LanguageActivity"
             android:label="@string/title_activity_language" />
