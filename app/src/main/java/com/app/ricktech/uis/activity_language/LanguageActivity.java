@@ -17,6 +17,7 @@ import io.paperdb.Paper;
 
 public class LanguageActivity extends AppCompatActivity {
     private ActivityLanguageBinding binding;
+    private String myLang = "";
     private String selectedLang="";
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -32,12 +33,12 @@ public class LanguageActivity extends AppCompatActivity {
 
     private void initView() {
         Paper.init(this);
-        String lang = Paper.book().read("lang","ar");
+        myLang = Paper.book().read("lang","ar");
 
-        if (lang.equals("ar")){
+        if (myLang.equals("ar")){
             updateUiAr();
 
-        }else if (lang.equals("en")){
+        }else if (myLang.equals("en")){
             updateUiEn();
 
         }else {
@@ -59,11 +60,14 @@ public class LanguageActivity extends AppCompatActivity {
         });
 
         binding.btnConfirm.setOnClickListener(v -> {
-            Paper.book().write(lang, selectedLang);
-            Intent intent = getIntent();
-            intent.putExtra("lang", selectedLang);
-            setResult(RESULT_OK,intent);
-            finish();
+            if (!myLang.equals(selectedLang)){
+                Paper.book().write("lang", selectedLang);
+                Intent intent = getIntent();
+                intent.putExtra("lang", selectedLang);
+                setResult(RESULT_OK,intent);
+                finish();
+            }
+
         });
     }
 
