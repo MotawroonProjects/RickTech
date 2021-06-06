@@ -18,6 +18,7 @@ import com.app.ricktech.databinding.FragmentHomeBinding;
 import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
+import com.app.ricktech.uis.activity_categories.CategoriesActivity;
 import com.app.ricktech.uis.activity_accessories.AccessoriesActivity;
 import com.app.ricktech.uis.activity_home.HomeActivity;
 
@@ -70,6 +71,13 @@ public class Fragment_Home extends Fragment {
             startActivity(intent);
         });
         getSlider();
+        binding.flViewLapTop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, CategoriesActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 

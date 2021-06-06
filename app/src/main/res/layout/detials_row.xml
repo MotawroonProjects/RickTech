@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+
+    </data>
+
+
+
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_gravity="center"
+
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:padding="3dp"
+                        android:src="@drawable/ic_credit_card"
+/>
+
+                    <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:text="CPU :"
+                    android:textStyle="bold"
+                        android:layout_gravity="center"
+                    android:textColor="@color/gray7"
+                    android:textSize="14sp" />
+
+
+                </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="32GB DDR4-2933MHz, 2x16G"
+                        android:textColor="@color/gray7"
+                        android:textSize="14sp"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginLeft="25dp" />
+
+
+
+
+
+
+    </LinearLayout>
+</layout>

@@ -58,6 +58,11 @@
     <string name="username">إسم المستخدم</string>
     <string name="password">كلمة المرور</string>
     <string name="forgot_password">نسيت كلمة المرور ؟</string>
+    <string name="products">المنتجات</string>
+    <string name="price">السعر</string>
+    <string name="add_to_cart">اضافة الى السله</string>
+    <string name="score"> : النتيجه</string>
+    <string name="compare">مقارنه</string>
     <string name="field_req">الحقل مطلوب</string>
     <string name="password_short">كلمة المرور قصيرة جدا</string>
     <string name="create_account"><![CDATA[ليس لدي حساب بالفعل؟ <font color="#FF4D00">إنشاء حساب</font>]]></string>
