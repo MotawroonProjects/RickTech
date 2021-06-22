@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.databinding.DataBindingUtil;
 import com.app.ricktech.R;
 import com.app.ricktech.databinding.ActivityVerificationCodeBinding;
 import com.app.ricktech.language.Language;
+import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
@@ -38,11 +40,12 @@ import retrofit2.Response;
 public class VerificationCodeActivity extends AppCompatActivity {
     private ActivityVerificationCodeBinding binding;
     private String lang;
-    private String email;
     private CountDownTimer timer;
     private String smsCode;
     private Preferences preferences;
     private boolean canSend = false;
+    private boolean sendOtp = false;
+    private UserModel userModel;
 
 
     @Override
@@ -63,8 +66,8 @@ public class VerificationCodeActivity extends AppCompatActivity {
     private void getDataFromIntent() {
         Intent intent = getIntent();
         if (intent != null) {
-            email = intent.getStringExtra("email");
-
+            userModel = (UserModel) intent.getSerializableExtra("data");
+            sendOtp = intent.getBooleanExtra("sendOtp", false);
         }
     }
 
@@ -73,7 +76,7 @@ public class VerificationCodeActivity extends AppCompatActivity {
 
         Paper.init(this);
         lang = Paper.book().read("lang", "ar");
-        binding.setEmail(email);
+        binding.setEmail(userModel.getData().getEmail());
         binding.tvResend.setOnClickListener(view -> {
             if (canSend){
                 sendSmsCode();
@@ -90,13 +93,50 @@ public class VerificationCodeActivity extends AppCompatActivity {
             }
 
         });
-        sendSmsCode();
+        if (sendOtp){
+            sendSmsCode();
+
+        }else {
+            startTimer();
+        }
     }
 
     private void sendSmsCode() {
 
         startTimer();
 
+        Api.getService(Tags.base_url)
+                .sendSmsCode(lang,"Bearer "+userModel.getData().getToken())
+                .enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+
+                        if (response.isSuccessful() && response.body() != null ) {
+
+                            if (response.body().getStatus() == 200){
+                                userModel = response.body();
+                            }else {
+
+                            }
+
+                        } else {
+
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable t) {
+                        try {
+                            Log.e("error", t.getMessage()+"__");
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
 
 
 
@@ -125,14 +165,17 @@ public class VerificationCodeActivity extends AppCompatActivity {
 
 
     private void checkValidCode(String code) {
-
-
+        if (code.equals(userModel.getData().getEmail_activation_code())){
+            preferences.create_update_userdata(this,userModel);
+            setResult(RESULT_OK);
+            finish();
+        }else {
+            Toast.makeText(this, R.string.inv_code, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
-    private void login() {
 
-    }
 
 
 

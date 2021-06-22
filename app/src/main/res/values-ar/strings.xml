@@ -83,6 +83,10 @@
     <string name="more_details_town_street">تفاصيل إضافية(المدينة/الشارع/الحي)</string>
     <string name="select_the_address">حدد موقعك على الخريطة</string>
     <string name="accessories">إكسسوارات</string>
+    <string name="us_pas_inc">إسم المستخدم او كلمة المرور غير صحيحة</string>
+    <string name="inv_code">كود التحقق غير صحيح</string>
+    <string name="email_found">البريد الالكتروني موجود من قبل</string>
+    <string name="un_found">إسم المستخدم موجود من قبل</string>
 
 
 </resources>

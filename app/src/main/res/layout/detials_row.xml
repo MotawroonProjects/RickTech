@@ -3,61 +3,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
-
+        <variable
+            name="model"
+            type="com.app.ricktech.models.ComponentModel" />
     </data>
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
+            <ImageView
+                android:layout_width="24dp"
 
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:padding="3dp"
+                image="@{model.category.image}"
+                 />
 
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:layout_gravity="center"
-
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:padding="3dp"
-                        android:src="@drawable/ic_credit_card"
-/>
-
-                    <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:text="CPU :"
-                    android:textStyle="bold"
-                        android:layout_gravity="center"
-                    android:textColor="@color/gray7"
-                    android:textSize="14sp" />
+                android:layout_gravity="center"
+                android:maxLines="2"
+                android:text='@{model.category.trans_title+":"}'
+                android:textColor="@color/gray7"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
 
-                </LinearLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:text="32GB DDR4-2933MHz, 2x16G"
-                        android:textColor="@color/gray7"
-                        android:textSize="14sp"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginLeft="25dp" />
+        </LinearLayout>
 
-
-
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="25dp"
+            android:layout_marginLeft="25dp"
+            android:text="@{model.component.trans_title}"
+            android:textColor="@color/gray7"
+            android:textSize="14sp" />
 
 
     </LinearLayout>

@@ -11,14 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.ricktech.R;
 import com.app.ricktech.databinding.DetialsRowBinding;
 import com.app.ricktech.databinding.LabtopRowBinding;
+import com.app.ricktech.models.ComponentModel;
 
 import java.util.List;
 
 public class DetialsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Object> list;
+    private List<ComponentModel> list;
     private Context context;
     private LayoutInflater inflater;
-    public DetialsAdapter(Context context, List<Object> list) {
+    public DetialsAdapter(Context context, List<ComponentModel> list) {
         this.list = list;
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -37,15 +38,13 @@ public class DetialsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         MyHolder myHolder = (MyHolder) holder;
-
-        myHolder.itemView.setOnClickListener(v -> {
-        });
+        myHolder.binding.setModel(list.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        return 9;
+        return list.size();
     }
 
     public static class MyHolder extends RecyclerView.ViewHolder {

@@ -38,7 +38,6 @@ public class SplashActivity extends AppCompatActivity {
     private void initView() {
         preferences = Preferences.getInstance();
         userModel = preferences.getUserData(this);
-
         new Handler().postDelayed(() -> {
             if (userModel==null){
                 navigateToLoginActivity();
@@ -47,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
                 navigateToHomeActivity();
             }
         }, 3000);
+
 
     }
 

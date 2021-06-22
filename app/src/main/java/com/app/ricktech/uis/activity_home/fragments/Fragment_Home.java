@@ -2,6 +2,7 @@ package com.app.ricktech.uis.activity_home.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,21 @@ import androidx.fragment.app.Fragment;
 
 import com.app.ricktech.R;
 
+import com.app.ricktech.adapters.SliderAdapter;
 import com.app.ricktech.databinding.FragmentHomeBinding;
 
+import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
+import com.app.ricktech.remote.Api;
+import com.app.ricktech.tags.Tags;
 import com.app.ricktech.uis.activity_categories.CategoriesActivity;
 import com.app.ricktech.uis.activity_accessories.AccessoriesActivity;
 import com.app.ricktech.uis.activity_home.HomeActivity;
+import com.app.ricktech.uis.activity_product_detials.ProductDetialsActivity;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.ViewSkeletonScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +36,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Home extends Fragment {
 
@@ -36,9 +47,9 @@ public class Fragment_Home extends Fragment {
     private Preferences preferences;
     private String lang;
     private UserModel userModel;
-   /* private SliderAdapter sliderAdapter;
-   */
-   private List<SliderModel> sliderModelList;
+    private SliderAdapter sliderAdapter;
+    private List<SliderModel.Data> sliderModelList;
+    private ViewSkeletonScreen skeletonScreen;
 
     private Timer timer;
     private TimerTask timerTask;
@@ -70,85 +81,102 @@ public class Fragment_Home extends Fragment {
             Intent intent = new Intent(activity, AccessoriesActivity.class);
             startActivity(intent);
         });
-        getSlider();
-        binding.flViewLapTop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(activity, CategoriesActivity.class);
-                startActivity(intent);
-            }
+        binding.flViewLapTop.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, CategoriesActivity.class);
+            startActivity(intent);
         });
+
+
+
+        getSlider();
     }
 
 
     private void getSlider() {
-     /*   Api.getService(Tags.base_url)
-                .getSlider()
-                .enqueue(new Callback<SliderDataModel>() {
+        Log.e("lang", lang);
+        Api.getService(Tags.base_url)
+                .getSlider(lang)
+                .enqueue(new Callback<SliderModel>() {
                     @Override
-                    public void onResponse(Call<SliderDataModel> call, Response<SliderDataModel> response) {
+                    public void onResponse(Call<SliderModel> call, Response<SliderModel> response) {
                         binding.progBarSlider.setVisibility(View.GONE);
-                        if (response.isSuccessful() && response.body() != null) {
+                        Log.e("0", "0");
+
+                        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
+                            Log.e("1", "1");
+
                             if (response.body().getData().size() > 0) {
                                 updateSliderUi(response.body().getData());
+                                Log.e("2", "2");
 
                             } else {
-                                binding.flSlider.setVisibility(View.GONE);
+                                Log.e("3", "3");
 
+                                binding.flSlider.setVisibility(View.GONE);
+                                binding.progBarSlider.setVisibility(View.GONE);
                             }
 
                         } else {
+                            Log.e("4", "4");
+
                             binding.flSlider.setVisibility(View.GONE);
                             binding.progBarSlider.setVisibility(View.GONE);
 
-                            try {
-                                Log.e("error_code", response.errorBody().string());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+
                         }
 
 
                     }
 
                     @Override
-                    public void onFailure(Call<SliderDataModel> call, Throwable t) {
+                    public void onFailure(Call<SliderModel> call, Throwable t) {
                         try {
-                            Log.e("Error", t.getMessage());
+                            Log.e("error", t.getMessage()+"__");
+                            binding.flSlider.setVisibility(View.GONE);
                             binding.progBarSlider.setVisibility(View.GONE);
                         } catch (Exception e) {
 
                         }
                     }
-                });*/
+                });
     }
 
 
-    private void updateSliderUi(List<SliderModel> data) {
-      /*  sliderModelList.addAll(data);
-        sliderAdapter = new SliderAdapter(sliderModelList, activity,this);
+    private void updateSliderUi(List<SliderModel.Data> data) {
+        sliderModelList.addAll(data);
+        sliderAdapter = new SliderAdapter(sliderModelList, activity, this);
         binding.pager.setAdapter(sliderAdapter);
         binding.pager.setClipToPadding(false);
         binding.pager.setPadding(90, 8, 90, 8);
         binding.pager.setPageMargin(24);
+        binding.pager.setOffscreenPageLimit(sliderModelList.size());
+        binding.flSlider.setVisibility(View.VISIBLE);
         binding.pager.setVisibility(View.VISIBLE);
 
         if (data.size() > 1) {
             timer = new Timer();
             timerTask = new MyTask();
             timer.scheduleAtFixedRate(timerTask, 6000, 6000);
-        }*/
+        }
     }
 
+    public void setSliderItemData(ProductModel productModel) {
+        if (productModel!=null){
+            if (productModel.getType().equals("complete")){
+                Intent intent = new Intent(activity, ProductDetialsActivity.class);
+                intent.putExtra("data", String.valueOf(productModel.getId()));
+                startActivity(intent);
+            }else {
 
-
-
+            }
+        }
+    }
 
 
     public class MyTask extends TimerTask {
         @Override
         public void run() {
-            /*activity.runOnUiThread(() -> {
+            activity.runOnUiThread(() -> {
                 int current_page = binding.pager.getCurrentItem();
                 if (current_page < sliderAdapter.getCount() - 1) {
                     binding.pager.setCurrentItem(binding.pager.getCurrentItem() + 1);
@@ -156,7 +184,7 @@ public class Fragment_Home extends Fragment {
                     binding.pager.setCurrentItem(0);
 
                 }
-            });*/
+            });
 
         }
     }

@@ -83,7 +83,7 @@
             app:cursorColor="@color/colorPrimaryDark"
             app:cursorWidth="2dp"
             app:hideLineWhenFilled="true"
-            app:itemCount="6"
+            app:itemCount="5"
             app:itemHeight="40dp"
             app:itemRadius="5dp"
             app:itemSpacing="8dp"
