@@ -24,7 +24,6 @@ import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.uis.activity_checkout.CheckoutActivity;
 import com.app.ricktech.uis.activity_home.HomeActivity;
 
-import org.jetbrains.annotations.NotNull;
 
 import io.paperdb.Paper;
 
@@ -71,7 +70,7 @@ public class Fragment_Cart extends Fragment {
     }
 
     @Override
-    public void onAttach(@NonNull @NotNull Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override

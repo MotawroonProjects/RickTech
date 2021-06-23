@@ -67,6 +67,16 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:shimmer_duration="800"
+                >
+                <include layout="@layout/place_holder"/>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
             <LinearLayout
                 android:id="@+id/llData"
                 android:layout_width="match_parent"
@@ -115,7 +125,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
-                            android:text='4,000 '
+                            android:text='@{model.points+""}'
                             android:textColor="@color/white"
                             android:textSize="14sp" />
 
@@ -168,11 +178,14 @@
                             <FrameLayout
                                 android:id="@+id/flSlider"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                >
 
                                 <ImageView
                                     android:layout_width="match_parent"
-                                    android:layout_height="400dp"
+                                    android:layout_height="180dp"
+                                    android:scaleType="centerInside"
                                     image="@{model.main_image}"
                                     />
                             </FrameLayout>
@@ -265,8 +278,8 @@
                                     android:layout_weight="1">
 
                                     <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
                                         android:layout_gravity="end"
                                         android:layout_marginEnd="20dp"
                                         android:background="@drawable/polygon"
@@ -311,82 +324,116 @@
                                     android:textStyle="bold" />
 
 
+
+
+
                             </LinearLayout>
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:text="@{model.trans_desc}"
+                                android:textColor="@color/black"
+                                android:textSize="13sp"
+                                android:layout_marginTop="10dp"
+                                android:visibility='@{model.type.equals("complete")?View.GONE:View.VISIBLE}'
+
+                                />
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/recView"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
+                                android:layout_height="match_parent"
+                                android:visibility='@{model.type.equals("complete")?View.VISIBLE:View.GONE}'
+
+                                />
 
 
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
 
-                <FrameLayout
-                    android:id="@+id/fl_add_to_cart"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="@color/colorPrimary">
+                    android:orientation="horizontal"
+                    >
+                    <FrameLayout
+                        android:id="@+id/fl_add_to_cart"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="56dp"
+                        android:layout_gravity="bottom"
+                        android:background="@color/colorPrimary">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:clickable="false"
-                        android:longClickable="false"
-                        android:orientation="horizontal"
-
-                        >
-
-                        <FrameLayout
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_gravity="center_vertical"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:clickable="false"
+                            android:longClickable="false"
+                            android:orientation="horizontal"
 
                             >
 
-                            <ImageView
-                                android:id="@+id/image_arrow2"
-                                android:layout_width="match_parent"
+                            <FrameLayout
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_gravity="center_vertical"
+
+                                >
+
+                                <ImageView
+                                    android:id="@+id/image_arrow2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/colorPrimary"
+                                    android:clickable="false"
+                                    android:longClickable="false"
+                                    android:padding="3dp"
+                                    android:src="@drawable/ic_cart"
+                                    app:tint="@color/white" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@color/colorPrimary"
+                                android:layout_gravity="center_vertical"
                                 android:clickable="false"
+                                android:gravity="center_vertical"
                                 android:longClickable="false"
-                                android:padding="3dp"
-                                android:src="@drawable/ic_cart"
-                                app:tint="@color/white" />
-                        </FrameLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:clickable="false"
-                            android:gravity="center_vertical"
-                            android:longClickable="false"
-                            android:maxLines="2"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"
-                            android:text="@string/add_to_cart"
-                            android:textColor="@color/white"
-                            android:textSize="15sp"
-                            tools:ignore="RtlCompat" />
+                                android:maxLines="2"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:text="@string/add_to_cart"
+                                android:textColor="@color/white"
+                                android:textSize="15sp"
+                                tools:ignore="RtlCompat" />
 
 
-                    </LinearLayout>
+                        </LinearLayout>
 
-                </FrameLayout>
+                    </FrameLayout>
+                    <Button
+                        android:id="@+id/btnBuild"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:background="@color/gray6"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:text="@string/add_to_build"
+                        android:textAllCaps="false"
+                        android:visibility='@{model.type.equals("complete")?View.GONE:View.VISIBLE}'
+                        />
+                </LinearLayout>
+
 
             </LinearLayout>
 
-            <ProgressBar
-                android:id="@+id/progBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
+
 
 
         </FrameLayout>

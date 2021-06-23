@@ -4,6 +4,7 @@ import com.app.ricktech.models.PlaceGeocodeData;
 import com.app.ricktech.models.PlaceMapDetailsData;
 import com.app.ricktech.models.SingleProductModel;
 import com.app.ricktech.models.SliderModel;
+import com.app.ricktech.models.StatusResponse;
 import com.app.ricktech.models.UserModel;
 
 import retrofit2.Call;
@@ -55,6 +56,22 @@ public interface Service {
                            @Field("password") String password,
                            @Field("email") String email,
                            @Field("software_type") String software_type
+    );
+
+    @GET("api/logout")
+    Call<StatusResponse> logout(@Header("Authorization") String bearer_token);
+
+    @FormUrlEncoded
+    @POST("api/firebase-tokens")
+    Call<StatusResponse> updateFirebaseToken(@Field("user_id") int user_id,
+                                             @Field("firebase_token") String firebase_token,
+                                             @Field("software_type") String software_type
+    );
+
+    @FormUrlEncoded
+    @POST("api/confirmEmail")
+    Call<UserModel> confirmEmail(@Header("Authorization") String bearer_token,
+                                      @Field("code") String code
     );
 
 

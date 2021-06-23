@@ -94,6 +94,12 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode()==RESULT_OK){
+                navigateToHomeActivity();
+            }
+        });
+
 
     }
 
@@ -231,14 +237,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void navigateToVerificationCode(UserModel userModel) {
+        Log.e("code", userModel.getData().getEmail_activation_code()+"_");
         Intent intent = new Intent(this, VerificationCodeActivity.class);
         intent.putExtra("data", userModel);
-        intent.putExtra("sendOtp", true);
-        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode()==RESULT_OK){
-                navigateToHomeActivity();
-            }
-        });
+        intent.putExtra("sendOtp", false);
+
         launcher.launch(intent);
 
     }

@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -28,6 +29,8 @@ import com.app.ricktech.uis.activity_forget_password.ForgetPasswordActivity;
 import com.app.ricktech.uis.activity_home.HomeActivity;
 import com.app.ricktech.uis.activity_login.LoginActivity;
 import com.app.ricktech.uis.activity_verification_code.VerificationCodeActivity;
+
+import java.io.IOException;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -73,17 +76,27 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
 
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode()==RESULT_OK){
+                navigateToHomeActivity();
+            }
+        });
 
 
 
     }
 
     private void signUp() {
+        ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
         Api.getService(Tags.base_url)
                 .signUp(model.getName(), model.getPassword(),model.getEmail(),"android")
                 .enqueue(new Callback<UserModel>() {
                     @Override
                     public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                        dialog.dismiss();
                         if (response.isSuccessful() && response.body() != null) {
                             if (response.body().getStatus() == 200) {
                                 navigateToVerificationCodeActivity(response.body());
@@ -94,12 +107,22 @@ public class SignUpActivity extends AppCompatActivity {
                                 Toast.makeText(SignUpActivity.this, R.string.un_found, Toast.LENGTH_SHORT).show();
 
                             }
+                        }else {
+                            Log.e("code", response.code()+"__");
+                            try {
+                                Log.e("errorbody", response.errorBody().string()+"__");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UserModel> call, Throwable t) {
                         try {
+                            dialog.dismiss();
+
                             Log.e("error", t.getMessage()+"__");
 
                         }catch (Exception e){}
@@ -109,14 +132,11 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void navigateToVerificationCodeActivity(UserModel userModel) {
+        Log.e("dd", userModel.getData().getEmail_activation_code()+"__");
         Intent intent = new Intent(this, VerificationCodeActivity.class);
         intent.putExtra("data", userModel);
         intent.putExtra("sendOtp", true);
-        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode()==RESULT_OK){
-                navigateToHomeActivity();
-            }
-        });
+
         launcher.launch(intent);
     }
 

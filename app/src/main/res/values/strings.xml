@@ -89,4 +89,5 @@
     <string name="inv_code">Invalid verification code</string>
     <string name="email_found">Email found</string>
     <string name="un_found">Username found</string>
+    <string name="add_to_build">Add To Build</string>
 </resources>

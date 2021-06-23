@@ -2,6 +2,7 @@ package com.app.ricktech.uis.activity_product_detials;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 
@@ -26,6 +27,7 @@ import com.app.ricktech.remote.Api;
 import com.app.ricktech.tags.Tags;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
+import com.facebook.shimmer.Shimmer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,13 +81,16 @@ public class ProductDetialsActivity extends AppCompatActivity {
         binding.recView.setItemAnimator(new DefaultItemAnimator());
         binding.llBack.setOnClickListener(v -> finish());
 
-        skeletonScreen = Skeleton.bind(binding.llRoot)
+        /*skeletonScreen = Skeleton.bind(binding.llRoot)
                 .load(R.layout.activity_product_detials)
                 .duration(1000)
                 .angle(30)
                 .shimmer(true)
                 .show();
+*/
 
+        binding.shimmer.startShimmer();
+        binding.tvOldPrice.setPaintFlags(binding.tvOldPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
         getProductById();
     }
 
@@ -95,13 +100,18 @@ public class ProductDetialsActivity extends AppCompatActivity {
                 .enqueue(new Callback<SingleProductModel>() {
                     @Override
                     public void onResponse(Call<SingleProductModel> call, Response<SingleProductModel> response) {
-                        skeletonScreen.hide();
+                        binding.shimmer.stopShimmer();
+                        binding.shimmer.setVisibility(View.GONE);
+                        //skeletonScreen.hide();
                         if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
                             productModel = response.body().getData();
                             updateUi();
 
                         } else {
-                            skeletonScreen.hide();
+                            binding.shimmer.stopShimmer();
+                            binding.shimmer.setVisibility(View.GONE);
+
+                            //skeletonScreen.hide();
 
 
                         }
@@ -112,7 +122,10 @@ public class ProductDetialsActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<SingleProductModel> call, Throwable t) {
                         try {
-                            skeletonScreen.hide();
+                            binding.shimmer.stopShimmer();
+                            binding.shimmer.setVisibility(View.GONE);
+
+                            //skeletonScreen.hide();
                         } catch (Exception e) {
 
                         }

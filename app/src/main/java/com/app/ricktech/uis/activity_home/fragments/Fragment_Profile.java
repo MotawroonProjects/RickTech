@@ -25,7 +25,6 @@ import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.uis.activity_home.HomeActivity;
 import com.app.ricktech.uis.activity_language.LanguageActivity;
 
-import org.jetbrains.annotations.NotNull;
 
 import io.paperdb.Paper;
 
@@ -65,6 +64,7 @@ public class Fragment_Profile extends Fragment {
 
 
         binding.llLogout.setOnClickListener(v -> {
+            activity.logout();
         });
 
         binding.llLanguage.setOnClickListener(v -> {
@@ -81,7 +81,7 @@ public class Fragment_Profile extends Fragment {
 
 
     @Override
-    public void onAttach(@NonNull @NotNull Context context) {
+    public void onAttach(@NonNull  Context context) {
         super.onAttach(context);
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override

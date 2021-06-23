@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "192919594875",
+    "project_id": "ricktick-8ea3d",
+    "storage_bucket": "ricktick-8ea3d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:192919594875:android:715a19687f148975407fde",
+        "android_client_info": {
+          "package_name": "com.app.ricktech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "192919594875-h15snujqr91gdl7ahbo4s03hvm82lceq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2R7-8umzbcvW91zD2A37wDp0lvOWa8Y4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "192919594875-h15snujqr91gdl7ahbo4s03hvm82lceq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

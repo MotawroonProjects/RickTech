@@ -17,6 +17,7 @@ import com.app.ricktech.R;
 import com.app.ricktech.databinding.ActivityVerificationCodeBinding;
 import com.app.ricktech.language.Language;
 import com.app.ricktech.models.SliderModel;
+import com.app.ricktech.models.StatusResponse;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
@@ -27,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -165,13 +167,57 @@ public class VerificationCodeActivity extends AppCompatActivity {
 
 
     private void checkValidCode(String code) {
-        if (code.equals(userModel.getData().getEmail_activation_code())){
-            preferences.create_update_userdata(this,userModel);
-            setResult(RESULT_OK);
-            finish();
-        }else {
-            Toast.makeText(this, R.string.inv_code, Toast.LENGTH_SHORT).show();
-        }
+        ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Api.getService(Tags.base_url)
+                .confirmEmail("Bearer " + userModel.getData().getToken(),code)
+                .enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                        dialog.dismiss();
+                        if (response.isSuccessful()) {
+                            if (response.body() != null && response.body().getStatus() == 200) {
+                                preferences.create_update_userdata(VerificationCodeActivity.this,response.body());
+                                setResult(RESULT_OK);
+                                finish();
+                            }
+
+                        } else {
+                            dialog.dismiss();
+                            try {
+                                Log.e("error", response.code() + "__" + response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            if (response.code() == 500) {
+                            } else {
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            if (t.getMessage() != null) {
+                                Log.e("error", t.getMessage() + "__");
+
+                                if (t.getMessage().toLowerCase().contains("failed to connect") || t.getMessage().toLowerCase().contains("unable to resolve host")) {
+                                } else {
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e("Error", e.getMessage() + "__");
+                        }
+                    }
+                });
+
+
+
+
 
     }
 

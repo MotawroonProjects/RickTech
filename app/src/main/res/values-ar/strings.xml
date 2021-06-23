@@ -87,6 +87,7 @@
     <string name="inv_code">كود التحقق غير صحيح</string>
     <string name="email_found">البريد الالكتروني موجود من قبل</string>
     <string name="un_found">إسم المستخدم موجود من قبل</string>
+    <string name="add_to_build">أضف الى التجميعة</string>
 
 
 </resources>

@@ -20,7 +20,6 @@ import com.app.ricktech.tags.Tags;
 import com.app.ricktech.uis.activity_home.fragments.Fragment_Home;
 import com.squareup.picasso.Picasso;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -42,9 +41,8 @@ public class SliderAdapter extends PagerAdapter {
     }
 
     @NonNull
-    @NotNull
     @Override
-    public Object instantiateItem(@NonNull @NotNull ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = inflater.inflate(R.layout.slider_row, container, false);
         ImageView imageView = view.findViewById(R.id.image);
         String url = Tags.IMAGE_URL + list.get(position).getImage();
@@ -60,12 +58,12 @@ public class SliderAdapter extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(@NonNull @NotNull View view, @NonNull @NotNull Object object) {
+    public boolean isViewFromObject(@NonNull  View view, @NonNull  Object object) {
         return view==object;
     }
 
     @Override
-    public void destroyItem(@NonNull @NotNull ViewGroup container, int position, @NonNull @NotNull Object object) {
+    public void destroyItem(@NonNull  ViewGroup container, int position, @NonNull  Object object) {
         container.removeView((View) object);
     }
 }
