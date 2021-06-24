@@ -7,17 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.app.ricktech.R;
-import com.app.ricktech.databinding.SliderRowBinding;
 import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.tags.Tags;
-import com.app.ricktech.uis.activity_home.fragments.Fragment_Home;
+import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Home;
 import com.squareup.picasso.Picasso;
 
 

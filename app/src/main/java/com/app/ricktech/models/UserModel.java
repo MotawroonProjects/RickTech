@@ -8,6 +8,11 @@ public class UserModel extends StatusResponse implements Serializable {
     public Data getData() {
         return data;
     }
+
+    public void setData(Data data) {
+        this.data = data;
+    }
+
     public static class Data implements Serializable
     {
         private int id;
@@ -94,6 +99,10 @@ public class UserModel extends StatusResponse implements Serializable {
 
         public void setFirebase_token(String firebase_token) {
             this.firebase_token = firebase_token;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
     }
 

@@ -9,18 +9,17 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.ricktech.R;
-import com.app.ricktech.databinding.CategoryRowBinding;
 import com.app.ricktech.databinding.LabtopRowBinding;
-import com.app.ricktech.uis.activity_categories.CategoriesActivity;
-import com.app.ricktech.uis.activity_product.ProductActivity;
+import com.app.ricktech.models.ProductModel;
+import com.app.ricktech.uis.gaming_laptop_module.activity_product.ProductActivity;
 
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Object> list;
+    private List<ProductModel> list;
     private Context context;
     private LayoutInflater inflater;
-    public ProductAdapter(Context context, List<Object> list) {
+    public ProductAdapter(Context context, List<ProductModel> list) {
         this.list = list;
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -39,17 +38,17 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         MyHolder myHolder = (MyHolder) holder;
-
+        myHolder.binding.setModel(list.get(position));
         myHolder.itemView.setOnClickListener(v -> {
-            ProductActivity categoriesActivity=(ProductActivity) context;
-            categoriesActivity.show();
+            ProductActivity activity=(ProductActivity) context;
+            activity.setItemData(list.get(myHolder.getAdapterPosition()));
         });
 
     }
 
     @Override
     public int getItemCount() {
-        return 9;
+        return list.size();
     }
 
     public static class MyHolder extends RecyclerView.ViewHolder {

@@ -25,68 +25,69 @@
         android:theme="@style/Theme.RickTech"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".uis.pc_building_module.activity_building.BulidingActivity"></activity>
+        <activity android:name=".uis.gaming_laptop_module.activity_gaming_product_details.GamingProductDetailsActivity" />
+        <activity android:name=".uis.pc_building_module.activity_building_product_details.BulidingProductDetailsActivity" />
+        <activity android:name=".uis.general_module.activity_reset_password.ResetPasswordActivity" />
         <activity
-            android:name=".uis.activity_product_detials.ProductDetialsActivity"
+            android:name=".uis.general_module.activity_product_detials.ProductDetialsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_product.ProductActivity"
+            android:name=".uis.gaming_laptop_module.activity_product.ProductActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_categories.CategoriesActivity"
+            android:name=".uis.gaming_laptop_module.activity_categories.CategoriesActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".uis.activity_accessories.AccessoriesActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-
-            />
+            android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_verification_code.VerificationCodeActivity"
+            android:name=".uis.general_module.activity_verification_code.VerificationCodeActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_map.MapActivity"
+            android:name=".uis.general_module.activity_map.MapActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_checkout.CheckoutActivity"
+            android:name=".uis.general_module.activity_checkout.CheckoutActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_sign_up.SignUpActivity"
+            android:name=".uis.general_module.activity_sign_up.SignUpActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_forget_password.ForgetPasswordActivity"
+            android:name=".uis.general_module.activity_forget_password.ForgetPasswordActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_login.LoginActivity"
+            android:name=".uis.general_module.activity_login.LoginActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_language.LanguageActivity"
+            android:name=".uis.general_module.activity_language.LanguageActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_home.HomeActivity"
+            android:name=".uis.general_module.activity_home.HomeActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".uis.activity_splash.SplashActivity"
+            android:name=".uis.general_module.activity_splash.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,7 +1,9 @@
 package com.app.ricktech.services;
 
+import com.app.ricktech.models.BrandDataModel;
 import com.app.ricktech.models.PlaceGeocodeData;
 import com.app.ricktech.models.PlaceMapDetailsData;
+import com.app.ricktech.models.ProductDataModel;
 import com.app.ricktech.models.SingleProductModel;
 import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.models.StatusResponse;
@@ -71,8 +73,35 @@ public interface Service {
     @FormUrlEncoded
     @POST("api/confirmEmail")
     Call<UserModel> confirmEmail(@Header("Authorization") String bearer_token,
-                                      @Field("code") String code
+                                 @Field("code") String code
     );
+
+    @FormUrlEncoded
+    @POST("api/checkEmailForForgetPasswordReset")
+    Call<UserModel> checkEmail(@Field("email") String email);
+
+
+    @FormUrlEncoded
+    @POST("api/checkPasswordResetCode")
+    Call<UserModel> checkEmailForgetPasswordValidCode(@Header("Authorization") String bearer_token,
+                                                      @Field("code") String code);
+
+
+    @FormUrlEncoded
+    @POST("api/resetPassword")
+    Call<UserModel> resetPassword(@Header("Authorization") String bearer_token,
+                                  @Field("password") String password);
+
+
+    @GET("api/getBrandsOfGamingPcs")
+    Call<BrandDataModel> getGamingBrand(@Header("lang") String lang);
+
+
+    @FormUrlEncoded
+    @POST("api/getGamingProductsBYBrandId")
+    Call<ProductDataModel> getGamingProductByBrandId(@Header("lang") String lang,
+                                                     @Field("brand_id") String brand_id
+                                                     );
 
 
 }

@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data
         >
-
-
+        <variable
+            name="model"
+            type="com.app.ricktech.models.ProductModel" />
     </data>
 <LinearLayout
     android:layout_width="match_parent"
@@ -25,7 +26,7 @@
         <ImageView
             android:layout_width="90dp"
             android:layout_height="90dp"
-            android:src="@drawable/lap"
+            image="@{model.main_image}"
             />
         <Space
             android:layout_width="8dp"
@@ -43,7 +44,7 @@
                 android:maxLines="2"
 
                 android:textColor="@color/gray7"
-                android:text="ALIENWARE M17 R4 GAMING LAPTOP"
+                android:text="@{model.trans_title}"
                 />
 
 
@@ -67,7 +68,7 @@
                     android:textSize="14sp"
                     android:textColor="@color/colorAccent"
                     android:layout_gravity="center_vertical"
-                   android:text="2,499.99 €"
+                   android:text='@{model.price+" €"}'
                     />
 
 

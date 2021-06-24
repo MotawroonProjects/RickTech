@@ -90,7 +90,7 @@
                     android:layout_height="56dp"
                     android:layout_gravity="top"
                     android:background="@drawable/small_rounded_bottom_compare"
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     >
 
                     <LinearLayout
@@ -429,7 +429,6 @@
                         android:textSize="15sp"
                         android:text="@string/add_to_build"
                         android:textAllCaps="false"
-                        android:visibility="gone"
                         />
                 </LinearLayout>
 

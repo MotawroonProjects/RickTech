@@ -2,7 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-
+        <variable
+            name="model"
+            type="com.app.ricktech.models.BrandModel" />
     </data>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -22,7 +24,7 @@
                android:layout_width="100dp"
                android:layout_height="100dp"
                android:layout_gravity="center"
-              android:src="@drawable/acer"
+               image="@{model.image}"
                />
            <TextView
                android:layout_width="wrap_content"
@@ -33,7 +35,7 @@
                android:textSize="14sp"
                android:textColor="@color/gray7"
                android:layout_gravity="center"
-               android:text="Acer"
+               android:text="@{model.trans_title}"
                />
        </LinearLayout>
     </androidx.cardview.widget.CardView>

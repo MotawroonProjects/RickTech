@@ -7,7 +7,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".uis.activity_splash.SplashActivity">
+        tools:context=".uis.general_module.activity_splash.SplashActivity">
 
         <ImageView
             android:layout_width="200dp"

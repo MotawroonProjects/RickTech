@@ -13,7 +13,8 @@ public class CategoryModel implements Serializable {
     private String is_in_compare;
     private String trans_title;
     private List<CategoryModel> sub_categories;
-
+    //custom
+    private List<ProductModel> selectedProduct;
     public int getId() {
         return id;
     }
@@ -44,6 +45,14 @@ public class CategoryModel implements Serializable {
 
     public String getTrans_title() {
         return trans_title;
+    }
+
+    public List<ProductModel> getSelectedProduct() {
+        return selectedProduct;
+    }
+
+    public void setSelectedProduct(List<ProductModel> selectedProduct) {
+        this.selectedProduct = selectedProduct;
     }
 
     public List<CategoryModel> getSub_categories() {

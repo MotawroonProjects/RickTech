@@ -114,7 +114,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/resend"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:layout_gravity="center_vertical"
+                />
 
             <Space
                 android:layout_width="0dp"

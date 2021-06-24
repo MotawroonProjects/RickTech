@@ -88,6 +88,9 @@
     <string name="email_found">البريد الالكتروني موجود من قبل</string>
     <string name="un_found">إسم المستخدم موجود من قبل</string>
     <string name="add_to_build">أضف الى التجميعة</string>
+    <string name="inc_email">بريد الالكتروني غير صحيح</string>
+    <string name="reset_password">إستعادة كلمة المرور</string>
+    <string name="enter_new_password">كلمة المرور الجديدة</string>
 
 
 </resources>
