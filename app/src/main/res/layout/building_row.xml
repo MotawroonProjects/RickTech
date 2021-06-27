@@ -39,6 +39,7 @@
                 <ImageView
                     android:layout_width="36dp"
                     android:layout_height="36dp"
+                    image="@{model.image}"
                     />
                 <TextView
                     android:layout_width="wrap_content"
@@ -48,6 +49,7 @@
                     android:textSize="16sp"
                     android:textColor="@color/gray7"
                     android:singleLine="true"
+                    android:text="@{model.trans_title}"
                     />
             </LinearLayout>
             <androidx.cardview.widget.CardView
@@ -136,7 +138,7 @@
                     <ImageView
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        image='@{model.selectedProduct.size()>0?model.selectedProduct.get(0).main_image:""}'
+                        image='@{model.selectedProduct.size()>0?model.selectedProduct.get(model.selectedProduct.size()-1).main_image:""}'
 
                         />
 
@@ -153,7 +155,7 @@
                             android:textSize="16sp"
                             android:textColor="@color/gray7"
                             android:singleLine="true"
-                            android:text='@{model.selectedProduct.size()>0?model.selectedProduct.get(0).trans_title:""}'
+                            android:text='@{model.selectedProduct.size()>0?model.selectedProduct.get(model.selectedProduct.size()-1).trans_title:""}'
 
                             />
                         <LinearLayout
@@ -180,10 +182,26 @@
                                 android:textColor="@color/colorAccent"
                                 android:textStyle="bold"
                                 android:textSize="16sp"
-                                android:text='@{model.selectedProduct.size()>0?model.selectedProduct.get(0).price+" €":""}'
+                                android:text='@{model.selectedProduct.size()>0?model.selectedProduct.get(model.selectedProduct.size()-1).price+" €":""}'
 
                                 />
 
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:layout_gravity="center_vertical"
+                                android:background="@drawable/circle_primary"
+                                android:text='@{model.selectedProduct.size()+""}'
+                                android:gravity="center"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:visibility='@{model.selectedProduct.size()>0?View.VISIBLE:View.GONE,default=gone}'
+                                />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -202,12 +220,15 @@
                 app:cardCornerRadius="12dp"
                 android:layout_margin="3dp"
                 app:cardBackgroundColor="@color/white"
+                android:visibility='@{model.selectedProduct.size()>0?View.VISIBLE:View.GONE,default=gone}'
                 >
                 <ImageView
+                    android:id="@+id/imageDelete"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_remove"
                     app:tint="@color/colorPrimary"
+
                     />
 
 

@@ -27,6 +27,7 @@ import com.app.ricktech.uis.gaming_laptop_module.activity_categories.CategoriesA
 import com.app.ricktech.uis.activity_accessories.AccessoriesActivity;
 import com.app.ricktech.uis.general_module.activity_home.HomeActivity;
 import com.app.ricktech.uis.general_module.activity_product_detials.ProductDetialsActivity;
+import com.app.ricktech.uis.pc_building_module.activity_building.BulidingActivity;
 import com.ethanhua.skeleton.ViewSkeletonScreen;
 
 import java.util.ArrayList;
@@ -84,7 +85,10 @@ public class Fragment_Home extends Fragment {
             Intent intent = new Intent(activity, CategoriesActivity.class);
             startActivity(intent);
         });
-
+        binding.flViewPc.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, BulidingActivity.class);
+            startActivity(intent);
+        });
 
 
         getSlider();

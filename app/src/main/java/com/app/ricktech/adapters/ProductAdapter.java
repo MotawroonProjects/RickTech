@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,6 +13,7 @@ import com.app.ricktech.R;
 import com.app.ricktech.databinding.LabtopRowBinding;
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.uis.gaming_laptop_module.activity_product.ProductActivity;
+import com.app.ricktech.uis.pc_building_module.activity_building_products.ProductBuildingActivity;
 
 import java.util.List;
 
@@ -19,10 +21,12 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private List<ProductModel> list;
     private Context context;
     private LayoutInflater inflater;
+    private AppCompatActivity activity;
     public ProductAdapter(Context context, List<ProductModel> list) {
         this.list = list;
         this.context = context;
         inflater = LayoutInflater.from(context);
+        activity = (AppCompatActivity) context;
     }
 
 
@@ -40,8 +44,14 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         MyHolder myHolder = (MyHolder) holder;
         myHolder.binding.setModel(list.get(position));
         myHolder.itemView.setOnClickListener(v -> {
-            ProductActivity activity=(ProductActivity) context;
-            activity.setItemData(list.get(myHolder.getAdapterPosition()));
+            if (activity instanceof ProductActivity){
+                ProductActivity productActivity = (ProductActivity) activity;
+                productActivity.setItemData(list.get(myHolder.getAdapterPosition()));
+
+            }else if (activity instanceof ProductBuildingActivity){
+                ProductBuildingActivity  buildingActivity = (ProductBuildingActivity) activity;
+                buildingActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+            }
         });
 
     }

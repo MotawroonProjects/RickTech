@@ -81,6 +81,10 @@ public class BulidingProductDetailsActivity extends AppCompatActivity {
 
         binding.shimmer.startShimmer();
         binding.tvOldPrice.setPaintFlags(binding.tvOldPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+        binding.btnBuild.setOnClickListener(v -> {
+            setResult(RESULT_OK);
+            finish();
+        });
         getProductById();
     }
 

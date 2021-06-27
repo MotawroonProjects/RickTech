@@ -1,4 +1,4 @@
-package com.app.ricktech.uis.pc_building_module.activity_building;
+package com.app.ricktech.uis.pc_building_module.activity_sub_bulding;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -12,29 +12,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import com.app.ricktech.R;
 import com.app.ricktech.adapters.BuildingAdapter;
-import com.app.ricktech.adapters.DetialsAdapter;
-import com.app.ricktech.databinding.ActivityBulidingBinding;
-import com.app.ricktech.databinding.ActivityBulidingProductDetailsBinding;
+import com.app.ricktech.adapters.SubBuildingAdapter;
+import com.app.ricktech.databinding.ActivitySubBuildingBinding;
 import com.app.ricktech.language.Language;
 import com.app.ricktech.models.AddBuildModel;
 import com.app.ricktech.models.CategoryBuildingDataModel;
 import com.app.ricktech.models.CategoryModel;
-import com.app.ricktech.models.ComponentModel;
-import com.app.ricktech.models.ProductDataModel;
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
 import com.app.ricktech.tags.Tags;
 import com.app.ricktech.uis.pc_building_module.activity_building_products.ProductBuildingActivity;
-import com.app.ricktech.uis.pc_building_module.activity_sub_bulding.SubBuildingActivity;
 import com.ethanhua.skeleton.SkeletonScreen;
 
 import java.util.ArrayList;
@@ -47,15 +42,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BulidingActivity extends AppCompatActivity {
-
-    private ActivityBulidingBinding binding;
+public class SubBuildingActivity extends AppCompatActivity {
+    private ActivitySubBuildingBinding binding;
     private String lang;
-    private BuildingAdapter adapter;
+    private SubBuildingAdapter adapter;
     private UserModel userModel;
     private Preferences preferences;
     private List<CategoryModel> list;
     private SkeletonScreen skeletonScreen;
+    private CategoryModel  parentModel;
     private ActivityResultLauncher<Intent> launcher;
     private int selectedPos = -1;
     private CategoryModel categoryModel;
@@ -71,8 +66,15 @@ public class BulidingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_buliding);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_sub_building);
+        getDataFromIntent();
         initView();
+    }
+
+    private void getDataFromIntent() {
+        Intent intent = getIntent();
+        parentModel = (CategoryModel) intent.getSerializableExtra("data");
+
     }
 
 
@@ -84,17 +86,16 @@ public class BulidingActivity extends AppCompatActivity {
         Paper.init(this);
         lang = Paper.book().read("lang", "ar");
         binding.setLang(lang);
-        binding.recView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new BuildingAdapter(this, list);
+        binding.setTitle(parentModel.getTrans_title());
+        binding.recView.setLayoutManager(new GridLayoutManager(this,2));
+        adapter = new SubBuildingAdapter(this, list);
         binding.recView.setAdapter(adapter);
         binding.recView.setItemAnimator(new DefaultItemAnimator());
         binding.llBack.setOnClickListener(v -> finish());
 
-        binding.setScore("0");
-        binding.setTotal("0.0");
 
         binding.shimmer.startShimmer();
-        getBuildings();
+        getSubBuildings();
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
@@ -137,14 +138,7 @@ public class BulidingActivity extends AppCompatActivity {
 
                     calculateTotal_Points();
 
-                    if (map.size()>0){
-                        canNext = true;
-                        binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
 
-                    }else {
-                        canNext = false;
-                        binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
-                    }
                 }
             }
         });
@@ -153,9 +147,9 @@ public class BulidingActivity extends AppCompatActivity {
 
 
 
-    private void getBuildings() {
+    private void getSubBuildings() {
         Api.getService(Tags.base_url)
-                .getCategoryBuilding(lang)
+                .getSubCategoryBuilding(lang,parentModel.getId()+"")
                 .enqueue(new Callback<CategoryBuildingDataModel>() {
                     @Override
                     public void onResponse(Call<CategoryBuildingDataModel> call, Response<CategoryBuildingDataModel> response) {
@@ -168,12 +162,10 @@ public class BulidingActivity extends AppCompatActivity {
                                 list.addAll(response.body().getData());
                                 adapter.notifyDataSetChanged();
                                 binding.tvNoData.setVisibility(View.GONE);
-                                binding.llTotal.setVisibility(View.VISIBLE);
-                                binding.flCompare.setVisibility(View.VISIBLE);
+
                             } else {
                                 binding.tvNoData.setVisibility(View.VISIBLE);
-                                binding.llTotal.setVisibility(View.GONE);
-                                binding.flCompare.setVisibility(View.GONE);
+
 
                             }
 
@@ -208,12 +200,6 @@ public class BulidingActivity extends AppCompatActivity {
             intent.putExtra("data", categoryModel.getId() + "");
             launcher.launch(intent);
 
-        } else {
-            req = 200;
-            Intent intent = new Intent(this, SubBuildingActivity.class);
-            intent.putExtra("data", categoryModel);
-            launcher.launch(intent);
-
         }
 
 
@@ -226,14 +212,7 @@ public class BulidingActivity extends AppCompatActivity {
         list.set(adapterPosition,categoryModel);
         adapter.notifyItemChanged(adapterPosition);
 
-        if (map.size()>0){
-            canNext = true;
-            binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
 
-        }else {
-            canNext = false;
-            binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
-        }
         calculateTotal_Points();
     }
 
@@ -248,7 +227,5 @@ public class BulidingActivity extends AppCompatActivity {
             }
         }
 
-        binding.setTotal(total+"");
-        binding.setScore(points+"");
     }
 }

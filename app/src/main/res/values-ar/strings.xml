@@ -91,6 +91,7 @@
     <string name="inc_email">بريد الالكتروني غير صحيح</string>
     <string name="reset_password">إستعادة كلمة المرور</string>
     <string name="enter_new_password">كلمة المرور الجديدة</string>
+    <string name="back">رجوع</string>
 
 
 </resources>

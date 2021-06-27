@@ -1,6 +1,7 @@
 package com.app.ricktech.services;
 
 import com.app.ricktech.models.BrandDataModel;
+import com.app.ricktech.models.CategoryBuildingDataModel;
 import com.app.ricktech.models.PlaceGeocodeData;
 import com.app.ricktech.models.PlaceMapDetailsData;
 import com.app.ricktech.models.ProductDataModel;
@@ -101,7 +102,24 @@ public interface Service {
     @POST("api/getGamingProductsBYBrandId")
     Call<ProductDataModel> getGamingProductByBrandId(@Header("lang") String lang,
                                                      @Field("brand_id") String brand_id
-                                                     );
+    );
+
+
+    @GET("api/getPcBuildingsCategories")
+    Call<CategoryBuildingDataModel> getCategoryBuilding(@Header("lang") String lang
+    );
+
+    @FormUrlEncoded
+    @POST("api/getProductsByCategoryId")
+    Call<ProductDataModel> getProductByCategoryIdBuilding(@Header("lang") String lang,
+                                                          @Field("category_id") String category_id
+    );
+
+    @FormUrlEncoded
+    @POST("api/getSubCategoriesByCategoryId")
+    Call<CategoryBuildingDataModel> getSubCategoryBuilding(@Header("lang") String lang,
+                                                        @Field("parent_id") String parent_id
+    );
 
 
 }
