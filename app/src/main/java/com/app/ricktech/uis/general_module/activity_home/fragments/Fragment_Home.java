@@ -24,7 +24,7 @@ import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
 import com.app.ricktech.tags.Tags;
 import com.app.ricktech.uis.gaming_laptop_module.activity_categories.CategoriesActivity;
-import com.app.ricktech.uis.activity_accessories.AccessoriesActivity;
+import com.app.ricktech.uis.accessory_module.activity_accessories.AccessoriesActivity;
 import com.app.ricktech.uis.general_module.activity_home.HomeActivity;
 import com.app.ricktech.uis.general_module.activity_product_detials.ProductDetialsActivity;
 import com.app.ricktech.uis.pc_building_module.activity_building.BulidingActivity;

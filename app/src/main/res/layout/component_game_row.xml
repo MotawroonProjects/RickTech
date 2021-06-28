@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="model"
+            type="com.app.ricktech.models.CompareComponentModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        >
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            image="@{model.category.image}"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/gray7"
+            android:textSize="14sp"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textStyle="bold"
+            android:text="@{model.category.trans_title}"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray6"
+            android:textSize="12sp"
+            android:lines="1"
+            android:ellipsize="end"
+            android:text="@{model.product.trans_title}"
+            />
+    </LinearLayout>
+</layout>

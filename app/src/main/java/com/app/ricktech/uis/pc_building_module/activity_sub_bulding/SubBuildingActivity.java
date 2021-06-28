@@ -32,6 +32,7 @@ import com.app.ricktech.tags.Tags;
 import com.app.ricktech.uis.pc_building_module.activity_building_products.ProductBuildingActivity;
 import com.ethanhua.skeleton.SkeletonScreen;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ public class SubBuildingActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> launcher;
     private int selectedPos = -1;
     private CategoryModel categoryModel;
-    private Map<Integer, AddBuildModel> map;
+    private Map<Integer, List<ProductModel>> map;
     private int req;
     private boolean canNext = false;
 
@@ -108,20 +109,17 @@ public class SubBuildingActivity extends AppCompatActivity {
 
 
                             if (map.get(selectedPos) != null) {
-                                AddBuildModel model = map.get(selectedPos);
-                                if (model != null) {
-                                    List<String> productModelList = model.getList();
-                                    productModelList.add(productModel.getId()+"");
-                                    model.setList(productModelList);
-                                    map.put(selectedPos, model);
+                                List<ProductModel> productModelList = map.get(selectedPos);
+                                if (productModelList != null) {
+                                    productModelList.add(productModel);
+                                    map.put(selectedPos, productModelList);
 
                                 }
 
                             } else {
-                                List<String> productModelList = new ArrayList<>();
-                                productModelList.add(productModel.getId()+"");
-                                AddBuildModel model = new AddBuildModel(categoryModel.getId()+"", productModelList);
-                                map.put(selectedPos, model);
+                                List<ProductModel> productModelList = new ArrayList<>();
+                                productModelList.add(productModel);
+                                map.put(selectedPos, productModelList);
                             }
 
                             List<ProductModel> list1 = list.get(selectedPos).getSelectedProduct();
@@ -136,13 +134,34 @@ public class SubBuildingActivity extends AppCompatActivity {
                     }
 
 
-                    calculateTotal_Points();
+                    if(map.size()>0){
+                        canNext = true;
+                        binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
+                    }else {
+                        canNext = true;
+                        binding.btnSave.setBackgroundResource(R.drawable.small_rounded_gray77);
+
+                    }
+
 
 
                 }
             }
         });
 
+        binding.btnSave.setOnClickListener(v -> {
+            if (canNext){
+                List<ProductModel> data = new ArrayList<>();
+                for (List<ProductModel> list :map.values()){
+                    data.addAll(list);
+                }
+
+                Intent intent = getIntent();
+                intent.putExtra("data", (Serializable) data);
+                setResult(RESULT_OK,intent);
+                finish();
+            }
+        });
     }
 
 
@@ -213,19 +232,15 @@ public class SubBuildingActivity extends AppCompatActivity {
         adapter.notifyItemChanged(adapterPosition);
 
 
-        calculateTotal_Points();
-    }
+        if(map.size()>0){
+            canNext = true;
+            binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
+        }else {
+            canNext = true;
+            binding.btnSave.setBackgroundResource(R.drawable.small_rounded_gray77);
 
-    private void calculateTotal_Points() {
-        double total = 0;
-        double points = 0;
-        for (Integer key :map.keySet()){
-            CategoryModel model = list.get(key);
-            for (ProductModel productModel:model.getSelectedProduct()){
-                total+= productModel.getPrice();
-                points += productModel.getPoints();
-            }
         }
 
     }
+
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.ricktech.R;
 import com.app.ricktech.databinding.LabtopRowBinding;
 import com.app.ricktech.models.ProductModel;
+import com.app.ricktech.uis.accessory_module.activity_accessory_products.AccessoryProductsActivity;
 import com.app.ricktech.uis.gaming_laptop_module.activity_product.ProductActivity;
 import com.app.ricktech.uis.pc_building_module.activity_building_products.ProductBuildingActivity;
 
@@ -51,6 +52,9 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }else if (activity instanceof ProductBuildingActivity){
                 ProductBuildingActivity  buildingActivity = (ProductBuildingActivity) activity;
                 buildingActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+            }else if (activity instanceof AccessoryProductsActivity){
+                AccessoryProductsActivity  accessoryProductsActivity = (AccessoryProductsActivity) activity;
+                accessoryProductsActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
             }
         });
 

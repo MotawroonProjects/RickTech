@@ -92,6 +92,14 @@
     <string name="reset_password">إستعادة كلمة المرور</string>
     <string name="enter_new_password">كلمة المرور الجديدة</string>
     <string name="back">رجوع</string>
+    <string name="save">حفظ</string>
+    <string name="save_build_as">حفظ التجمية بإسم:</string>
+    <string name="enter_build_name">أدخل اسم للتجميعة</string>
+    <string name="no_games">لا توجد العاب للمقارنة</string>
+    <string name="perfect">مثالي</string>
+    <string name="good">جيد</string>
+    <string name="bad">سيئ</string>
+    <string name="suc">تم بنجاح!</string>
 
 
 </resources>

@@ -1,5 +1,8 @@
 package com.app.ricktech.services;
 
+import com.app.ricktech.models.AccessoryDataModel;
+import com.app.ricktech.models.AddCompareModel;
+import com.app.ricktech.models.AddToBuildDataModel;
 import com.app.ricktech.models.BrandDataModel;
 import com.app.ricktech.models.CategoryBuildingDataModel;
 import com.app.ricktech.models.PlaceGeocodeData;
@@ -8,9 +11,11 @@ import com.app.ricktech.models.ProductDataModel;
 import com.app.ricktech.models.SingleProductModel;
 import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.models.StatusResponse;
+import com.app.ricktech.models.SuggestionGameDataModel;
 import com.app.ricktech.models.UserModel;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -118,9 +123,23 @@ public interface Service {
     @FormUrlEncoded
     @POST("api/getSubCategoriesByCategoryId")
     Call<CategoryBuildingDataModel> getSubCategoryBuilding(@Header("lang") String lang,
-                                                        @Field("parent_id") String parent_id
+                                                           @Field("parent_id") String parent_id
+    );
+
+    @POST("api/savePcBuildings")
+    Call<StatusResponse> addToBuild(@Header("lang") String lang,
+                                    @Header("Authorization") String bearer_token,
+                                    @Body AddToBuildDataModel model
     );
 
 
+    @POST("api/comparePcBuildingWithGames")
+    Call<SuggestionGameDataModel> compare(@Header("lang") String lang,
+                                          @Body AddCompareModel model
+    );
+
+    @GET("api/getAccessories")
+    Call<AccessoryDataModel> getAccessory(@Header("lang") String lang
+    );
 }
 

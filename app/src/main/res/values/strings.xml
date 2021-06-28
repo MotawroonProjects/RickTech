@@ -94,4 +94,12 @@
     <string name="reset_password">Reset Password</string>
     <string name="enter_new_password">Enter New Password</string>
     <string name="back">Back</string>
+    <string name="save">save</string>
+    <string name="save_build_as">Save Build As:</string>
+    <string name="enter_build_name">Enter build name</string>
+    <string name="no_games">No games to compare</string>
+    <string name="perfect">Perfect</string>
+    <string name="good">Good</string>
+    <string name="bad">Bad</string>
+    <string name="suc">Success!</string>
 </resources>

@@ -87,7 +87,20 @@ public class GeneralMethod {
 
 
 
+    @BindingAdapter("compare")
+    public static void compare(TextView view, double point) {
+        if (point>=80){
+            view.setBackgroundResource(R.drawable.rounded_perfect);
+        }else if (point>=50&&point<80){
+            view.setBackgroundResource(R.drawable.rounded_good);
 
+        }else {
+            view.setBackgroundResource(R.drawable.rounded_bad);
+
+        }
+        view.setText(point+"%");
+
+    }
 
 }
 
