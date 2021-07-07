@@ -102,4 +102,5 @@
     <string name="good">Good</string>
     <string name="bad">Bad</string>
     <string name="suc">Success!</string>
+    <string name="reset">Reset</string>
 </resources>

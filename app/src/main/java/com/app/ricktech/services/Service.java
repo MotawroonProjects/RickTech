@@ -11,7 +11,9 @@ import com.app.ricktech.models.ProductDataModel;
 import com.app.ricktech.models.SingleProductModel;
 import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.models.StatusResponse;
+import com.app.ricktech.models.SuggestionBrandDataModel;
 import com.app.ricktech.models.SuggestionGameDataModel;
+import com.app.ricktech.models.SuggestionsDataModel;
 import com.app.ricktech.models.UserModel;
 
 import retrofit2.Call;
@@ -141,5 +143,33 @@ public interface Service {
     @GET("api/getAccessories")
     Call<AccessoryDataModel> getAccessory(@Header("lang") String lang
     );
+
+
+    @FormUrlEncoded
+    @POST("api/compareGamingPcWithGames")
+    Call<SuggestionGameDataModel> compareGaming(@Header("lang") String lang,
+                                                @Field("product_id") String product_id
+    );
+
+    @GET("api/getSuggestionPcBuildingTypes")
+    Call<SuggestionBrandDataModel> getSuggestionBrand(@Header("lang") String lang
+    );
+
+
+    @FormUrlEncoded
+    @POST("api/getBrandsOfSuggestionPcBuildings")
+    Call<BrandDataModel> getSuggestionBrands(@Header("lang") String lang,
+                                             @Field("pc_building_type_id") String pc_building_type_id
+    );
+
+
+    @FormUrlEncoded
+    @POST("api/getCategoriesOfSuggestionPcBuilding")
+    Call<SuggestionsDataModel> getCategorySuggestions(@Header("lang") String lang,
+                                                      @Field("brand_id") String brand_id,
+                                                      @Field("pc_building_type_id") String pc_building_type_id
+    );
+
+
 }
 

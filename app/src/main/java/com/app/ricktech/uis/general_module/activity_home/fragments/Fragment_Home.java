@@ -11,14 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.app.ricktech.R;
 
 import com.app.ricktech.adapters.SliderAdapter;
+import com.app.ricktech.adapters.SuggestionBrandAdapter;
 import com.app.ricktech.databinding.FragmentHomeBinding;
 
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.SliderModel;
+import com.app.ricktech.models.SuggestionBrandDataModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
@@ -28,6 +32,9 @@ import com.app.ricktech.uis.accessory_module.activity_accessories.AccessoriesAct
 import com.app.ricktech.uis.general_module.activity_home.HomeActivity;
 import com.app.ricktech.uis.general_module.activity_product_detials.ProductDetialsActivity;
 import com.app.ricktech.uis.pc_building_module.activity_building.BulidingActivity;
+import com.app.ricktech.uis.suggestions_module.activity_suggestions.SuggestionBrandActivity;
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.ethanhua.skeleton.ViewSkeletonScreen;
 
 import java.util.ArrayList;
@@ -49,7 +56,9 @@ public class Fragment_Home extends Fragment {
     private UserModel userModel;
     private SliderAdapter sliderAdapter;
     private List<SliderModel.Data> sliderModelList;
-    private ViewSkeletonScreen skeletonScreen;
+    private SkeletonScreen skeletonScreen;
+    private SuggestionBrandAdapter adapter;
+    private List<SuggestionBrandDataModel.Data> list;
 
     private Timer timer;
     private TimerTask timerTask;
@@ -69,6 +78,7 @@ public class Fragment_Home extends Fragment {
 
 
     private void initView() {
+        list = new ArrayList<>();
         sliderModelList = new ArrayList<>();
         activity = (HomeActivity) getActivity();
         preferences = Preferences.getInstance();
@@ -91,11 +101,21 @@ public class Fragment_Home extends Fragment {
         });
 
 
+        binding.recView.setLayoutManager(new GridLayoutManager(activity,2));
+        adapter = new SuggestionBrandAdapter(activity,list,this);
+        binding.recView.setAdapter(adapter);
+        skeletonScreen = Skeleton.bind(binding.recView)
+                .load(R.layout.brand_row)
+                .adapter(adapter)
+                .frozen(false)
+                .count(4)
+                .show();
+
         getSlider();
+        getBrands();
     }
 
-
-    private void getSlider() {
+    private void getBrands() {
         Api.getService(Tags.base_url)
                 .getSlider(lang)
                 .enqueue(new Callback<SliderModel>() {
@@ -144,6 +164,49 @@ public class Fragment_Home extends Fragment {
     }
 
 
+    private void getSlider() {
+        Api.getService(Tags.base_url)
+                .getSuggestionBrand(lang)
+                .enqueue(new Callback<SuggestionBrandDataModel>() {
+                    @Override
+                    public void onResponse(Call<SuggestionBrandDataModel> call, Response<SuggestionBrandDataModel> response) {
+                        skeletonScreen.hide();
+                        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
+                            skeletonScreen.hide();
+
+                            if (response.body().getData().size() > 0) {
+                                list.clear();
+                                list.addAll(response.body().getData());
+                                adapter.notifyDataSetChanged();
+                                binding.tvNoData.setVisibility(View.GONE);
+                            } else {
+                                binding.tvNoData.setVisibility(View.VISIBLE);
+
+                            }
+
+                        } else {
+
+                            skeletonScreen.hide();
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<SuggestionBrandDataModel> call, Throwable t) {
+                        try {
+                            Log.e("error", t.getMessage()+"__");
+                            skeletonScreen.hide();
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+    }
+
+
     private void updateSliderUi(List<SliderModel.Data> data) {
         sliderModelList.addAll(data);
         sliderAdapter = new SliderAdapter(sliderModelList, activity, this);
@@ -172,6 +235,12 @@ public class Fragment_Home extends Fragment {
 
             }
         }
+    }
+
+    public void setBrandItemData(SuggestionBrandDataModel.Data data) {
+        Intent intent = new Intent(activity, SuggestionBrandActivity.class);
+        intent.putExtra("data", data);
+        startActivity(intent);
     }
 
 

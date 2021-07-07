@@ -15,6 +15,7 @@ import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.uis.accessory_module.activity_accessory_products.AccessoryProductsActivity;
 import com.app.ricktech.uis.gaming_laptop_module.activity_product.ProductActivity;
 import com.app.ricktech.uis.pc_building_module.activity_building_products.ProductBuildingActivity;
+import com.app.ricktech.uis.suggestions_module.activity_suggestion_products.SuggestionProductsActivity;
 
 import java.util.List;
 
@@ -55,7 +56,12 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }else if (activity instanceof AccessoryProductsActivity){
                 AccessoryProductsActivity  accessoryProductsActivity = (AccessoryProductsActivity) activity;
                 accessoryProductsActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+            }else if (activity instanceof SuggestionProductsActivity){
+                SuggestionProductsActivity suggestionProductsActivity = (SuggestionProductsActivity) activity;
+                suggestionProductsActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
             }
+
+
         });
 
     }

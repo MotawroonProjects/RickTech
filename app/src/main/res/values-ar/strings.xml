@@ -100,6 +100,7 @@
     <string name="good">جيد</string>
     <string name="bad">سيئ</string>
     <string name="suc">تم بنجاح!</string>
+    <string name="reset">الافتراضي</string>
 
 
 </resources>

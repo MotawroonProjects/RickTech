@@ -25,42 +25,46 @@
         android:theme="@style/Theme.RickTech"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".uis.accessory_module.activity_accessory_product_details.AccessoryProductDetailsActivity"
+        <activity android:name=".uis.suggestions_module.activity_suggestion_sub_building.SuggestionSubBuildingActivity"></activity>
+        <activity android:name=".uis.suggestions_module.activity_suggestion_products.SuggestionProductsActivity" />
+        <activity android:name=".uis.suggestions_module.activity_suggestion_buildings.SuggetionBuildingsActivity" />
+        <activity android:name=".uis.suggestions_module.activity_suggestions.SuggestionBrandActivity" />
+        <activity
+            android:name=".uis.accessory_module.activity_accessory_product_details.AccessoryProductDetailsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            />
-        <activity android:name=".uis.accessory_module.activity_accessory_products.AccessoryProductsActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".uis.accessory_module.activity_accessory_products.AccessoryProductsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            />
-        <activity android:name=".uis.pc_building_module.activity_games.GamesActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".uis.pc_building_module.activity_games.GamesActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            />
-        <activity android:name=".uis.pc_building_module.activity_sub_bulding.SubBuildingActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".uis.pc_building_module.activity_sub_bulding.SubBuildingActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            />
-        <activity android:name=".uis.pc_building_module.activity_building_products.ProductBuildingActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".uis.pc_building_module.activity_building_products.ProductBuildingActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            />
-        <activity android:name=".uis.pc_building_module.activity_building.BulidingActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".uis.pc_building_module.activity_building.BulidingActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            />
-        <activity android:name=".uis.gaming_laptop_module.activity_gaming_product_details.GamingProductDetailsActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".uis.gaming_laptop_module.activity_gaming_product_details.GamingProductDetailsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            />
-        <activity android:name=".uis.pc_building_module.activity_building_product_details.BulidingProductDetailsActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".uis.pc_building_module.activity_building_product_details.BulidingProductDetailsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            />
-        <activity android:name=".uis.general_module.activity_reset_password.ResetPasswordActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".uis.general_module.activity_reset_password.ResetPasswordActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".uis.general_module.activity_product_detials.ProductDetialsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"

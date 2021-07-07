@@ -1,4 +1,13 @@
-package com.app.ricktech.uis.gaming_laptop_module.activity_product;
+package com.app.ricktech.uis.suggestions_module.activity_suggestion_products;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,24 +15,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-
 import com.app.ricktech.R;
 import com.app.ricktech.adapters.ProductAdapter;
-import com.app.ricktech.databinding.ActivityProductBinding;
+import com.app.ricktech.databinding.ActivityProductBuildingBinding;
+import com.app.ricktech.databinding.ActivitySuggestionProductsBinding;
 import com.app.ricktech.language.Language;
-import com.app.ricktech.models.BrandModel;
 import com.app.ricktech.models.ProductDataModel;
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
 import com.app.ricktech.tags.Tags;
-import com.app.ricktech.uis.gaming_laptop_module.activity_gaming_product_details.GamingProductDetailsActivity;
-import com.app.ricktech.uis.general_module.activity_product_detials.ProductDetialsActivity;
+import com.app.ricktech.uis.pc_building_module.activity_building_product_details.BulidingProductDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +36,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductActivity extends AppCompatActivity {
-    private ActivityProductBinding binding;
+public class SuggestionProductsActivity extends AppCompatActivity {
+    private ActivitySuggestionProductsBinding binding;
     private String lang;
     private ProductAdapter adapter;
     private UserModel userModel;
     private Preferences preferences;
     private List<ProductModel> list;
-    private BrandModel model;
+    private String category_id = "";
+    private int selectedPos = -1;
+    private ProductModel productModel;
+    private ActivityResultLauncher<Intent> launcher;
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -50,15 +56,16 @@ public class ProductActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_product);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_suggestion_products);
         getDataFromIntent();
         initView();
     }
 
     private void getDataFromIntent() {
-        Intent intent = getIntent();
-        model = (BrandModel) intent.getSerializableExtra("data");
 
+        Intent intent = getIntent();
+        category_id = intent.getStringExtra("data");
+        Log.e("id", category_id+"__");
     }
 
     private void initView() {
@@ -68,27 +75,38 @@ public class ProductActivity extends AppCompatActivity {
         Paper.init(this);
         lang = Paper.book().read("lang", "ar");
         binding.setLang(lang);
-        binding.setModel(model);
         binding.recView.setLayoutManager(new GridLayoutManager(this, 1));
         adapter = new ProductAdapter(this, list);
         binding.recView.setAdapter(adapter);
         binding.recView.setItemAnimator(new DefaultItemAnimator());
         binding.llBack.setOnClickListener(v -> finish());
 
-        getProducts();
 
+        getProductByCategoryId();
+
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if(result.getResultCode()==RESULT_OK){
+                    Intent intent = getIntent();
+                    if (productModel!=null){
+                        intent.putExtra("data", productModel);
+                    }
+                    setResult(RESULT_OK,intent);
+                    finish();
+                }
+            }
+        });
     }
 
-    private void getProducts() {
-        Log.e("id", model.getId()+"__");
+    private void getProductByCategoryId() {
         Api.getService(Tags.base_url)
-                .getGamingProductByBrandId(lang,model.getId()+"")
+                .getProductByCategoryIdBuilding(lang,category_id)
                 .enqueue(new Callback<ProductDataModel>() {
                     @Override
                     public void onResponse(Call<ProductDataModel> call, Response<ProductDataModel> response) {
                         binding.progBar.setVisibility(View.GONE);
 
-                        Log.e("size", response.body().getData().size()+"_");
                         if (response.isSuccessful() && response.body() != null&&response.body().getStatus()==200 ) {
                             if (response.body().getData().size() > 0) {
                                 list.clear();
@@ -121,10 +139,13 @@ public class ProductActivity extends AppCompatActivity {
                 });
     }
 
-
-    public void setItemData(ProductModel productModel) {
-        Intent intent=new Intent(this, GamingProductDetailsActivity.class);
+    public void setItemData(int adapterPosition, ProductModel productModel) {
+        selectedPos = adapterPosition;
+        this.productModel = productModel;
+        Intent intent = new Intent(this, BulidingProductDetailsActivity.class);
         intent.putExtra("data", productModel.getId()+"");
-        startActivity(intent);
+        launcher.launch(intent);
+
+
     }
 }

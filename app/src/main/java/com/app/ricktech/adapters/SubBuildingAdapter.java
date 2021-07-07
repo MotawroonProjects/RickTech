@@ -15,6 +15,7 @@ import com.app.ricktech.databinding.SubBuildingRowBinding;
 import com.app.ricktech.models.CategoryModel;
 import com.app.ricktech.uis.pc_building_module.activity_building.BulidingActivity;
 import com.app.ricktech.uis.pc_building_module.activity_sub_bulding.SubBuildingActivity;
+import com.app.ricktech.uis.suggestions_module.activity_suggestion_sub_building.SuggestionSubBuildingActivity;
 
 import java.util.List;
 
@@ -22,12 +23,12 @@ public class SubBuildingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<CategoryModel> list;
     private Context context;
     private LayoutInflater inflater;
-    private SubBuildingActivity activity;
+    private AppCompatActivity appCompatActivity;
     public SubBuildingAdapter(Context context, List<CategoryModel> list) {
         this.list = list;
         this.context = context;
         inflater = LayoutInflater.from(context);
-        activity = (SubBuildingActivity) context;
+        appCompatActivity = (AppCompatActivity) context;
     }
 
 
@@ -45,12 +46,31 @@ public class SubBuildingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         MyHolder myHolder = (MyHolder) holder;
         myHolder.binding.setModel(list.get(position));
         myHolder.itemView.setOnClickListener(v -> {
-            activity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+            if (appCompatActivity instanceof SubBuildingActivity){
+                SubBuildingActivity activity = (SubBuildingActivity) appCompatActivity;
+                activity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            } else if (appCompatActivity instanceof SuggestionSubBuildingActivity) {
+                SuggestionSubBuildingActivity activity = (SuggestionSubBuildingActivity) appCompatActivity;
+                activity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+
+            }
 
         });
 
         myHolder.binding.imageDelete.setOnClickListener(v -> {
-            activity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+            if (appCompatActivity instanceof SubBuildingActivity){
+                SubBuildingActivity activity = (SubBuildingActivity) appCompatActivity;
+                activity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            } else if (appCompatActivity instanceof SuggestionSubBuildingActivity) {
+                SuggestionSubBuildingActivity activity = (SuggestionSubBuildingActivity) appCompatActivity;
+                activity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+
+            }
+
 
         });
 
