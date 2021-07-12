@@ -1,6 +1,7 @@
 package com.app.ricktech.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryModel implements Serializable {
@@ -12,9 +13,26 @@ public class CategoryModel implements Serializable {
     private String parent_id;
     private String is_in_compare;
     private String trans_title;
-    private List<CategoryModel> sub_categories;
+    private List<CategoryModel> subCategories = new ArrayList<>();
     //custom
-    private List<ProductModel> selectedProduct;
+    private List<ProductModel> selectedProduct = new ArrayList<>();
+
+    public CategoryModel() {
+    }
+
+    public CategoryModel(int id, String desc, String image, String type, String is_final_level, String parent_id, String is_in_compare, String trans_title, List<CategoryModel> subCategories, List<ProductModel> selectedProduct) {
+        this.id = id;
+        this.desc = desc;
+        this.image = image;
+        this.type = type;
+        this.is_final_level = is_final_level;
+        this.parent_id = parent_id;
+        this.is_in_compare = is_in_compare;
+        this.trans_title = trans_title;
+        this.subCategories = subCategories;
+        this.selectedProduct = selectedProduct;
+    }
+
     public int getId() {
         return id;
     }
@@ -56,6 +74,10 @@ public class CategoryModel implements Serializable {
     }
 
     public List<CategoryModel> getSub_categories() {
-        return sub_categories;
+        return subCategories;
+    }
+
+    public void setSub_categories(List<CategoryModel> sub_categories) {
+        this.subCategories = sub_categories;
     }
 }

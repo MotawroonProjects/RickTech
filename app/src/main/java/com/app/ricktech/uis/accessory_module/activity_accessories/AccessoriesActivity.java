@@ -26,6 +26,7 @@ import com.app.ricktech.tags.Tags;
 import com.app.ricktech.uis.accessory_module.activity_accessory_products.AccessoryProductsActivity;
 import com.app.ricktech.uis.pc_building_module.activity_building_products.ProductBuildingActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,6 +122,8 @@ public class AccessoriesActivity extends AppCompatActivity {
     public void setItemData(int adapterPosition, CategoryModel categoryModel) {
         Intent intent = new Intent(this, AccessoryProductsActivity.class);
         intent.putExtra("data", categoryModel.getId()+"");
+        intent.putExtra("data2", (Serializable) categoryModel.getSelectedProduct());
+
         startActivity(intent);
 
     }

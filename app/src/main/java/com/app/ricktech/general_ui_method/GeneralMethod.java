@@ -102,6 +102,17 @@ public class GeneralMethod {
 
     }
 
+    @BindingAdapter("date")
+    public static void date(TextView view, String create_at) {
+       if (create_at!=null){
+           String[] arr = create_at.split("T");
+           if (arr.length>0){
+               view.setText(arr[0]);
+           }
+       }
+
+    }
+
 }
 
 

@@ -19,16 +19,21 @@ import com.app.ricktech.uis.suggestions_module.activity_suggestion_products.Sugg
 
 import java.util.List;
 
+import io.paperdb.Paper;
+
 public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<ProductModel> list;
     private Context context;
     private LayoutInflater inflater;
     private AppCompatActivity activity;
+    private String lang;
     public ProductAdapter(Context context, List<ProductModel> list) {
         this.list = list;
         this.context = context;
         inflater = LayoutInflater.from(context);
         activity = (AppCompatActivity) context;
+        Paper.init(context);
+        lang = Paper.book().read("lang","ar");
     }
 
 
@@ -45,6 +50,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         MyHolder myHolder = (MyHolder) holder;
         myHolder.binding.setModel(list.get(position));
+        myHolder.binding.setLang(lang);
         myHolder.itemView.setOnClickListener(v -> {
             if (activity instanceof ProductActivity){
                 ProductActivity productActivity = (ProductActivity) activity;

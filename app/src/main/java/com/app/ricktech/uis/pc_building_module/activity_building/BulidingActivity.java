@@ -65,7 +65,6 @@ public class BulidingActivity extends AppCompatActivity {
     private UserModel userModel;
     private Preferences preferences;
     private List<CategoryModel> list;
-    private SkeletonScreen skeletonScreen;
     private ActivityResultLauncher<Intent> launcher;
     private int selectedPos = -1;
     private CategoryModel categoryModel;
@@ -117,13 +116,15 @@ public class BulidingActivity extends AppCompatActivity {
                     if (productModel != null) {
                         if (selectedPos != -1) {
 
-
                             if (map.get(selectedPos) != null) {
                                 AddBuildModel model = map.get(selectedPos);
                                 if (model != null) {
                                     List<String> productModelList = model.getList();
                                     productModelList.add(productModel.getId()+"");
                                     model.setList(productModelList);
+                                    List<ProductModel> productModelList1 = new ArrayList<>(model.getProductModelList());
+                                    productModelList1.add(productModel);
+                                    model.setProductModelList(productModelList1);
                                     map.put(selectedPos, model);
 
                                 }
@@ -132,6 +133,9 @@ public class BulidingActivity extends AppCompatActivity {
                                 List<String> productModelList = new ArrayList<>();
                                 productModelList.add(productModel.getId()+"");
                                 AddBuildModel model = new AddBuildModel(categoryModel.getId()+"", productModelList);
+                                List<ProductModel> productModelList1 = new ArrayList<>(model.getProductModelList());
+                                productModelList1.add(productModel);
+                                model.setProductModelList(productModelList1);
                                 map.put(selectedPos, model);
                             }
 
@@ -141,6 +145,7 @@ public class BulidingActivity extends AppCompatActivity {
                             }
                             list1.add(productModel);
                             categoryModel.setSelectedProduct(list1);
+
                             adapter.notifyItemChanged(selectedPos);
 
                         }
@@ -162,45 +167,88 @@ public class BulidingActivity extends AppCompatActivity {
                     }
                 }
                 else if (req == 200 && result.getResultCode() == RESULT_OK && result.getData() != null){
-                    List<ProductModel> data = (List<ProductModel>) result.getData().getSerializableExtra("data");
+                    List<CategoryModel> data = (List<CategoryModel>) result.getData().getSerializableExtra("data");
                     if (selectedPos!=-1){
-                        if (list!=null){
+                        if (data!=null){
 
+                            if (data.size()>0){
+                                if (map.get(selectedPos) != null) {
+                                    AddBuildModel model = map.get(selectedPos);
+                                    if (model != null) {
+                                        List<String> productIds = model.getList();
+                                        List<ProductModel> list1 = new ArrayList<>();
+                                        for (CategoryModel categoryModel:data){
+                                            list1.addAll(categoryModel.getSelectedProduct());
 
+                                        }
 
-                            if (map.get(selectedPos) != null) {
-                                AddBuildModel model = map.get(selectedPos);
-                                if (model != null) {
-                                    List<String> productModelList = model.getList();
-                                    productModelList.clear();
-                                    for (ProductModel productModel:data){
+                                        List<ProductModel> productModelList1 = new ArrayList<>();
+
+                                        for (ProductModel productModel:list1){
+                                            productModelList1.add(productModel);
+                                            productIds.add(productModel.getId()+"");
+                                        }
+                                        categoryModel.setSelectedProduct(productModelList1);
+                                        List<ProductModel> productModelList2 = new ArrayList<>(model.getProductModelList());
+                                        productModelList2.addAll(list1);
+
+                                        model.setProductModelList(productModelList2);
+                                        model.setList(productIds);
+                                        map.put(selectedPos, model);
+
+                                    }
+
+                                } else {
+                                    List<ProductModel> list1 = new ArrayList<>();
+
+                                    for (CategoryModel categoryModel:data){
+                                        list1.addAll(categoryModel.getSelectedProduct());
+                                    }
+
+                                    List<String> productModelList = new ArrayList<>();
+                                    List<ProductModel> productModelList1 = new ArrayList<>();
+
+                                    for (ProductModel productModel:list1){
+                                        productModelList1.add(productModel);
                                         productModelList.add(productModel.getId()+"");
                                     }
-                                    model.setList(productModelList);
+                                    categoryModel.setSelectedProduct(productModelList1);
+                                    AddBuildModel model = new AddBuildModel(categoryModel.getId()+"", productModelList);
+                                    List<ProductModel> productModelList2 = new ArrayList<>(model.getProductModelList());
+                                    productModelList2.addAll(list1);
+                                    model.setProductModelList(productModelList2);
                                     map.put(selectedPos, model);
 
                                 }
+                            }else {
+                                if (map.get(selectedPos)!=null){
+                                    map.remove(selectedPos);
+                                    categoryModel.getSelectedProduct().clear();
+                                    categoryModel.getSub_categories().clear();
 
-                            } else {
-                                List<String> productModelList = new ArrayList<>();
-
-                                for (ProductModel productModel:data){
-                                    productModelList.add(productModel.getId()+"");
                                 }
-                                AddBuildModel model = new AddBuildModel(categoryModel.getId()+"", productModelList);
-                                map.put(selectedPos, model);
-
                             }
 
 
 
-                            categoryModel.setSelectedProduct(data);
-                            list.set(selectedPos,categoryModel);
+                            categoryModel.setSub_categories(data);
+                            list.set(selectedPos, categoryModel);
 
                             adapter.notifyItemChanged(selectedPos);
 
                             calculateTotal_Points();
 
+                            if (map.size()>0){
+                                canNext = true;
+                                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
+                                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
+
+                            }else {
+                                canNext = false;
+                                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
+                                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
+
+                            }
                         }
                     }
                 }
@@ -414,6 +462,8 @@ public class BulidingActivity extends AppCompatActivity {
             req = 100;
             Intent intent = new Intent(this, ProductBuildingActivity.class);
             intent.putExtra("data", categoryModel.getId() + "");
+            intent.putExtra("data2", (Serializable) categoryModel.getSelectedProduct());
+
             launcher.launch(intent);
 
         } else {
@@ -430,7 +480,7 @@ public class BulidingActivity extends AppCompatActivity {
     public void deleteItemData(int adapterPosition, CategoryModel categoryModel) {
         map.remove(adapterPosition);
         categoryModel.getSelectedProduct().clear();
-
+        categoryModel.getSub_categories().clear();
         list.set(adapterPosition,categoryModel);
         adapter.notifyItemChanged(adapterPosition);
 

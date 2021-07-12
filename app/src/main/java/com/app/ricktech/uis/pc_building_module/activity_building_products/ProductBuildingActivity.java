@@ -56,7 +56,7 @@ public class ProductBuildingActivity extends AppCompatActivity {
     private int selectedPos = -1;
     private ProductModel productModel;
     private ActivityResultLauncher<Intent> launcher;
-
+    private List<ProductModel> selectedProducts = new ArrayList<>();
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
         super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
@@ -74,6 +74,10 @@ public class ProductBuildingActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         category_id = intent.getStringExtra("data");
+        if (intent.hasExtra("data2")){
+            selectedProducts.addAll((List<ProductModel>)intent.getSerializableExtra("data2"));
+
+        }
         Log.e("id", category_id+"__");
     }
 
@@ -118,9 +122,7 @@ public class ProductBuildingActivity extends AppCompatActivity {
 
                         if (response.isSuccessful() && response.body() != null&&response.body().getStatus()==200 ) {
                             if (response.body().getData().size() > 0) {
-                                list.clear();
-                                list.addAll(response.body().getData());
-                                adapter.notifyDataSetChanged();
+                                updateData(response.body().getData());
                                 binding.tvNoData.setVisibility(View.GONE);
                             } else{
                                 binding.tvNoData.setVisibility(View.VISIBLE);
@@ -148,6 +150,34 @@ public class ProductBuildingActivity extends AppCompatActivity {
                 });
     }
 
+    private void updateData(List<ProductModel> data) {
+        List<ProductModel> productModelList = new ArrayList<>();
+        for (ProductModel productModel:data){
+            int pos = getItemPos(productModel);
+            if (pos!=-1){
+                productModel.setSelected(true);
+            }
+
+            productModelList.add(productModel);
+
+        }
+        list.clear();
+        list.addAll(productModelList);
+
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private int getItemPos(ProductModel productModel){
+        int pos = -1;
+        for (int index = 0;index<selectedProducts.size();index++){
+            if (productModel.getId()==selectedProducts.get(index).getId()){
+                pos = index;
+                return pos;
+            }
+        }
+        return pos;
+    }
     public void setItemData(int adapterPosition, ProductModel productModel) {
         selectedPos = adapterPosition;
         this.productModel = productModel;

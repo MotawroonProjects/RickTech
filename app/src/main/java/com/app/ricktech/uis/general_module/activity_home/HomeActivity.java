@@ -17,6 +17,7 @@ import android.util.Log;
 import com.app.ricktech.R;
 import com.app.ricktech.databinding.ActivityHomeBinding;
 import com.app.ricktech.language.Language;
+import com.app.ricktech.models.NotificationCount;
 import com.app.ricktech.models.StatusResponse;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
@@ -28,6 +29,7 @@ import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Home
 import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Offers;
 import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Profile;
 import com.app.ricktech.uis.general_module.activity_login.LoginActivity;
+import com.app.ricktech.uis.general_module.activity_notifications.NotificationActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.greenrobot.eventbus.EventBus;
@@ -83,12 +85,14 @@ public class HomeActivity extends AppCompatActivity {
 
 
         binding.flNotification.setOnClickListener(v -> {
-           /* Intent intent=new Intent(HomeActivity.this, NotificationActivity.class);
-            startActivity(intent);*/
+            binding.setNotCount(0);
+            Intent intent=new Intent(HomeActivity.this, NotificationActivity.class);
+            startActivity(intent);
         });
         if (userModel != null) {
             //EventBus.getDefault().register(this);
             updateFirebaseToken();
+            getUnreadNotificationCount();
 
         }
 
@@ -240,6 +244,46 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    private void getUnreadNotificationCount(){
+        Api.getService(Tags.base_url)
+                .getUnreadNotificationCount(lang,"Bearer " + userModel.getData().getToken())
+                .enqueue(new Callback<NotificationCount>() {
+                    @Override
+                    public void onResponse(Call<NotificationCount> call, Response<NotificationCount> response) {
+                        if (response.isSuccessful()) {
+                            if (response.body() != null && response.body().getStatus() == 200) {
+                                binding.setNotCount(response.body().getData());
+                            }
+
+                        } else {
+                            try {
+                                Log.e("error", response.code() + "__" + response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            if (response.code() == 500) {
+                            } else {
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NotificationCount> call, Throwable t) {
+                        try {
+                            if (t.getMessage() != null) {
+                                Log.e("error", t.getMessage() + "__");
+
+                                if (t.getMessage().toLowerCase().contains("failed to connect") || t.getMessage().toLowerCase().contains("unable to resolve host")) {
+                                } else {
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e("Error", e.getMessage() + "__");
+                        }
+                    }
+                });
+    }
 
     public void refreshActivity(String lang) {
         Paper.book().write("lang", lang);

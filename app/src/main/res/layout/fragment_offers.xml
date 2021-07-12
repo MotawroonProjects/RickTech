@@ -7,16 +7,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recView"
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <ProgressBar
-            android:id="@+id/progBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
+            android:layout_height="match_parent"
+            app:shimmer_duration="800"
+            android:visibility="visible"
+            >
+            <include layout="@layout/place_holder"/>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
         <TextView
             android:id="@+id/tvNoData"
             android:layout_width="wrap_content"

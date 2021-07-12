@@ -25,6 +25,7 @@ public class ProductModel implements Serializable {
     private BrandModel brand;
     private CategoryModel category;
     private List<ComponentModel> components;
+    private boolean isSelected = false;
 
     public int getId() {
         return id;
@@ -104,5 +105,13 @@ public class ProductModel implements Serializable {
 
     public List<ComponentModel> getComponents() {
         return components;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

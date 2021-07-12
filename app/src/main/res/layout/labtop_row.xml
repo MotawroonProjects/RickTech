@@ -6,6 +6,10 @@
         <variable
             name="model"
             type="com.app.ricktech.models.ProductModel" />
+        <variable
+            name="lang"
+            type="String" />
+        <import type="android.view.View"/>
     </data>
 <LinearLayout
     android:layout_width="match_parent"
@@ -75,6 +79,22 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="50dp"
+        android:layout_height="35dp"
+        android:layout_gravity="end"
+        android:background='@{lang.equals("ar")?@drawable/rounded_right:@drawable/rounded_left}'
+        android:visibility='@{model.selected?View.VISIBLE:View.GONE}'
+        >
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_double_tick"
+            app:tint="@color/white"
+            />
+    </FrameLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"

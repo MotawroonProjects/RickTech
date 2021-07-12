@@ -101,6 +101,10 @@
     <string name="bad">سيئ</string>
     <string name="suc">تم بنجاح!</string>
     <string name="reset">الافتراضي</string>
+    <string name="inv_url">رابط غير صحيح</string>
+    <string name="build_name">إسم التجميعة</string>
+    <string name="created_date">تاريخ الإنشاء:</string>
+    <string name="delete">حذف</string>
 
 
 </resources>

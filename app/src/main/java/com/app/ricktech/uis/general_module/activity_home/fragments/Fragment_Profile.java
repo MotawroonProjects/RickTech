@@ -24,6 +24,8 @@ import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.uis.general_module.activity_home.HomeActivity;
 import com.app.ricktech.uis.general_module.activity_language.LanguageActivity;
+import com.app.ricktech.uis.general_module.activity_saving_build.SavingBuildActivity;
+import com.app.ricktech.uis.general_module.activity_web_view.WebViewActivity;
 
 
 import io.paperdb.Paper;
@@ -73,6 +75,18 @@ public class Fragment_Profile extends Fragment {
             launcher.launch(intent);
 
 
+        });
+
+
+        binding.llAbout.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, WebViewActivity.class);
+            intent.putExtra("type", "0");
+            startActivity(intent);
+        });
+
+        binding.llSaved.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, SavingBuildActivity.class);
+            startActivity(intent);
         });
 
 

@@ -1,6 +1,7 @@
 package com.app.ricktech.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SuggestionModel implements Serializable {
@@ -13,6 +14,9 @@ public class SuggestionModel implements Serializable {
     private String is_in_compare;
     private String trans_title;
     private Suggestions suggestions;
+    //custom
+    private List<CategoryModel> sub_categoryModel =new ArrayList<>();
+    private List<CategoryModel> default_sub_categoryModel =new ArrayList<>();
 
     public int getId() {
         return id;
@@ -50,8 +54,25 @@ public class SuggestionModel implements Serializable {
         return suggestions;
     }
 
+    public List<CategoryModel> getSub_categoryModel() {
+        return sub_categoryModel;
+    }
+
+    public void setSub_categoryModel(List<CategoryModel> sub_categoryModel) {
+        this.sub_categoryModel = sub_categoryModel;
+    }
+
+
     public void setSuggestions(Suggestions suggestions) {
         this.suggestions = suggestions;
+    }
+
+    public List<CategoryModel> getDefault_sub_categoryModel() {
+        return default_sub_categoryModel;
+    }
+
+    public void setDefault_sub_categoryModel(List<CategoryModel> default_sub_categoryModel) {
+        this.default_sub_categoryModel = default_sub_categoryModel;
     }
 
     public static class Suggestions implements Serializable{
@@ -64,6 +85,10 @@ public class SuggestionModel implements Serializable {
 
         public List<Products> getProducts() {
             return products;
+        }
+
+        public void setProducts(List<Products> products) {
+            this.products = products;
         }
 
         public List<Products> getSelectedProducts() {
@@ -89,6 +114,8 @@ public class SuggestionModel implements Serializable {
         public void setDefaultData(boolean defaultData) {
             isDefaultData = defaultData;
         }
+
+
     }
 
     public static class Products implements Serializable

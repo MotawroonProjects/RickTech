@@ -103,4 +103,8 @@
     <string name="bad">Bad</string>
     <string name="suc">Success!</string>
     <string name="reset">Reset</string>
+    <string name="inv_url">Invalid url</string>
+    <string name="build_name">Build Name</string>
+    <string name="created_date">Created date:</string>
+    <string name="delete">Delete</string>
 </resources>

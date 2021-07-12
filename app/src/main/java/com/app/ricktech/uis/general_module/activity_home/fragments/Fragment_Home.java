@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.app.ricktech.R;
 
@@ -101,8 +102,8 @@ public class Fragment_Home extends Fragment {
         });
 
 
-        binding.recView.setLayoutManager(new GridLayoutManager(activity,2));
-        adapter = new SuggestionBrandAdapter(activity,list,this);
+        binding.recView.setLayoutManager(new GridLayoutManager(activity, 2));
+        adapter = new SuggestionBrandAdapter(activity, list, this);
         binding.recView.setAdapter(adapter);
         skeletonScreen = Skeleton.bind(binding.recView)
                 .load(R.layout.brand_row)
@@ -111,66 +112,26 @@ public class Fragment_Home extends Fragment {
                 .count(4)
                 .show();
 
+        binding.swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            getSlider();
+            getBrands();
+        });
         getSlider();
         getBrands();
     }
 
     private void getBrands() {
-        Api.getService(Tags.base_url)
-                .getSlider(lang)
-                .enqueue(new Callback<SliderModel>() {
-                    @Override
-                    public void onResponse(Call<SliderModel> call, Response<SliderModel> response) {
-                        binding.progBarSlider.setVisibility(View.GONE);
-                        Log.e("0", "0");
-
-                        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
-                            Log.e("1", "1");
-
-                            if (response.body().getData().size() > 0) {
-                                updateSliderUi(response.body().getData());
-                                Log.e("2", "2");
-
-                            } else {
-                                Log.e("3", "3");
-
-                                binding.flSlider.setVisibility(View.GONE);
-                                binding.progBarSlider.setVisibility(View.GONE);
-                            }
-
-                        } else {
-                            Log.e("4", "4");
-
-                            binding.flSlider.setVisibility(View.GONE);
-                            binding.progBarSlider.setVisibility(View.GONE);
 
 
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<SliderModel> call, Throwable t) {
-                        try {
-                            Log.e("error", t.getMessage()+"__");
-                            binding.flSlider.setVisibility(View.GONE);
-                            binding.progBarSlider.setVisibility(View.GONE);
-                        } catch (Exception e) {
-
-                        }
-                    }
-                });
-    }
-
-
-    private void getSlider() {
         Api.getService(Tags.base_url)
                 .getSuggestionBrand(lang)
                 .enqueue(new Callback<SuggestionBrandDataModel>() {
                     @Override
                     public void onResponse(Call<SuggestionBrandDataModel> call, Response<SuggestionBrandDataModel> response) {
                         skeletonScreen.hide();
+                        binding.swipeRefresh.setRefreshing(false);
+
                         if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
                             skeletonScreen.hide();
 
@@ -185,6 +146,7 @@ public class Fragment_Home extends Fragment {
                             }
 
                         } else {
+                            binding.swipeRefresh.setRefreshing(false);
 
                             skeletonScreen.hide();
 
@@ -196,9 +158,58 @@ public class Fragment_Home extends Fragment {
                     @Override
                     public void onFailure(Call<SuggestionBrandDataModel> call, Throwable t) {
                         try {
-                            Log.e("error", t.getMessage()+"__");
+                            Log.e("error", t.getMessage() + "__");
+                            binding.swipeRefresh.setRefreshing(false);
                             skeletonScreen.hide();
 
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+
+
+    }
+
+
+    private void getSlider() {
+        Api.getService(Tags.base_url)
+                .getSlider(lang)
+                .enqueue(new Callback<SliderModel>() {
+                    @Override
+                    public void onResponse(Call<SliderModel> call, Response<SliderModel> response) {
+                        binding.progBarSlider.setVisibility(View.GONE);
+                        binding.swipeRefresh.setRefreshing(false);
+                        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
+
+                            if (response.body().getData().size() > 0) {
+                                updateSliderUi(response.body().getData());
+
+                            } else {
+
+                                binding.flSlider.setVisibility(View.GONE);
+                                binding.progBarSlider.setVisibility(View.GONE);
+                            }
+
+                        } else {
+                            binding.swipeRefresh.setRefreshing(false);
+
+                            binding.flSlider.setVisibility(View.GONE);
+                            binding.progBarSlider.setVisibility(View.GONE);
+
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<SliderModel> call, Throwable t) {
+                        try {
+                            Log.e("error", t.getMessage() + "__");
+                            binding.swipeRefresh.setRefreshing(false);
+                            binding.flSlider.setVisibility(View.GONE);
+                            binding.progBarSlider.setVisibility(View.GONE);
                         } catch (Exception e) {
 
                         }
@@ -208,6 +219,7 @@ public class Fragment_Home extends Fragment {
 
 
     private void updateSliderUi(List<SliderModel.Data> data) {
+        sliderModelList.clear();
         sliderModelList.addAll(data);
         sliderAdapter = new SliderAdapter(sliderModelList, activity, this);
         binding.pager.setAdapter(sliderAdapter);
@@ -226,12 +238,12 @@ public class Fragment_Home extends Fragment {
     }
 
     public void setSliderItemData(ProductModel productModel) {
-        if (productModel!=null){
-            if (productModel.getType().equals("complete")){
+        if (productModel != null) {
+            if (productModel.getType().equals("complete")) {
                 Intent intent = new Intent(activity, ProductDetialsActivity.class);
                 intent.putExtra("data", String.valueOf(productModel.getId()));
                 startActivity(intent);
-            }else {
+            } else {
 
             }
         }

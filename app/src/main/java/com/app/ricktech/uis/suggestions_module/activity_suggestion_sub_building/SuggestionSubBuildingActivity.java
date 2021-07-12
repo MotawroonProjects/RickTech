@@ -20,9 +20,12 @@ import com.app.ricktech.adapters.SubBuildingAdapter;
 import com.app.ricktech.databinding.ActivitySubBuildingBinding;
 import com.app.ricktech.databinding.ActivitySuggestionSubBuildingBinding;
 import com.app.ricktech.language.Language;
+import com.app.ricktech.models.AddBuildModel;
 import com.app.ricktech.models.CategoryBuildingDataModel;
 import com.app.ricktech.models.CategoryModel;
 import com.app.ricktech.models.ProductModel;
+import com.app.ricktech.models.SuggestionModel;
+import com.app.ricktech.models.SuggestionsDataModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
@@ -49,13 +52,15 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
     private UserModel userModel;
     private Preferences preferences;
     private List<CategoryModel> list;
+    private SuggestionModel addBuildModel;
     private String  parent_id;
     private ActivityResultLauncher<Intent> launcher;
     private int selectedPos = -1;
     private CategoryModel categoryModel;
-    private Map<Integer, List<ProductModel>> map;
+    private Map<Integer, CategoryModel> map;
     private int req;
     private boolean canNext = false;
+    private boolean hasData = false;
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -73,9 +78,11 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
     private void getDataFromIntent() {
         Intent intent = getIntent();
         parent_id = intent.getStringExtra("data");
-
+        addBuildModel = (SuggestionModel) intent.getSerializableExtra("data2");
+        if (addBuildModel.getSub_categoryModel().size()>0){
+            hasData = true;
+        }
     }
-
 
     private void initView() {
         map = new HashMap<>();
@@ -106,25 +113,27 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
 
 
                             if (map.get(selectedPos) != null) {
-                                List<ProductModel> productModelList = map.get(selectedPos);
-                                if (productModelList != null) {
-                                    productModelList.add(productModel);
-                                    map.put(selectedPos, productModelList);
+                                CategoryModel catModel = map.get(selectedPos);
 
-                                }
+                                List<ProductModel> productModelList = new ArrayList<>(catModel.getSelectedProduct());
+                                productModelList.add(productModel);
+                                catModel.setSelectedProduct(productModelList);
+                                map.put(selectedPos, catModel);
+                                list.set(selectedPos,catModel);
 
                             } else {
-                                List<ProductModel> productModelList = new ArrayList<>();
-                                productModelList.add(productModel);
-                                map.put(selectedPos, productModelList);
+                                List<ProductModel> list1 = new ArrayList<>(list.get(selectedPos).getSelectedProduct());
+                                list1.add(productModel);
+                                CategoryModel categoryModel = list.get(selectedPos);
+                                Log.e("tttId", categoryModel.getId()+"__");
+
+                                categoryModel.setSelectedProduct(list1);
+                                list.set(selectedPos,categoryModel);
+
+                                map.put(selectedPos, categoryModel);
                             }
 
-                            List<ProductModel> list1 = list.get(selectedPos).getSelectedProduct();
-                            if (list1==null){
-                                list1 = new ArrayList<>();
-                            }
-                            list1.add(productModel);
-                            categoryModel.setSelectedProduct(list1);
+
                             adapter.notifyItemChanged(selectedPos);
 
                         }
@@ -135,7 +144,7 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
                         canNext = true;
                         binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
                     }else {
-                        canNext = true;
+                        canNext = false;
                         binding.btnSave.setBackgroundResource(R.drawable.small_rounded_gray77);
 
                     }
@@ -143,15 +152,13 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
 
 
                 }
+
             }
         });
 
         binding.btnSave.setOnClickListener(v -> {
             if (canNext){
-                List<ProductModel> data = new ArrayList<>();
-                for (List<ProductModel> list :map.values()){
-                    data.addAll(list);
-                }
+                List<CategoryModel> data = new ArrayList<>(map.values());
 
                 Intent intent = getIntent();
                 intent.putExtra("data", (Serializable) data);
@@ -160,8 +167,6 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     private void getSubBuildings() {
         Api.getService(Tags.base_url)
@@ -174,9 +179,7 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
                         binding.llData.setVisibility(View.VISIBLE);
                         if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
                             if (response.body().getData().size() > 0) {
-                                list.clear();
-                                list.addAll(response.body().getData());
-                                adapter.notifyDataSetChanged();
+                                updateData(response.body().getData());
                                 binding.tvNoData.setVisibility(View.GONE);
 
                             } else {
@@ -207,6 +210,55 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
                 });
     }
 
+    private void updateData(List<CategoryModel> data) {
+
+        list.clear();
+        List<CategoryModel> categoryModelList = new ArrayList<>();
+
+        for (int index=0;index<data.size();index++){
+            CategoryModel model = data.get(index);
+            for (CategoryModel categoryModel:addBuildModel.getSub_categoryModel()){
+
+                if (categoryModel.getId()==model.getId()){
+                    model.setSelectedProduct(categoryModel.getSelectedProduct());
+                    model.setSub_categories(categoryModel.getSub_categories());
+                    map.put(index, model);
+
+                }
+
+            }
+
+
+
+
+            categoryModelList.add(model);
+
+
+        }
+
+
+
+        if (categoryModelList.size()==0){
+            categoryModelList.addAll(data);
+        }
+
+        list.addAll(categoryModelList);
+
+        adapter.notifyDataSetChanged();
+
+        if(map.size()>0){
+            canNext = true;
+            binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
+
+        }else {
+            canNext = false;
+            binding.btnSave.setBackgroundResource(R.drawable.small_rounded_gray77);
+
+        }
+
+    }
+
+
     public void setItemData(int adapterPosition, CategoryModel categoryModel) {
         this.selectedPos = adapterPosition;
         this.categoryModel = categoryModel;
@@ -214,6 +266,7 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
             req = 100;
             Intent intent = new Intent(this, ProductBuildingActivity.class);
             intent.putExtra("data", categoryModel.getId() + "");
+            intent.putExtra("data2", (Serializable) categoryModel.getSelectedProduct());
             launcher.launch(intent);
 
         }
@@ -224,7 +277,6 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
     public void deleteItemData(int adapterPosition, CategoryModel categoryModel) {
         map.remove(adapterPosition);
         categoryModel.getSelectedProduct().clear();
-
         list.set(adapterPosition,categoryModel);
         adapter.notifyItemChanged(adapterPosition);
 
@@ -233,8 +285,14 @@ public class SuggestionSubBuildingActivity extends AppCompatActivity {
             canNext = true;
             binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
         }else {
-            canNext = true;
-            binding.btnSave.setBackgroundResource(R.drawable.small_rounded_gray77);
+            if (hasData){
+                canNext = true;
+                binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
+            }else{
+                canNext = false;
+                binding.btnSave.setBackgroundResource(R.drawable.small_rounded_gray77);
+
+            }
 
         }
 

@@ -1,4 +1,9 @@
-package com.app.ricktech.uis.gaming_laptop_module.activity_product;
+package com.app.ricktech.uis.general_module.activity_notifications;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,16 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-
 import com.app.ricktech.R;
-import com.app.ricktech.adapters.ProductAdapter;
-import com.app.ricktech.databinding.ActivityProductBinding;
+import com.app.ricktech.adapters.NotificationAdapter;
+import com.app.ricktech.databinding.ActivityNotificationBinding;
 import com.app.ricktech.language.Language;
-import com.app.ricktech.models.BrandModel;
+import com.app.ricktech.models.NotificationDataModel;
+import com.app.ricktech.models.NotificationModel;
 import com.app.ricktech.models.ProductDataModel;
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.UserModel;
@@ -23,7 +24,6 @@ import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
 import com.app.ricktech.tags.Tags;
 import com.app.ricktech.uis.gaming_laptop_module.activity_gaming_product_details.GamingProductDetailsActivity;
-import com.app.ricktech.uis.general_module.activity_product_detials.ProductDetialsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +33,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductActivity extends AppCompatActivity {
-    private ActivityProductBinding binding;
+public class NotificationActivity extends AppCompatActivity {
+    private ActivityNotificationBinding binding;
     private String lang;
-    private ProductAdapter adapter;
+    private NotificationAdapter adapter;
     private UserModel userModel;
     private Preferences preferences;
-    private List<ProductModel> list;
-    private BrandModel model;
-    private List<ProductModel> selectedProducts = new ArrayList<>();
+    private List<NotificationModel> list;
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -51,20 +49,11 @@ public class ProductActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_product);
-        getDataFromIntent();
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_notification);
         initView();
     }
 
-    private void getDataFromIntent() {
-        Intent intent = getIntent();
-        model = (BrandModel) intent.getSerializableExtra("data");
-        if (intent.hasExtra("data2")){
-            selectedProducts.addAll((List<ProductModel>)intent.getSerializableExtra("data2"));
 
-        }
-
-    }
 
     private void initView() {
         preferences = Preferences.getInstance();
@@ -73,27 +62,27 @@ public class ProductActivity extends AppCompatActivity {
         Paper.init(this);
         lang = Paper.book().read("lang", "ar");
         binding.setLang(lang);
-        binding.setModel(model);
-        binding.recView.setLayoutManager(new GridLayoutManager(this, 1));
-        adapter = new ProductAdapter(this, list);
+        binding.recView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new NotificationAdapter(this, list);
         binding.recView.setAdapter(adapter);
         binding.recView.setItemAnimator(new DefaultItemAnimator());
         binding.llBack.setOnClickListener(v -> finish());
-
-        getProducts();
+        binding.shimmer.startShimmer();
+        binding.swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        binding.swipeRefresh.setOnRefreshListener(this::getNotifications);
+        getNotifications();
 
     }
 
-    private void getProducts() {
-        Log.e("id", model.getId()+"__");
+    private void getNotifications() {
         Api.getService(Tags.base_url)
-                .getGamingProductByBrandId(lang,model.getId()+"")
-                .enqueue(new Callback<ProductDataModel>() {
+                .getNotification(lang,"Bearer "+userModel.getData().getToken())
+                .enqueue(new Callback<NotificationDataModel>() {
                     @Override
-                    public void onResponse(Call<ProductDataModel> call, Response<ProductDataModel> response) {
-                        binding.progBar.setVisibility(View.GONE);
-
-                        Log.e("size", response.body().getData().size()+"_");
+                    public void onResponse(Call<NotificationDataModel> call, Response<NotificationDataModel> response) {
+                        binding.shimmer.stopShimmer();
+                        binding.shimmer.setVisibility(View.GONE);
+                        binding.swipeRefresh.setRefreshing(false);
                         if (response.isSuccessful() && response.body() != null&&response.body().getStatus()==200 ) {
                             if (response.body().getData().size() > 0) {
                                 list.clear();
@@ -106,19 +95,21 @@ public class ProductActivity extends AppCompatActivity {
                             }
 
                         } else {
-                            binding.progBar.setVisibility(View.GONE);
-
+                            binding.swipeRefresh.setRefreshing(false);
+                            binding.shimmer.stopShimmer();
+                            binding.shimmer.setVisibility(View.GONE);
                         }
 
 
                     }
 
                     @Override
-                    public void onFailure(Call<ProductDataModel> call, Throwable t) {
+                    public void onFailure(Call<NotificationDataModel> call, Throwable t) {
                         try {
                             Log.e("error", t.getMessage()+"__");
-                            binding.progBar.setVisibility(View.GONE);
-
+                            binding.swipeRefresh.setRefreshing(false);
+                            binding.shimmer.stopShimmer();
+                            binding.shimmer.setVisibility(View.GONE);
                         } catch (Exception e) {
 
                         }
@@ -127,9 +118,5 @@ public class ProductActivity extends AppCompatActivity {
     }
 
 
-    public void setItemData(ProductModel productModel) {
-        Intent intent=new Intent(this, GamingProductDetailsActivity.class);
-        intent.putExtra("data", productModel.getId()+"");
-        startActivity(intent);
-    }
+
 }

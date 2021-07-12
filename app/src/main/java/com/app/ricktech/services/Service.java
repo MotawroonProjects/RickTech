@@ -5,9 +5,13 @@ import com.app.ricktech.models.AddCompareModel;
 import com.app.ricktech.models.AddToBuildDataModel;
 import com.app.ricktech.models.BrandDataModel;
 import com.app.ricktech.models.CategoryBuildingDataModel;
+import com.app.ricktech.models.NotificationCount;
+import com.app.ricktech.models.NotificationDataModel;
 import com.app.ricktech.models.PlaceGeocodeData;
 import com.app.ricktech.models.PlaceMapDetailsData;
 import com.app.ricktech.models.ProductDataModel;
+import com.app.ricktech.models.SavedProductDataModel;
+import com.app.ricktech.models.SettingDataModel;
 import com.app.ricktech.models.SingleProductModel;
 import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.models.StatusResponse;
@@ -170,6 +174,36 @@ public interface Service {
                                                       @Field("pc_building_type_id") String pc_building_type_id
     );
 
+
+    @FormUrlEncoded
+    @POST("api/getSubCategoriesOfSuggestionPcBuilding")
+    Call<SuggestionsDataModel> getSubCategorySuggestions(@Header("lang") String lang,
+                                                         @Field("brand_id") String brand_id,
+                                                         @Field("pc_building_type_id") String pc_building_type_id,
+                                                         @Field("category_id") String category_id
+    );
+
+    @GET("api/getOffers")
+    Call<ProductDataModel> getOffers(@Header("lang") String lang
+    );
+
+    @GET("api/allNotifications")
+    Call<NotificationDataModel> getNotification(@Header("lang") String lang,
+                                                @Header("Authorization") String bearer_token
+    );
+
+    @GET("api/unReadNotificationsCount")
+    Call<NotificationCount> getUnreadNotificationCount(@Header("lang") String lang,
+                                                       @Header("Authorization") String bearer_token
+    );
+
+    @GET("api/appInfo")
+    Call<SettingDataModel> getSetting(@Header("lang") String lang);
+
+    @GET("api/getSavedPcBuildings")
+    Call<SavedProductDataModel> getSavedBuilding(@Header("lang") String lang,
+                                                 @Header("Authorization") String bearer_token
+                                                 );
 
 }
 
