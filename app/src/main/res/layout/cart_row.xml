@@ -5,7 +5,10 @@
     <data>
         <variable
             name="model"
-            type="com.app.ricktech.models.SavedProductDataModel.Data" />
+            type="com.app.ricktech.models.CartModel" />
+        <variable
+            name="index"
+            type="String" />
     </data>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -21,12 +24,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/build_name"
-                android:textColor="@color/gray10"
-                android:textSize="12sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -35,7 +32,7 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="@{model.trans_title}"
+                android:text='@{"#"+index}'
 
 
                 />
@@ -65,7 +62,7 @@
                         android:layout_marginTop="5dp"
                         android:textColor="@color/colorPrimary"
                         android:textSize="16sp"
-                        date="@{model.created_at}"
+                        android:text="@{model.create_at}"
                         />
                 </LinearLayout>
 
@@ -88,7 +85,7 @@
                         android:layout_marginTop="5dp"
                         android:textColor="@color/colorPrimary"
                         android:textSize="16sp"
-                        android:text='@{model.price+" €"}'
+                        android:text='@{model.total+" €"}'
 
                         />
                 </LinearLayout>
@@ -103,7 +100,6 @@
                 android:layout_marginEnd="8dp">
 
                 <LinearLayout
-                    android:id="@+id/llAddToCart"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:layout_weight="1"
@@ -124,7 +120,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
-                        android:text="@string/add_to_cart"
+                        android:text="@string/details"
                         android:textColor="@color/white"
                         android:textSize="15sp" />
                 </LinearLayout>
@@ -134,7 +130,6 @@
                     android:layout_height="0dp" />
 
                 <LinearLayout
-                    android:id="@+id/llDelete"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:layout_weight="1"

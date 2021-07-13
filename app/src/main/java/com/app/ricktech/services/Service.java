@@ -203,7 +203,28 @@ public interface Service {
     @GET("api/getSavedPcBuildings")
     Call<SavedProductDataModel> getSavedBuilding(@Header("lang") String lang,
                                                  @Header("Authorization") String bearer_token
-                                                 );
+    );
+
+    @FormUrlEncoded
+    @POST("api/getDetailsOfSinglePcOrder")
+    Call<SuggestionsDataModel> getSavedBuildingDetails(@Header("lang") String lang,
+                                                       @Field("pc_id") String pc_id
+    );
+
+
+    @FormUrlEncoded
+    @POST("api/getSubCategoriesOfPcBuilding")
+    Call<SuggestionsDataModel> getSubCategorySuggestionsSavedBuildings(@Header("lang") String lang,
+                                                                       @Field("pc_id") String pc_id,
+                                                                       @Field("category_id") String category_id
+    );
+
+    @FormUrlEncoded
+    @POST("api/pcBuildingDeleting")
+    Call<StatusResponse> deleteSavedBuilding(@Header("lang") String lang,
+                                             @Field("pc_id") String pc_id
+    );
+
 
 }
 

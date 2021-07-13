@@ -120,8 +120,6 @@ public class SubBuildingActivity extends AppCompatActivity {
                             List<ProductModel> list1 = new ArrayList<>(list.get(selectedPos).getSelectedProduct());
                             list1.add(productModel);
                             CategoryModel categoryModel = list.get(selectedPos);
-                            Log.e("tttId", categoryModel.getId()+"__");
-
                             categoryModel.setSelectedProduct(list1);
                             list.set(selectedPos,categoryModel);
 

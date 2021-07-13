@@ -48,6 +48,7 @@ import com.ethanhua.skeleton.SkeletonScreen;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +114,7 @@ public class BulidingActivity extends AppCompatActivity {
                 {
 
                     ProductModel productModel = (ProductModel) result.getData().getSerializableExtra("data");
+                    Log.e("product", productModel.getId()+"_cat"+productModel.getCategory_id());
                     if (productModel != null) {
                         if (selectedPos != -1) {
 
@@ -132,7 +134,7 @@ public class BulidingActivity extends AppCompatActivity {
                             } else {
                                 List<String> productModelList = new ArrayList<>();
                                 productModelList.add(productModel.getId()+"");
-                                AddBuildModel model = new AddBuildModel(categoryModel.getId()+"", productModelList);
+                                AddBuildModel model = new AddBuildModel(productModel.getCategory_id()+"", productModelList);
                                 List<ProductModel> productModelList1 = new ArrayList<>(model.getProductModelList());
                                 productModelList1.add(productModel);
                                 model.setProductModelList(productModelList1);
@@ -168,6 +170,7 @@ public class BulidingActivity extends AppCompatActivity {
                 }
                 else if (req == 200 && result.getResultCode() == RESULT_OK && result.getData() != null){
                     List<CategoryModel> data = (List<CategoryModel>) result.getData().getSerializableExtra("data");
+                    Log.e("datasize", data.size()+"__");
                     if (selectedPos!=-1){
                         if (data!=null){
 
@@ -175,10 +178,22 @@ public class BulidingActivity extends AppCompatActivity {
                                 if (map.get(selectedPos) != null) {
                                     AddBuildModel model = map.get(selectedPos);
                                     if (model != null) {
-                                        List<String> productIds = model.getList();
+                                        List<String> productIds = new ArrayList<>();
                                         List<ProductModel> list1 = new ArrayList<>();
+
                                         for (CategoryModel categoryModel:data){
                                             list1.addAll(categoryModel.getSelectedProduct());
+                                            AddBuildModel addBuildModel = new AddBuildModel();
+                                            addBuildModel.setCategory_id(categoryModel.getId()+"");
+
+                                            List<String> ids = new ArrayList<>();
+                                            for (ProductModel productModel:categoryModel.getSelectedProduct()){
+                                                ids.add(productModel.getId()+"");
+
+                                            }
+                                            addBuildModel.setList(ids);
+                                            addBuildModel.setProductModelList(list1);
+
 
                                         }
 
@@ -187,6 +202,7 @@ public class BulidingActivity extends AppCompatActivity {
                                         for (ProductModel productModel:list1){
                                             productModelList1.add(productModel);
                                             productIds.add(productModel.getId()+"");
+
                                         }
                                         categoryModel.setSelectedProduct(productModelList1);
                                         List<ProductModel> productModelList2 = new ArrayList<>(model.getProductModelList());
@@ -200,9 +216,23 @@ public class BulidingActivity extends AppCompatActivity {
 
                                 } else {
                                     List<ProductModel> list1 = new ArrayList<>();
-
+                                    List<AddBuildModel> addBuildModelList = new ArrayList<>();
                                     for (CategoryModel categoryModel:data){
                                         list1.addAll(categoryModel.getSelectedProduct());
+                                        AddBuildModel addBuildModel = new AddBuildModel();
+                                        addBuildModel.setCategory_id(categoryModel.getId()+"");
+
+                                        List<String> ids = new ArrayList<>();
+                                        for (ProductModel productModel:categoryModel.getSelectedProduct()){
+                                            ids.add(productModel.getId()+"");
+
+                                        }
+                                        addBuildModel.setList(ids);
+                                        addBuildModel.setProductModelList(list1);
+                                        addBuildModelList.add(addBuildModel);
+
+
+
                                     }
 
                                     List<String> productModelList = new ArrayList<>();
@@ -214,6 +244,10 @@ public class BulidingActivity extends AppCompatActivity {
                                     }
                                     categoryModel.setSelectedProduct(productModelList1);
                                     AddBuildModel model = new AddBuildModel(categoryModel.getId()+"", productModelList);
+
+
+
+
                                     List<ProductModel> productModelList2 = new ArrayList<>(model.getProductModelList());
                                     productModelList2.addAll(list1);
                                     model.setProductModelList(productModelList2);
@@ -221,8 +255,10 @@ public class BulidingActivity extends AppCompatActivity {
 
                                 }
                             }else {
+
                                 if (map.get(selectedPos)!=null){
                                     map.remove(selectedPos);
+
                                     categoryModel.getSelectedProduct().clear();
                                     categoryModel.getSub_categories().clear();
 
@@ -271,6 +307,7 @@ public class BulidingActivity extends AppCompatActivity {
         });
 
         binding.cardViewClose.setOnClickListener(v -> {
+            Common.CloseKeyBoard(this, binding.edtName);
 
             binding.flDialog.setVisibility(View.GONE);
         });
@@ -355,9 +392,14 @@ public class BulidingActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-        List<AddBuildModel> list = new ArrayList<>(map.values());
-        AddToBuildDataModel  model = new AddToBuildDataModel(name,total,list);
+        List<AddBuildModel> list=new ArrayList<>(map.values());
 
+        List<AddBuildModel> finalData = filterData(list);
+
+
+
+
+        AddToBuildDataModel  model = new AddToBuildDataModel(name,total,finalData);
 
         Api.getService(Tags.base_url)
                 .addToBuild(lang,"Bearer " + userModel.getData().getToken(),model)
@@ -405,6 +447,66 @@ public class BulidingActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+    }
+
+    private List<AddBuildModel> filterData(List<AddBuildModel> list) {
+        List<AddBuildModel> finalList = new ArrayList<>();
+
+        List<String> category_ids = new ArrayList<>();
+        List<ProductModel> allProducts = new ArrayList<>();
+        for (AddBuildModel addBuildModel :list){
+            allProducts.addAll(addBuildModel.getProductModelList());
+            List<ProductModel> productModelList = addBuildModel.getProductModelList();
+            for (ProductModel productModel:productModelList){
+
+                if (!isListHasId(productModel.getCategory_id(), category_ids)){
+                    category_ids.add(productModel.getCategory_id());
+                }
+            }
+        }
+
+
+        for (String cat_id :category_ids){
+            Log.e("category_id", cat_id);
+
+            AddBuildModel model = new AddBuildModel();
+            model.setCategory_id(cat_id);
+            List<String> products_ids = new ArrayList<>();
+            List<ProductModel> products = new ArrayList<>();
+            for (ProductModel productModel:allProducts){
+
+
+                if (productModel.getCategory_id().equals(cat_id)){
+                    products_ids.add(productModel.getId()+"");
+                    products.add(productModel);
+                }
+
+
+            }
+
+
+
+            model.setList(products_ids);
+            model.setProductModelList(products);
+            finalList.add(model);
+        }
+
+
+
+        return finalList;
+    }
+
+    private boolean isListHasId(String cat_id,List<String> cat_ids){
+        boolean isHasId = false;
+        for (String id:cat_ids){
+            if (cat_id.equals(id)){
+                isHasId = true;
+                return isHasId;
+            }
+        }
+
+        return isHasId;
 
     }
 

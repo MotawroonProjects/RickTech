@@ -25,13 +25,38 @@
         android:theme="@style/Theme.RickTech"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".uis.general_module.activity_saving_build.SavingBuildActivity"></activity>
-        <activity android:name=".uis.general_module.activity_web_view.WebViewActivity" />
-        <activity android:name=".uis.general_module.activity_notifications.NotificationActivity" />
-        <activity android:name=".uis.suggestions_module.activity_suggestion_sub_building.SuggestionSubBuildingActivity" />
-        <activity android:name=".uis.suggestions_module.activity_suggestion_products.SuggestionProductsActivity" />
-        <activity android:name=".uis.suggestions_module.activity_suggestion_buildings.SuggetionBuildingsActivity" />
-        <activity android:name=".uis.suggestions_module.activity_suggestions.SuggestionBrandActivity" />
+        <activity android:name=".uis.saved_build_module.activity_saved_buldings.SavedBuildingsActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity android:name=".uis.saved_build_module.activity_saving_build.SavingBuildActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity android:name=".uis.general_module.activity_web_view.WebViewActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity android:name=".uis.general_module.activity_notifications.NotificationActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity android:name=".uis.suggestions_module.activity_suggestion_sub_building.SuggestionSubBuildingActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity android:name=".uis.suggestions_module.activity_suggestion_products.SuggestionProductsActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity android:name=".uis.suggestions_module.activity_suggestion_buildings.SuggetionBuildingsActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity android:name=".uis.suggestions_module.activity_suggestions.SuggestionBrandActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity
             android:name=".uis.accessory_module.activity_accessory_product_details.AccessoryProductDetailsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"

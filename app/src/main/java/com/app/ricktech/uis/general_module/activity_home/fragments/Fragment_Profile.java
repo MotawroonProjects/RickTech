@@ -24,7 +24,7 @@ import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.uis.general_module.activity_home.HomeActivity;
 import com.app.ricktech.uis.general_module.activity_language.LanguageActivity;
-import com.app.ricktech.uis.general_module.activity_saving_build.SavingBuildActivity;
+import com.app.ricktech.uis.saved_build_module.activity_saving_build.SavingBuildActivity;
 import com.app.ricktech.uis.general_module.activity_web_view.WebViewActivity;
 
 

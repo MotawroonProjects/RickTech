@@ -1,11 +1,17 @@
-package com.app.ricktech.uis.general_module.activity_saving_build;
+package com.app.ricktech.uis.saved_build_module.activity_saving_build;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,10 +21,13 @@ import com.app.ricktech.adapters.SavedAdapter;
 import com.app.ricktech.databinding.ActivitySavingBuildBinding;
 import com.app.ricktech.language.Language;
 import com.app.ricktech.models.SavedProductDataModel;
+import com.app.ricktech.models.StatusResponse;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
+import com.app.ricktech.share.Common;
 import com.app.ricktech.tags.Tags;
+import com.app.ricktech.uis.saved_build_module.activity_saved_buldings.SavedBuildingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +44,7 @@ public class SavingBuildActivity extends AppCompatActivity {
     private UserModel userModel;
     private Preferences preferences;
     private List<SavedProductDataModel.Data> list;
+    private ActivityResultLauncher<Intent> launcher;
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -65,6 +75,16 @@ public class SavingBuildActivity extends AppCompatActivity {
         binding.shimmer.startShimmer();
         binding.swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         binding.swipeRefresh.setOnRefreshListener(this::getSavingBuilds);
+
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode()==RESULT_OK){
+                list.clear();
+                adapter.notifyDataSetChanged();
+                binding.shimmer.startShimmer();
+                binding.shimmer.setVisibility(View.VISIBLE);
+                getSavingBuilds();
+            }
+        });
         getSavingBuilds();
 
     }
@@ -113,4 +133,51 @@ public class SavingBuildActivity extends AppCompatActivity {
     }
 
 
+    public void setItemData(SavedProductDataModel.Data data) {
+        Intent intent = new Intent(this, SavedBuildingsActivity.class);
+        intent.putExtra("data", data.getId());
+        intent.putExtra("data2", data.getTrans_title());
+
+        launcher.launch(intent);
+
+    }
+
+    public void deleteItem(SavedProductDataModel.Data data, int adapterPosition) {
+
+        ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        Api.getService(Tags.base_url)
+                .deleteSavedBuilding(lang,data.getId())
+                .enqueue(new Callback<StatusResponse>() {
+                    @Override
+                    public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
+                       dialog.dismiss();
+                        if (response.isSuccessful() && response.body() != null&&response.body().getStatus()==200 ) {
+                            list.remove(adapterPosition);
+                            adapter.notifyItemRemoved(adapterPosition);
+                        } else {
+                            dialog.dismiss();
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<StatusResponse> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+
+                            Log.e("error", t.getMessage()+"__");
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+
+    }
 }

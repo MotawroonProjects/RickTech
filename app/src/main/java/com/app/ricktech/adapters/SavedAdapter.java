@@ -17,6 +17,7 @@ import com.app.ricktech.databinding.SavedProductRowBinding;
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.SavedProductDataModel;
 import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Offers;
+import com.app.ricktech.uis.saved_build_module.activity_saving_build.SavingBuildActivity;
 
 import java.util.List;
 
@@ -47,10 +48,17 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         MyHolder myHolder = (MyHolder) holder;
         myHolder.binding.setModel(list.get(position));
         myHolder.itemView.setOnClickListener(v -> {
-            /*if (appCompatActivity instanceof Fragment_Offers){
-                Fragment_Offers fragment_offers = (Fragment_Offers) fragment;
-                fragment_offers.setItemData(list.get(myHolder.getAdapterPosition()));
-            }*/
+            if (appCompatActivity instanceof SavingBuildActivity){
+                SavingBuildActivity savingBuildActivity = (SavingBuildActivity) appCompatActivity;
+                savingBuildActivity.setItemData(list.get(myHolder.getAdapterPosition()));
+            }
+        });
+
+        myHolder.binding.llDelete.setOnClickListener(v -> {
+            if (appCompatActivity instanceof SavingBuildActivity){
+                SavingBuildActivity savingBuildActivity = (SavingBuildActivity) appCompatActivity;
+                savingBuildActivity.deleteItem(list.get(myHolder.getAdapterPosition()),myHolder.getAdapterPosition());
+            }
         });
 
     }

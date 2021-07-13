@@ -9,6 +9,9 @@ public class AddBuildModel implements Serializable {
     private List<String> product_ids;
     private List<ProductModel> productModelList = new ArrayList<>();
 
+    public AddBuildModel() {
+    }
+
     public AddBuildModel(String category_id, List<String> product_ids) {
         this.category_id = category_id;
         this.product_ids = product_ids;
