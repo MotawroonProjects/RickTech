@@ -103,7 +103,7 @@
                 android:layout_marginEnd="8dp">
 
                 <LinearLayout
-                    android:id="@+id/llAddToCart"
+                    android:id="@+id/llDetails"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:layout_weight="1"
@@ -116,7 +116,7 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_cart"
+                        android:src="@drawable/ic_info"
                         app:tint="@color/white" />
 
                     <TextView
@@ -124,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
-                        android:text="@string/add_to_cart"
+                        android:text="@string/details"
                         android:textColor="@color/white"
                         android:textSize="15sp" />
                 </LinearLayout>

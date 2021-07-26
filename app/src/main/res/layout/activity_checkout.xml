@@ -8,6 +8,9 @@
         <variable
             name="lang"
             type="String" />
+        <variable
+            name="total"
+            type="String" />
 
     </data>
     <LinearLayout
@@ -127,6 +130,7 @@
                     />
 
                 <EditText
+                    android:id="@+id/edtLocationDetails"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:layout_marginTop="10dp"
@@ -205,6 +209,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
                             android:textSize="14sp"
+                            android:text='@{total+" €"}'
                             />
                     </LinearLayout>
 
@@ -232,6 +237,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
                             android:textSize="14sp"
+                            android:text="@string/free"
                             />
                     </LinearLayout>
 
@@ -267,6 +273,8 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
                             android:textSize="14sp"
+                            android:text='@{total+" €"}'
+
                             />
                     </LinearLayout>
 

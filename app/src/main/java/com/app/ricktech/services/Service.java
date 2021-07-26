@@ -4,14 +4,17 @@ import com.app.ricktech.models.AccessoryDataModel;
 import com.app.ricktech.models.AddCompareModel;
 import com.app.ricktech.models.AddToBuildDataModel;
 import com.app.ricktech.models.BrandDataModel;
+import com.app.ricktech.models.CartModel;
 import com.app.ricktech.models.CategoryBuildingDataModel;
 import com.app.ricktech.models.NotificationCount;
 import com.app.ricktech.models.NotificationDataModel;
+import com.app.ricktech.models.OrderDataModel;
 import com.app.ricktech.models.PlaceGeocodeData;
 import com.app.ricktech.models.PlaceMapDetailsData;
 import com.app.ricktech.models.ProductDataModel;
 import com.app.ricktech.models.SavedProductDataModel;
 import com.app.ricktech.models.SettingDataModel;
+import com.app.ricktech.models.SingleOrderModel;
 import com.app.ricktech.models.SingleProductModel;
 import com.app.ricktech.models.SliderModel;
 import com.app.ricktech.models.StatusResponse;
@@ -27,6 +30,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface Service {
@@ -225,6 +229,27 @@ public interface Service {
                                              @Field("pc_id") String pc_id
     );
 
+
+    @POST("api/makeNewOrder")
+    Call<StatusResponse> makeOrder(@Header("lang") String lang,
+                                   @Header("Authorization") String bearer_token,
+                                   @Body CartModel model
+    );
+
+
+    @GET("api/{endPoint}")
+    Call<OrderDataModel> getOrders(@Header("lang") String lang,
+                                   @Header("Authorization") String bearer_token,
+                                   @Path("endPoint") String endPoint
+    );
+
+
+    @FormUrlEncoded
+    @POST("api/getDetailsOfSingleOrder")
+    Call<SingleOrderModel> getSingleOrder(@Header("lang") String lang,
+                                          @Header("Authorization") String bearer_token,
+                                          @Field("order_id") String order_id
+    );
 
 }
 

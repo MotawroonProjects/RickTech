@@ -97,6 +97,9 @@ public class SuggestionProductsActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
     }
 
     private void getProductByCategoryId() {

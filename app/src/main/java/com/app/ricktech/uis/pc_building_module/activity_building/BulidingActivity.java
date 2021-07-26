@@ -7,13 +7,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,20 +19,18 @@ import android.widget.Toast;
 
 import com.app.ricktech.R;
 import com.app.ricktech.adapters.BuildingAdapter;
-import com.app.ricktech.adapters.DetialsAdapter;
 import com.app.ricktech.databinding.ActivityBulidingBinding;
-import com.app.ricktech.databinding.ActivityBulidingProductDetailsBinding;
 import com.app.ricktech.language.Language;
 import com.app.ricktech.models.AddBuildModel;
 import com.app.ricktech.models.AddCompareModel;
 import com.app.ricktech.models.AddToBuildDataModel;
 import com.app.ricktech.models.CategoryBuildingDataModel;
 import com.app.ricktech.models.CategoryModel;
-import com.app.ricktech.models.ComponentModel;
-import com.app.ricktech.models.ProductDataModel;
+import com.app.ricktech.models.ManageCartModel;
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.StatusResponse;
 import com.app.ricktech.models.SuggestionGameDataModel;
+import com.app.ricktech.models.SuggestionModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
@@ -43,15 +39,11 @@ import com.app.ricktech.tags.Tags;
 import com.app.ricktech.uis.pc_building_module.activity_building_products.ProductBuildingActivity;
 import com.app.ricktech.uis.pc_building_module.activity_games.GamesActivity;
 import com.app.ricktech.uis.pc_building_module.activity_sub_bulding.SubBuildingActivity;
-import com.ethanhua.skeleton.SkeletonScreen;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -68,11 +60,12 @@ public class BulidingActivity extends AppCompatActivity {
     private List<CategoryModel> list;
     private ActivityResultLauncher<Intent> launcher;
     private int selectedPos = -1;
-    private CategoryModel categoryModel;
-    private Map<Integer, AddBuildModel> map;
+    private CategoryModel selectedMainCategoryModel;
     private int req;
     private boolean canNext = false;
     double total = 0;
+    private ManageCartModel manageCartModel;
+
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -88,7 +81,8 @@ public class BulidingActivity extends AppCompatActivity {
 
 
     private void initView() {
-        map = new HashMap<>();
+        manageCartModel = ManageCartModel.getInstance();
+
         preferences = Preferences.getInstance();
         userModel = preferences.getUserData(this);
         list = new ArrayList<>();
@@ -114,39 +108,19 @@ public class BulidingActivity extends AppCompatActivity {
                 {
 
                     ProductModel productModel = (ProductModel) result.getData().getSerializableExtra("data");
-                    Log.e("product", productModel.getId()+"_cat"+productModel.getCategory_id());
                     if (productModel != null) {
                         if (selectedPos != -1) {
+                            if (selectedMainCategoryModel!=null){
+                                List<ProductModel> selectedProductList = new ArrayList<>(selectedMainCategoryModel.getSelectedProduct());
 
-                            if (map.get(selectedPos) != null) {
-                                AddBuildModel model = map.get(selectedPos);
-                                if (model != null) {
-                                    List<String> productModelList = model.getList();
-                                    productModelList.add(productModel.getId()+"");
-                                    model.setList(productModelList);
-                                    List<ProductModel> productModelList1 = new ArrayList<>(model.getProductModelList());
-                                    productModelList1.add(productModel);
-                                    model.setProductModelList(productModelList1);
-                                    map.put(selectedPos, model);
+                                selectedProductList.add(productModel);
 
-                                }
+                                selectedMainCategoryModel.setSelectedProduct(selectedProductList);
 
-                            } else {
-                                List<String> productModelList = new ArrayList<>();
-                                productModelList.add(productModel.getId()+"");
-                                AddBuildModel model = new AddBuildModel(productModel.getCategory_id()+"", productModelList);
-                                List<ProductModel> productModelList1 = new ArrayList<>(model.getProductModelList());
-                                productModelList1.add(productModel);
-                                model.setProductModelList(productModelList1);
-                                map.put(selectedPos, model);
+
                             }
 
-                            List<ProductModel> list1 = list.get(selectedPos).getSelectedProduct();
-                            if (list1==null){
-                                list1 = new ArrayList<>();
-                            }
-                            list1.add(productModel);
-                            categoryModel.setSelectedProduct(list1);
+                            list.set(selectedPos, selectedMainCategoryModel);
 
                             adapter.notifyItemChanged(selectedPos);
 
@@ -156,125 +130,42 @@ public class BulidingActivity extends AppCompatActivity {
 
                     calculateTotal_Points();
 
-                    if (map.size()>0){
-                        canNext = true;
-                        binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
-                        binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
+                    canNext = true;
+                    binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
+                    binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
 
-                    }else {
-                        canNext = false;
-                        binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
-                        binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
-
-                    }
                 }
                 else if (req == 200 && result.getResultCode() == RESULT_OK && result.getData() != null){
                     List<CategoryModel> data = (List<CategoryModel>) result.getData().getSerializableExtra("data");
-                    Log.e("datasize", data.size()+"__");
+
+
                     if (selectedPos!=-1){
                         if (data!=null){
 
+
                             if (data.size()>0){
-                                if (map.get(selectedPos) != null) {
-                                    AddBuildModel model = map.get(selectedPos);
-                                    if (model != null) {
-                                        List<String> productIds = new ArrayList<>();
-                                        List<ProductModel> list1 = new ArrayList<>();
-
-                                        for (CategoryModel categoryModel:data){
-                                            list1.addAll(categoryModel.getSelectedProduct());
-                                            AddBuildModel addBuildModel = new AddBuildModel();
-                                            addBuildModel.setCategory_id(categoryModel.getId()+"");
-
-                                            List<String> ids = new ArrayList<>();
-                                            for (ProductModel productModel:categoryModel.getSelectedProduct()){
-                                                ids.add(productModel.getId()+"");
-
-                                            }
-                                            addBuildModel.setList(ids);
-                                            addBuildModel.setProductModelList(list1);
-
-
-                                        }
-
-                                        List<ProductModel> productModelList1 = new ArrayList<>();
-
-                                        for (ProductModel productModel:list1){
-                                            productModelList1.add(productModel);
-                                            productIds.add(productModel.getId()+"");
-
-                                        }
-                                        categoryModel.setSelectedProduct(productModelList1);
-                                        List<ProductModel> productModelList2 = new ArrayList<>(model.getProductModelList());
-                                        productModelList2.addAll(list1);
-
-                                        model.setProductModelList(productModelList2);
-                                        model.setList(productIds);
-                                        map.put(selectedPos, model);
-
-                                    }
-
-                                } else {
-                                    List<ProductModel> list1 = new ArrayList<>();
-                                    List<AddBuildModel> addBuildModelList = new ArrayList<>();
-                                    for (CategoryModel categoryModel:data){
-                                        list1.addAll(categoryModel.getSelectedProduct());
-                                        AddBuildModel addBuildModel = new AddBuildModel();
-                                        addBuildModel.setCategory_id(categoryModel.getId()+"");
-
-                                        List<String> ids = new ArrayList<>();
-                                        for (ProductModel productModel:categoryModel.getSelectedProduct()){
-                                            ids.add(productModel.getId()+"");
-
-                                        }
-                                        addBuildModel.setList(ids);
-                                        addBuildModel.setProductModelList(list1);
-                                        addBuildModelList.add(addBuildModel);
-
-
-
-                                    }
-
-                                    List<String> productModelList = new ArrayList<>();
-                                    List<ProductModel> productModelList1 = new ArrayList<>();
-
-                                    for (ProductModel productModel:list1){
-                                        productModelList1.add(productModel);
-                                        productModelList.add(productModel.getId()+"");
-                                    }
-                                    categoryModel.setSelectedProduct(productModelList1);
-                                    AddBuildModel model = new AddBuildModel(categoryModel.getId()+"", productModelList);
-
-
-
-
-                                    List<ProductModel> productModelList2 = new ArrayList<>(model.getProductModelList());
-                                    productModelList2.addAll(list1);
-                                    model.setProductModelList(productModelList2);
-                                    map.put(selectedPos, model);
-
+                                List<ProductModel> list1 = new ArrayList<>();
+                                for (CategoryModel categoryModel:data){
+                                    list1.addAll(categoryModel.getSelectedProduct());
                                 }
+
+                                selectedMainCategoryModel.setSelectedProduct(new ArrayList<>(list1));
+
                             }else {
 
-                                if (map.get(selectedPos)!=null){
-                                    map.remove(selectedPos);
-
-                                    categoryModel.getSelectedProduct().clear();
-                                    categoryModel.getSub_categories().clear();
-
-                                }
+                                selectedMainCategoryModel.getSelectedProduct().clear();
+                                selectedMainCategoryModel.getSub_categories().clear();
                             }
 
 
-
-                            categoryModel.setSub_categories(data);
-                            list.set(selectedPos, categoryModel);
+                            selectedMainCategoryModel.setSub_categories(new ArrayList<>(data));
+                            list.set(selectedPos, selectedMainCategoryModel);
 
                             adapter.notifyItemChanged(selectedPos);
 
                             calculateTotal_Points();
 
-                            if (map.size()>0){
+                            if (isListHasData()){
                                 canNext = true;
                                 binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
                                 binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
@@ -299,7 +190,56 @@ public class BulidingActivity extends AppCompatActivity {
 
         binding.btnCompare.setOnClickListener(v -> {
             if (canNext){
-                List<AddBuildModel> list = new ArrayList<>(map.values());
+                List<AddBuildModel> list = new ArrayList<>();
+
+                List<CategoryModel> categoryModelList = new ArrayList<>(getSelectedCategory());
+                for (CategoryModel categoryModel :categoryModelList){
+                    if (categoryModel.getIs_final_level().equals("yes")){
+
+                        List<String> products_ids = new ArrayList<>();
+                        List<ProductModel> productModelList = new ArrayList<>();
+                        for (ProductModel model :categoryModel.getSelectedProduct()){
+                            products_ids.add(model.getId()+"");
+                            productModelList.add(model);
+                        }
+
+                        AddBuildModel addBuildModel = new AddBuildModel(categoryModel.getId()+"",products_ids);
+                        addBuildModel.setCategory_id(categoryModel.getId()+"");
+                        addBuildModel.setCategory_name(categoryModel.getTrans_title());
+                        addBuildModel.setCategory_image(categoryModel.getImage());
+                        addBuildModel.setProductModelList(productModelList);
+                        list.add(addBuildModel);
+
+                    }else {
+
+                        for (CategoryModel model:categoryModel.getSub_categories()){
+                            Log.e("eee2", model.getTrans_title());
+                            List<String> sub_products_ids = new ArrayList<>();
+                            List<ProductModel> subProductModelList = new ArrayList<>();
+
+                            for (ProductModel productModel:model.getSelectedProduct()){
+                                Log.e("titlexx", productModel.getTrans_title());
+                                sub_products_ids.add(productModel.getId()+"");
+                                subProductModelList.add(productModel);
+                            }
+
+                            AddBuildModel addBuildModel = new AddBuildModel(model.getId()+"",sub_products_ids);
+                            addBuildModel.setCategory_id(model.getId()+"");
+                            addBuildModel.setCategory_name(model.getTrans_title());
+                            addBuildModel.setCategory_image(model.getImage());
+                            addBuildModel.setProductModelList(subProductModelList);
+                            list.add(addBuildModel);
+                        }
+
+
+
+                    }
+
+                }
+
+
+                Log.e("efdfd", list.size()+"_");
+
                 AddCompareModel model = new AddCompareModel(list);
                 compare(model);
 
@@ -310,6 +250,18 @@ public class BulidingActivity extends AppCompatActivity {
             Common.CloseKeyBoard(this, binding.edtName);
 
             binding.flDialog.setVisibility(View.GONE);
+        });
+
+        binding.flAddToCart.setOnClickListener(v -> {
+            String name = binding.edtName.getText().toString();
+            if (!name.isEmpty()){
+                binding.edtName.setError(null);
+                Common.CloseKeyBoard(this,binding.edtName);
+                addToCart(name);
+            }else {
+                binding.edtName.setError(getString(R.string.field_req));
+
+            }
         });
         binding.btnBuild.setOnClickListener(v -> {
             String name = binding.edtName.getText().toString();
@@ -322,6 +274,8 @@ public class BulidingActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     private void compare(AddCompareModel model) {
@@ -385,21 +339,80 @@ public class BulidingActivity extends AppCompatActivity {
                     }
                 });
     }
-
     private void addToBuild(String name) {
         binding.flDialog.setVisibility(View.GONE);
         ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-        List<AddBuildModel> list=new ArrayList<>(map.values());
-
-        List<AddBuildModel> finalData = filterData(list);
 
 
 
 
-        AddToBuildDataModel  model = new AddToBuildDataModel(name,total,finalData);
+        List<AddBuildModel> list=new ArrayList<>();
+
+        List<CategoryModel> categoryModelList = new ArrayList<>(getSelectedCategory());
+        for (CategoryModel categoryModel : categoryModelList){
+            Log.e("eee", categoryModel.getTrans_title());
+
+
+            if (categoryModel.getIs_final_level().equals("yes")){
+
+                List<String> products_ids = new ArrayList<>();
+                List<ProductModel> productModelList = new ArrayList<>();
+                for (ProductModel model :categoryModel.getSelectedProduct()){
+                    products_ids.add(model.getId()+"");
+                    productModelList.add(model);
+                }
+
+                AddBuildModel addBuildModel = new AddBuildModel(categoryModel.getId()+"",products_ids);
+                addBuildModel.setCategory_id(categoryModel.getId()+"");
+                addBuildModel.setCategory_name(categoryModel.getTrans_title());
+                addBuildModel.setCategory_image(categoryModel.getImage());
+                addBuildModel.setProductModelList(productModelList);
+                list.add(addBuildModel);
+
+            }else {
+
+
+                for (CategoryModel model:categoryModel.getSub_categories()){
+
+                    List<String> sub_products_ids = new ArrayList<>();
+                    List<ProductModel> subProductModelList = new ArrayList<>();
+                    Log.e("eee2rr", model.getTrans_title());
+
+                    for (ProductModel productModel:model.getSelectedProduct()){
+                        Log.e("titlevbvb", productModel.getTrans_title());
+                        sub_products_ids.add(productModel.getId()+"");
+                        subProductModelList.add(productModel);
+                    }
+
+                    AddBuildModel addBuildModel = new AddBuildModel(model.getId()+"",sub_products_ids);
+                    addBuildModel.setCategory_id(model.getId()+"");
+                    addBuildModel.setCategory_name(model.getTrans_title());
+                    addBuildModel.setCategory_image(model.getImage());
+                    addBuildModel.setProductModelList(subProductModelList);
+                    list.add(addBuildModel);
+                }
+
+
+
+            }
+
+
+
+
+        }
+
+
+
+
+
+
+        AddToBuildDataModel  model = new AddToBuildDataModel(name,total,list);
+
+
+
 
         Api.getService(Tags.base_url)
                 .addToBuild(lang,"Bearer " + userModel.getData().getToken(),model)
@@ -449,68 +462,70 @@ public class BulidingActivity extends AppCompatActivity {
                 });
 
     }
+    private void  addToCart(String name){
 
-    private List<AddBuildModel> filterData(List<AddBuildModel> list) {
-        List<AddBuildModel> finalList = new ArrayList<>();
+        List<AddBuildModel> list=new ArrayList<>();
 
-        List<String> category_ids = new ArrayList<>();
-        List<ProductModel> allProducts = new ArrayList<>();
-        for (AddBuildModel addBuildModel :list){
-            allProducts.addAll(addBuildModel.getProductModelList());
+        List<CategoryModel> categoryModelList = new ArrayList<>(getSelectedCategory());
+        for (CategoryModel categoryModel : categoryModelList){
+
+            List<String> products_ids = new ArrayList<>();
+            List<ProductModel> productModelList = new ArrayList<>();
+            for (ProductModel model :categoryModel.getSelectedProduct()){
+                products_ids.add(model.getId()+"");
+                productModelList.add(model);
+            }
+
+            if (categoryModel.getIs_final_level().equals("yes")){
+                AddBuildModel addBuildModel = new AddBuildModel(categoryModel.getId()+"",products_ids);
+                addBuildModel.setCategory_id(categoryModel.getId()+"");
+                addBuildModel.setCategory_name(categoryModel.getTrans_title());
+                addBuildModel.setCategory_image(categoryModel.getImage());
+                addBuildModel.setProductModelList(productModelList);
+                list.add(addBuildModel);
+
+            }else {
+
+                for (CategoryModel model:categoryModel.getSub_categories()){
+                    List<String> sub_products_ids = new ArrayList<>();
+                    List<ProductModel> subProductModelList = new ArrayList<>();
+
+                    Log.e("tit", model.getTrans_title()+"__"+model.getSelectedProduct().size());
+                    for (ProductModel productModel:model.getSelectedProduct()){
+                        sub_products_ids.add(productModel.getId()+"");
+                        subProductModelList.add(productModel);
+                    }
+
+                    AddBuildModel addBuildModel = new AddBuildModel(model.getId()+"",sub_products_ids);
+                    addBuildModel.setCategory_id(model.getId()+"");
+                    addBuildModel.setCategory_name(model.getTrans_title());
+                    addBuildModel.setCategory_image(model.getImage());
+                    addBuildModel.setProductModelList(subProductModelList);
+                    list.add(addBuildModel);
+                }
+
+
+
+            }
+
+
+
+
+        }
+
+
+        for (AddBuildModel addBuildModel:list){
+            Log.e("a1", addBuildModel.getCategory_id()+"__"+addBuildModel.getCategory_name());
             List<ProductModel> productModelList = addBuildModel.getProductModelList();
             for (ProductModel productModel:productModelList){
-
-                if (!isListHasId(productModel.getCategory_id(), category_ids)){
-                    category_ids.add(productModel.getCategory_id());
-                }
+                Log.e("b1", productModel.getTrans_title()+"__"+productModel.getPrice()+"__"+productModel.getCount());
             }
         }
 
-
-        for (String cat_id :category_ids){
-            Log.e("category_id", cat_id);
-
-            AddBuildModel model = new AddBuildModel();
-            model.setCategory_id(cat_id);
-            List<String> products_ids = new ArrayList<>();
-            List<ProductModel> products = new ArrayList<>();
-            for (ProductModel productModel:allProducts){
-
-
-                if (productModel.getCategory_id().equals(cat_id)){
-                    products_ids.add(productModel.getId()+"");
-                    products.add(productModel);
-                }
-
-
-            }
-
-
-
-            model.setList(products_ids);
-            model.setProductModelList(products);
-            finalList.add(model);
-        }
-
-
-
-        return finalList;
+        manageCartModel.addBuildProduct(this,list,name, 1);
+        binding.flDialog.setVisibility(View.GONE);
+        Toast.makeText(this, getString(R.string.suc), Toast.LENGTH_SHORT).show();
     }
-
-    private boolean isListHasId(String cat_id,List<String> cat_ids){
-        boolean isHasId = false;
-        for (String id:cat_ids){
-            if (cat_id.equals(id)){
-                isHasId = true;
-                return isHasId;
-            }
-        }
-
-        return isHasId;
-
-    }
-
-
     private void getBuildings() {
         Api.getService(Tags.base_url)
                 .getCategoryBuilding(lang)
@@ -556,10 +571,9 @@ public class BulidingActivity extends AppCompatActivity {
                     }
                 });
     }
-
     public void setItemData(int adapterPosition, CategoryModel categoryModel) {
         this.selectedPos = adapterPosition;
-        this.categoryModel = categoryModel;
+        this.selectedMainCategoryModel = categoryModel;
         if (categoryModel.getIs_final_level().equals("yes")) {
             req = 100;
             Intent intent = new Intent(this, ProductBuildingActivity.class);
@@ -580,13 +594,12 @@ public class BulidingActivity extends AppCompatActivity {
     }
 
     public void deleteItemData(int adapterPosition, CategoryModel categoryModel) {
-        map.remove(adapterPosition);
         categoryModel.getSelectedProduct().clear();
         categoryModel.getSub_categories().clear();
         list.set(adapterPosition,categoryModel);
         adapter.notifyItemChanged(adapterPosition);
 
-        if (map.size()>0){
+        if (isListHasData()){
             canNext = true;
             binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
             binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
@@ -603,15 +616,43 @@ public class BulidingActivity extends AppCompatActivity {
     private void calculateTotal_Points() {
         total = 0;
         double points = 0;
-        for (Integer key :map.keySet()){
-            CategoryModel model = list.get(key);
-            for (ProductModel productModel:model.getSelectedProduct()){
-                total+= productModel.getPrice();
-                points += productModel.getPoints();
+
+        for (CategoryModel categoryModel:list){
+            if (categoryModel.getSelectedProduct().size()>0){
+                for (ProductModel productModel:categoryModel.getSelectedProduct()){
+                    total += productModel.getPrice();
+                    points += productModel.getPoints();
+                }
             }
+
+
         }
 
         binding.setTotal(total+"");
         binding.setScore(points+"");
     }
+
+    private boolean isListHasData(){
+        boolean hasData = false;
+        for (CategoryModel model : list) {
+
+            if (model.getSelectedProduct().size()>0){
+                hasData = true;
+            }
+
+
+        }
+        return hasData;
+    }
+
+    private List<CategoryModel> getSelectedCategory(){
+        List<CategoryModel> categoryModelList = new ArrayList<>();
+        for (CategoryModel categoryModel:list){
+            if (categoryModel.getSelectedProduct().size()>0){
+                categoryModelList.add(categoryModel);
+            }
+        }
+        return categoryModelList;
+    }
+
 }

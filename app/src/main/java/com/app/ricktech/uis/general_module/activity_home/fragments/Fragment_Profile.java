@@ -24,6 +24,7 @@ import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.uis.general_module.activity_home.HomeActivity;
 import com.app.ricktech.uis.general_module.activity_language.LanguageActivity;
+import com.app.ricktech.uis.orders_module.activity_orders.OrdersActivity;
 import com.app.ricktech.uis.saved_build_module.activity_saving_build.SavingBuildActivity;
 import com.app.ricktech.uis.general_module.activity_web_view.WebViewActivity;
 
@@ -89,7 +90,21 @@ public class Fragment_Profile extends Fragment {
             startActivity(intent);
         });
 
+        binding.llCurrentOrder.setOnClickListener(v -> {
+            navigateToOrderActivity(1);
+        });
 
+        binding.llPreviousOrder.setOnClickListener(v -> {
+            navigateToOrderActivity(2);
+        });
+
+
+    }
+
+    private void navigateToOrderActivity(int type) {
+        Intent intent = new Intent(activity, OrdersActivity.class);
+        intent.putExtra("type", type);
+        startActivity(intent);
 
     }
 

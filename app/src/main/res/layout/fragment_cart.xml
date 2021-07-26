@@ -13,10 +13,26 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             >
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recView"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_margin="16dp"
+                    android:visibility="gone"
+                    />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/tvNoData"
                 android:layout_width="wrap_content"
@@ -25,20 +41,11 @@
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:text="@string/empty_cart"
-                android:visibility="visible"
+                android:visibility="gone"
                 />
 
         </FrameLayout>
 
-        <Button
-            android:id="@+id/btnCheckout"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="@string/checkout"
-            android:visibility="visible"
-            />
+
     </LinearLayout>
 </layout>

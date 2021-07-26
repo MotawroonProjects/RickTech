@@ -47,7 +47,7 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         MyHolder myHolder = (MyHolder) holder;
         myHolder.binding.setModel(list.get(position));
-        myHolder.itemView.setOnClickListener(v -> {
+        myHolder.binding.llDetails.setOnClickListener(v -> {
             if (appCompatActivity instanceof SavingBuildActivity){
                 SavingBuildActivity savingBuildActivity = (SavingBuildActivity) appCompatActivity;
                 savingBuildActivity.setItemData(list.get(myHolder.getAdapterPosition()));

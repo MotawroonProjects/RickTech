@@ -18,8 +18,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.app.ricktech.R;
-import com.app.ricktech.adapters.BuildingAdapter;
-import com.app.ricktech.adapters.SubBuildingAdapter;
 import com.app.ricktech.adapters.SuggestionBuildingAdapter;
 import com.app.ricktech.databinding.ActivitySuggetionBuildingsBinding;
 import com.app.ricktech.language.Language;
@@ -27,8 +25,8 @@ import com.app.ricktech.models.AddBuildModel;
 import com.app.ricktech.models.AddCompareModel;
 import com.app.ricktech.models.AddToBuildDataModel;
 import com.app.ricktech.models.BrandModel;
-import com.app.ricktech.models.CategoryBuildingDataModel;
 import com.app.ricktech.models.CategoryModel;
+import com.app.ricktech.models.ManageCartModel;
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.StatusResponse;
 import com.app.ricktech.models.SuggestionGameDataModel;
@@ -39,12 +37,9 @@ import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
 import com.app.ricktech.share.Common;
 import com.app.ricktech.tags.Tags;
-import com.app.ricktech.uis.pc_building_module.activity_building.BulidingActivity;
 import com.app.ricktech.uis.pc_building_module.activity_building_products.ProductBuildingActivity;
 import com.app.ricktech.uis.pc_building_module.activity_games.GamesActivity;
-import com.app.ricktech.uis.pc_building_module.activity_sub_bulding.SubBuildingActivity;
 import com.app.ricktech.uis.suggestions_module.activity_suggestion_sub_building.SuggestionSubBuildingActivity;
-import com.ethanhua.skeleton.SkeletonScreen;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -74,8 +69,11 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
     private int req;
     private boolean canNext = false;
     double total = 0;
-    private Map<Integer, AddBuildModel> map;
-    private List<Map<Integer, SuggestionModel>> subCatMap;
+    private List<SuggestionModel> categoryHasSubCategoryList = new ArrayList<>();
+
+    private boolean hasSuggestions = false;
+
+    private ManageCartModel manageCartModel;
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -99,8 +97,8 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
 
 
     private void initView() {
-        map = new HashMap<>();
-        subCatMap = new ArrayList<>();
+        manageCartModel = ManageCartModel.getInstance();
+
         preferences = Preferences.getInstance();
         userModel = preferences.getUserData(this);
         list = new ArrayList<>();
@@ -128,31 +126,6 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
                     if (productModel != null) {
                         if (selectedPos != -1) {
 
-
-                            if (map.get(selectedPos) != null) {
-                                AddBuildModel model = map.get(selectedPos);
-                                if (model != null) {
-                                    List<String> productModelList = model.getList();
-                                    productModelList.add(productModel.getId() + "");
-                                    model.setList(productModelList);
-                                    List<ProductModel> productModelList1 = new ArrayList<>(model.getProductModelList());
-                                    productModelList1.add(productModel);
-                                    model.setProductModelList(productModelList1);
-                                    map.put(selectedPos, model);
-
-                                }
-
-                            } else {
-                                List<String> productModelList = new ArrayList<>();
-                                productModelList.add(productModel.getId() + "");
-                                AddBuildModel model = new AddBuildModel(suggestionModel.getId() + "", productModelList);
-                                List<ProductModel> productModelList1 = new ArrayList<>(model.getProductModelList());
-                                productModelList1.add(productModel);
-                                model.setProductModelList(productModelList1);
-                                map.put(selectedPos, model);
-
-                            }
-
                             List<SuggestionModel.Products> list1 = new ArrayList<>(list.get(selectedPos).getSuggestions().getSelectedProducts());
 
                             SuggestionModel.Products products = new SuggestionModel.Products();
@@ -171,7 +144,7 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
 
                     calculateTotal_Points();
 
-                    if (map.size() > 0) {
+                    if (isListHasData()) {
                         canNext = true;
                         binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
                         binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
@@ -182,87 +155,35 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
                         binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
 
                     }
-                }
-
-                else if (req == 200 && result.getResultCode() == RESULT_OK && result.getData() != null) {
+                } else if (req == 200 && result.getResultCode() == RESULT_OK && result.getData() != null) {
                     List<CategoryModel> data = (List<CategoryModel>) result.getData().getSerializableExtra("data");
                     if (selectedPos != -1) {
                         if (data != null) {
 
-                            if (data.size()>0){
-                                if (map.get(selectedPos) != null) {
-                                    AddBuildModel model = map.get(selectedPos);
-                                    if (model != null) {
-                                        List<String> productModelList = new ArrayList<>(model.getList());
-                                        List<SuggestionModel.Products> selectedProducts = new ArrayList<>();
+                            if (data.size() > 0) {
+                                List<SuggestionModel.Products> selectedProducts = new ArrayList<>();
 
-                                        List<ProductModel> pList = new ArrayList<>();
-                                        for (CategoryModel categoryModel : data) {
-                                            pList.addAll(categoryModel.getSelectedProduct());
-
-                                        }
-                                        for (ProductModel productModel : pList) {
-                                            productModelList.add(productModel.getId() + "");
-                                            SuggestionModel.Products products = new SuggestionModel.Products();
-                                            products.setProduct(productModel);
-                                            selectedProducts.add(products);
-                                        }
-
-                                        suggestionModel.getSuggestions().setSelectedProducts(selectedProducts);
-                                        model.setList(productModelList);
-                                        List<ProductModel> productModelList1 = new ArrayList<>(model.getProductModelList());
-                                        productModelList1.addAll(pList);
-                                        model.setProductModelList(productModelList1);
-                                        map.put(selectedPos, model);
-
-                                    }
+                                List<ProductModel> pList = new ArrayList<>();
+                                for (CategoryModel categoryModel : data) {
+                                    pList.addAll(categoryModel.getSelectedProduct());
 
                                 }
-                                else {
-                                    List<String> productModelList = new ArrayList<>();
-
-                                    List<ProductModel> pList = new ArrayList<>();
-                                    for (CategoryModel categoryModel : data) {
-                                        pList.addAll(categoryModel.getSelectedProduct());
-                                    }
-                                    for (ProductModel productModel : pList) {
-                                        productModelList.add(productModel.getId() + "");
-
-                                    }
-
-                                    AddBuildModel model = new AddBuildModel(suggestionModel.getId() + "", productModelList);
-                                    List<ProductModel> productModelList1 = new ArrayList<>(model.getProductModelList());
-                                    productModelList1.addAll(pList);
-                                    model.setProductModelList(productModelList1);
-                                    map.put(selectedPos, model);
-
-
-                                    List<SuggestionModel.Products> productsList = new ArrayList<>();
-                                    for (ProductModel productModel : pList) {
-                                        SuggestionModel.Products products = new SuggestionModel.Products();
-                                        products.setProduct(productModel);
-                                        productsList.add(products);
-                                    }
-                                    SuggestionModel.Suggestions suggestions = suggestionModel.getSuggestions();
-                                    List<SuggestionModel.Products> selectedList = new ArrayList<>(suggestions.getSelectedProducts());
-                                    selectedList.addAll(productsList);
-
-                                    suggestions.setSelectedProducts(selectedList);
-                                    suggestions.setDefaultData(false);
-                                    suggestionModel.setSuggestions(suggestions);
+                                for (ProductModel productModel : pList) {
+                                    SuggestionModel.Products products = new SuggestionModel.Products();
+                                    products.setProduct(productModel);
+                                    selectedProducts.add(products);
                                 }
 
+                                suggestionModel.getSuggestions().setSelectedProducts(selectedProducts);
+                                suggestionModel.getSuggestions().setDefaultData(false);
                                 suggestionModel.setSub_categoryModel(data);
 
 
-                            }else {
-                                if (map.get(selectedPos)!=null){
-                                    map.remove(selectedPos);
-                                    suggestionModel.getSuggestions().getSelectedProducts().clear();
-                                    suggestionModel.getSub_categoryModel().clear();
-                                    suggestionModel.getSuggestions().setDefaultData(false);
+                            } else {
+                                suggestionModel.getSuggestions().getSelectedProducts().clear();
+                                suggestionModel.getSub_categoryModel().clear();
+                                suggestionModel.getSuggestions().setDefaultData(false);
 
-                                }
                             }
 
                             list.set(selectedPos, suggestionModel);
@@ -270,7 +191,7 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
                             adapter.notifyItemChanged(selectedPos);
 
                             calculateTotal_Points();
-                            if (map.size() > 0) {
+                            if (isListHasData()) {
                                 canNext = true;
                                 binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
                                 binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
@@ -297,7 +218,55 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
         binding.btnCompare.setOnClickListener(v -> {
             if (canNext) {
 
-                List<AddBuildModel> list = new ArrayList<>(map.values());
+
+                List<AddBuildModel> list = new ArrayList<>();
+
+                List<SuggestionModel> selectedSuggestion = new ArrayList<>(getSelectedSuggestion());
+                for (SuggestionModel suggestionModel :selectedSuggestion){
+                    if (suggestionModel.getIs_final_level().equals("yes")){
+
+                        List<String> products_ids = new ArrayList<>();
+                        List<ProductModel> productModelList = new ArrayList<>();
+                        for (SuggestionModel.Products model :suggestionModel.getSuggestions().getSelectedProducts()){
+                            products_ids.add(model.getProduct().getId()+"");
+                            productModelList.add(model.getProduct());
+                        }
+
+                        AddBuildModel addBuildModel = new AddBuildModel(suggestionModel.getId()+"",products_ids);
+                        addBuildModel.setCategory_id(suggestionModel.getId()+"");
+                        addBuildModel.setCategory_name(suggestionModel.getTrans_title());
+                        addBuildModel.setCategory_image(suggestionModel.getImage());
+                        addBuildModel.setProductModelList(productModelList);
+                        list.add(addBuildModel);
+
+                    }else {
+
+                        for (CategoryModel model:suggestionModel.getSub_categoryModel()){
+                            Log.e("eee2", model.getTrans_title());
+                            List<String> sub_products_ids = new ArrayList<>();
+                            List<ProductModel> subProductModelList = new ArrayList<>();
+
+                            for (ProductModel productModel:model.getSelectedProduct()){
+                                Log.e("title", productModel.getTrans_title());
+                                sub_products_ids.add(productModel.getId()+"");
+                                subProductModelList.add(productModel);
+                            }
+
+                            AddBuildModel addBuildModel = new AddBuildModel(model.getId()+"",sub_products_ids);
+                            addBuildModel.setCategory_id(model.getId()+"");
+                            addBuildModel.setCategory_name(model.getTrans_title());
+                            addBuildModel.setCategory_image(model.getImage());
+                            addBuildModel.setProductModelList(subProductModelList);
+                            list.add(addBuildModel);
+                        }
+
+
+
+                    }
+
+                }
+
+
                 AddCompareModel model = new AddCompareModel(list);
                 compare(model);
             }
@@ -319,6 +288,226 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
 
             }
         });
+
+        binding.flAddToCart.setOnClickListener(v -> {
+            String name = binding.edtName.getText().toString();
+            if (!name.isEmpty()) {
+                binding.edtName.setError(null);
+                Common.CloseKeyBoard(this, binding.edtName);
+                addToCart(name);
+            } else {
+                binding.edtName.setError(getString(R.string.field_req));
+
+            }
+        });
+    }
+
+    private void getBuildings() {
+        Api.getService(Tags.base_url)
+                .getCategorySuggestions(lang, brand_id, suggestion_id)
+                .enqueue(new Callback<SuggestionsDataModel>() {
+                    @Override
+                    public void onResponse(Call<SuggestionsDataModel> call, Response<SuggestionsDataModel> response) {
+
+                        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
+                            if (response.body().getData().size() > 0) {
+                                updateData(response.body().getData());
+                            } else {
+                                binding.tvNoData.setVisibility(View.VISIBLE);
+                                binding.llTotal.setVisibility(View.GONE);
+                                binding.flCompare.setVisibility(View.GONE);
+
+                            }
+
+                        } else {
+                            binding.shimmer.stopShimmer();
+                            binding.shimmer.setVisibility(View.GONE);
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<SuggestionsDataModel> call, Throwable t) {
+                        try {
+                            Log.e("error", t.getMessage() + "__");
+                            binding.shimmer.stopShimmer();
+                            binding.shimmer.setVisibility(View.GONE);
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+
+    }
+
+    private void updateData(List<SuggestionModel> data) {
+        list.clear();
+
+
+        for (int index = 0; index < data.size(); index++) {
+            SuggestionModel model = data.get(index);
+            SuggestionModel.Suggestions suggestions = model.getSuggestions();
+
+            if (suggestions != null) {
+                List<SuggestionModel.Products> productModelList = new ArrayList<>();
+                if (suggestions.getProducts() != null && suggestions.getProducts().size() > 0) {
+                    hasSuggestions = true;
+                    productModelList.addAll(suggestions.getProducts());
+                }
+
+                suggestions.setSelectedProducts(productModelList);
+                suggestions.setDefaultSelectedProducts(new ArrayList<>(productModelList));
+                model.setSuggestions(suggestions);
+
+                if (model.getIs_final_level().equals("no")) {
+                    hasSuggestions = true;
+                    categoryHasSubCategoryList.add(model);
+                }
+                list.add(model);
+
+
+            }
+
+        }
+
+
+        if (categoryHasSubCategoryList.size() > 0) {
+            getSubCategory(0);
+        } else {
+            calculateTotal_Points();
+            adapter.notifyDataSetChanged();
+            binding.tvNoData.setVisibility(View.GONE);
+            binding.llTotal.setVisibility(View.VISIBLE);
+            binding.flCompare.setVisibility(View.VISIBLE);
+
+            if (hasSuggestions) {
+                canNext = true;
+                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
+                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
+
+            } else {
+                canNext = false;
+                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
+                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
+
+            }
+        }
+
+    }
+
+    private void getSubCategory(int index) {
+
+        if (index < categoryHasSubCategoryList.size()) {
+
+            SuggestionModel suggestionModel = categoryHasSubCategoryList.get(index);
+
+            Api.getService(Tags.base_url)
+                    .getSubCategorySuggestions(lang, brand_id, suggestion_id, suggestionModel.getId() + "")
+                    .enqueue(new Callback<SuggestionsDataModel>() {
+                        @Override
+                        public void onResponse(Call<SuggestionsDataModel> call, Response<SuggestionsDataModel> response) {
+
+                            if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
+                                if (response.body().getData().size() > 0) {
+
+                                    List<SuggestionModel.Products> products = new ArrayList<>();
+                                    List<CategoryModel> allSubCategoryList = new ArrayList<>();
+                                    for (SuggestionModel model : response.body().getData()) {
+                                        SuggestionModel.Suggestions suggestions = model.getSuggestions();
+
+                                        if (suggestions.getProducts().size() > 0) {
+                                            List<ProductModel> productModelList = new ArrayList<>();
+
+                                            for (SuggestionModel.Products products1 : suggestions.getProducts()) {
+                                                productModelList.add(products1.getProduct());
+                                            }
+
+                                            CategoryModel subCategoryModel = new CategoryModel(model.getId(), model.getDesc(), model.getImage(), model.getType(), model.getIs_final_level(), model.getParent_id(), model.getIs_in_compare(), model.getTrans_title(), new ArrayList<>(), productModelList,new ArrayList<>(productModelList));
+                                            allSubCategoryList.add(subCategoryModel);
+                                            suggestionModel.getSuggestions().setDefaultData(true);
+                                            products.addAll(suggestions.getProducts());
+
+                                            Log.e("ggg", model.getTrans_title() + "___" + list.size());
+
+                                        }
+
+                                    }
+
+                                    suggestionModel.setDefault_sub_categoryModel(new ArrayList<>(allSubCategoryList));
+                                    suggestionModel.setSub_categoryModel(new ArrayList<>(allSubCategoryList));
+
+                                    SuggestionModel.Suggestions suggestions = suggestionModel.getSuggestions();
+                                    if (suggestions != null) {
+                                        suggestions.setSelectedProducts(products);
+                                        suggestions.setDefaultSelectedProducts(new ArrayList<>(products));
+                                        suggestionModel.setSuggestions(suggestions);
+                                    }
+
+
+                                    int newIndex = index + 1;
+                                    categoryHasSubCategoryList.set(index, suggestionModel);
+
+                                    getSubCategory(newIndex);
+
+                                }
+
+                            }
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<SuggestionsDataModel> call, Throwable t) {
+                            try {
+                                Log.e("error", t.getMessage() + "__");
+
+
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    });
+        } else {
+            for (SuggestionModel model : categoryHasSubCategoryList) {
+                int pos = getCategoryHasSubCategoryPos(model);
+                if (pos != -1) {
+                    SuggestionModel suggestionModel = list.get(pos);
+                    suggestionModel.setSub_categoryModel(new ArrayList<>(model.getSub_categoryModel()));
+                    suggestionModel.setDefault_sub_categoryModel(new ArrayList<>(model.getDefault_sub_categoryModel()));
+                    SuggestionModel.Suggestions suggestions = suggestionModel.getSuggestions();
+                    if (suggestions != null) {
+                        suggestions.setDefaultData(true);
+                        suggestions.setSelectedProducts(model.getSuggestions().getSelectedProducts());
+                        suggestions.setDefaultSelectedProducts(new ArrayList<>(model.getSuggestions().getDefaultSelectedProducts()));
+                        suggestions.setProducts(model.getSuggestions().getProducts());
+                    }
+                    list.set(pos, suggestionModel);
+                }
+            }
+
+            binding.shimmer.stopShimmer();
+            binding.shimmer.setVisibility(View.GONE);
+            binding.llData.setVisibility(View.VISIBLE);
+            calculateTotal_Points();
+            adapter.notifyDataSetChanged();
+            binding.tvNoData.setVisibility(View.GONE);
+            binding.llTotal.setVisibility(View.VISIBLE);
+            binding.flCompare.setVisibility(View.VISIBLE);
+
+            if (hasSuggestions) {
+                canNext = true;
+                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
+                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
+
+            } else {
+                canNext = false;
+                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
+                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
+
+            }
+        }
     }
 
     private void compare(AddCompareModel model) {
@@ -386,16 +575,57 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
+        List<AddBuildModel> list = new ArrayList<>();
 
-        List<AddBuildModel> list=new ArrayList<>(map.values());
+        List<SuggestionModel> selectedSuggestion = new ArrayList<>(getSelectedSuggestion());
+        for (SuggestionModel suggestionModel :selectedSuggestion){
+            if (suggestionModel.getIs_final_level().equals("yes")){
 
-        List<AddBuildModel> finalData = filterData(list);
+                List<String> products_ids = new ArrayList<>();
+                List<ProductModel> productModelList = new ArrayList<>();
+                for (SuggestionModel.Products model :suggestionModel.getSuggestions().getSelectedProducts()){
+                    products_ids.add(model.getProduct().getId()+"");
+                    productModelList.add(model.getProduct());
+                }
+
+                AddBuildModel addBuildModel = new AddBuildModel(suggestionModel.getId()+"",products_ids);
+                addBuildModel.setCategory_id(suggestionModel.getId()+"");
+                addBuildModel.setCategory_name(suggestionModel.getTrans_title());
+                addBuildModel.setCategory_image(suggestionModel.getImage());
+                addBuildModel.setProductModelList(productModelList);
+                list.add(addBuildModel);
+
+            }else {
+
+                for (CategoryModel model:suggestionModel.getSub_categoryModel()){
+                    Log.e("eee2", model.getTrans_title());
+                    List<String> sub_products_ids = new ArrayList<>();
+                    List<ProductModel> subProductModelList = new ArrayList<>();
+
+                    for (ProductModel productModel:model.getSelectedProduct()){
+                        Log.e("title", productModel.getTrans_title());
+                        sub_products_ids.add(productModel.getId()+"");
+                        subProductModelList.add(productModel);
+                    }
+
+                    AddBuildModel addBuildModel = new AddBuildModel(model.getId()+"",sub_products_ids);
+                    addBuildModel.setCategory_id(model.getId()+"");
+                    addBuildModel.setCategory_name(model.getTrans_title());
+                    addBuildModel.setCategory_image(model.getImage());
+                    addBuildModel.setProductModelList(subProductModelList);
+                    list.add(addBuildModel);
+                }
+
+
+
+            }
+
+        }
 
 
 
 
-        AddToBuildDataModel  model = new AddToBuildDataModel(name,total,finalData);
-
+        AddToBuildDataModel model = new AddToBuildDataModel(name, total, list);
 
 
         Api.getService(Tags.base_url)
@@ -447,277 +677,66 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
 
     }
 
-    private List<AddBuildModel> filterData(List<AddBuildModel> list) {
-        List<AddBuildModel> finalList = new ArrayList<>();
+    private void addToCart(String name) {
 
-        List<String> category_ids = new ArrayList<>();
-        List<ProductModel> allProducts = new ArrayList<>();
-        for (AddBuildModel addBuildModel :list){
-            allProducts.addAll(addBuildModel.getProductModelList());
-            List<ProductModel> productModelList = addBuildModel.getProductModelList();
-            for (ProductModel productModel:productModelList){
+        List<AddBuildModel> list = new ArrayList<>();
 
-                if (!isListHasId(productModel.getCategory_id(), category_ids)){
-                    category_ids.add(productModel.getCategory_id());
-                }
-            }
-        }
+        List<SuggestionModel> selectedSuggestion = new ArrayList<>(getSelectedSuggestion());
+        for (SuggestionModel suggestionModel :selectedSuggestion){
+            if (suggestionModel.getIs_final_level().equals("yes")){
 
-
-        for (String cat_id :category_ids){
-            Log.e("category_id", cat_id);
-
-            AddBuildModel model = new AddBuildModel();
-            model.setCategory_id(cat_id);
-            List<String> products_ids = new ArrayList<>();
-            List<ProductModel> products = new ArrayList<>();
-            for (ProductModel productModel:allProducts){
-
-
-                if (productModel.getCategory_id().equals(cat_id)){
-                    products_ids.add(productModel.getId()+"");
-                    products.add(productModel);
+                List<String> products_ids = new ArrayList<>();
+                List<ProductModel> productModelList = new ArrayList<>();
+                for (SuggestionModel.Products model :suggestionModel.getSuggestions().getSelectedProducts()){
+                    products_ids.add(model.getProduct().getId()+"");
+                    productModelList.add(model.getProduct());
                 }
 
+                AddBuildModel addBuildModel = new AddBuildModel(suggestionModel.getId()+"",products_ids);
+                addBuildModel.setCategory_id(suggestionModel.getId()+"");
+                addBuildModel.setCategory_name(suggestionModel.getTrans_title());
+                addBuildModel.setCategory_image(suggestionModel.getImage());
+                addBuildModel.setProductModelList(productModelList);
+                list.add(addBuildModel);
 
-            }
+            }else {
 
+                for (CategoryModel model:suggestionModel.getSub_categoryModel()){
+                    Log.e("eee2", model.getTrans_title());
+                    List<String> sub_products_ids = new ArrayList<>();
+                    List<ProductModel> subProductModelList = new ArrayList<>();
 
-
-            model.setList(products_ids);
-            model.setProductModelList(products);
-            finalList.add(model);
-        }
-
-
-
-        return finalList;
-    }
-
-    private boolean isListHasId(String cat_id,List<String> cat_ids){
-        boolean isHasId = false;
-        for (String id:cat_ids){
-            if (cat_id.equals(id)){
-                isHasId = true;
-                return isHasId;
-            }
-        }
-
-        return isHasId;
-
-    }
-
-    private void getBuildings() {
-        Api.getService(Tags.base_url)
-                .getCategorySuggestions(lang, brand_id, suggestion_id)
-                .enqueue(new Callback<SuggestionsDataModel>() {
-                    @Override
-                    public void onResponse(Call<SuggestionsDataModel> call, Response<SuggestionsDataModel> response) {
-
-                        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
-                            if (response.body().getData().size() > 0) {
-                                updateData(response.body().getData());
-                            } else {
-                                binding.tvNoData.setVisibility(View.VISIBLE);
-                                binding.llTotal.setVisibility(View.GONE);
-                                binding.flCompare.setVisibility(View.GONE);
-
-                            }
-
-                        } else {
-                            binding.shimmer.stopShimmer();
-                            binding.shimmer.setVisibility(View.GONE);
-                        }
-
-
+                    for (ProductModel productModel:model.getSelectedProduct()){
+                        Log.e("title", productModel.getTrans_title());
+                        sub_products_ids.add(productModel.getId()+"");
+                        subProductModelList.add(productModel);
                     }
 
-                    @Override
-                    public void onFailure(Call<SuggestionsDataModel> call, Throwable t) {
-                        try {
-                            Log.e("error", t.getMessage() + "__");
-                            binding.shimmer.stopShimmer();
-                            binding.shimmer.setVisibility(View.GONE);
-
-                        } catch (Exception e) {
-
-                        }
-                    }
-                });
-
-    }
-
-    private void updateData(List<SuggestionModel> data) {
-        list.clear();
-
-
-        for (int index = 0; index < data.size(); index++) {
-            SuggestionModel model = data.get(index);
-            SuggestionModel.Suggestions suggestions = model.getSuggestions();
-            List<SuggestionModel.Products> productModelList = new ArrayList<>();
-
-            if (suggestions != null && suggestions.getProducts() != null && suggestions.getProducts().size() > 0) {
-
-                productModelList.addAll(suggestions.getProducts());
-            }
-
-            suggestions.setSelectedProducts(productModelList);
-            model.setSuggestions(suggestions);
-            if (model.getIs_final_level().equals("no")) {
-                Map<Integer, SuggestionModel> suggestionModelMap = new HashMap<>();
-
-                suggestionModelMap.put(index, model);
-                subCatMap.add(suggestionModelMap);
-            }
-            list.add(model);
-            if (suggestions.getProducts().size() > 0) {
-                List<String> modelList = new ArrayList<>();
-                for (SuggestionModel.Products products : suggestions.getProducts()) {
-                    modelList.add(products.getProduct().getId() + "");
+                    AddBuildModel addBuildModel = new AddBuildModel(model.getId()+"",sub_products_ids);
+                    addBuildModel.setCategory_id(model.getId()+"");
+                    addBuildModel.setCategory_name(model.getTrans_title());
+                    addBuildModel.setCategory_image(model.getImage());
+                    addBuildModel.setProductModelList(subProductModelList);
+                    list.add(addBuildModel);
                 }
 
-                AddBuildModel addBuildModel = new AddBuildModel(model.getId() + "", modelList);
-                map.put(index, addBuildModel);
+
 
             }
+
         }
 
 
-        if (subCatMap.size() > 0) {
-            getSubCategory(0);
-        } else {
-            calculateTotal_Points();
-            adapter.notifyDataSetChanged();
-            binding.tvNoData.setVisibility(View.GONE);
-            binding.llTotal.setVisibility(View.VISIBLE);
-            binding.flCompare.setVisibility(View.VISIBLE);
 
-            if (map.size() > 0) {
-                canNext = true;
-                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
-                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
 
-            } else {
-                canNext = false;
-                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
-                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
 
-            }
-        }
 
+
+        manageCartModel.addBuildProduct(this, list, name, 1);
+        binding.flDialog.setVisibility(View.GONE);
+        Toast.makeText(this, getString(R.string.suc), Toast.LENGTH_SHORT).show();
     }
 
-    private void getSubCategory(int index) {
-
-        if (index < subCatMap.size()) {
-            int key = 0;
-            for (int pos : subCatMap.get(index).keySet()) {
-                key = pos;
-                break;
-            }
-            SuggestionModel suggestionModel = subCatMap.get(index).get(key);
-            int finalKey = key;
-
-            Api.getService(Tags.base_url)
-                    .getSubCategorySuggestions(lang, brand_id, suggestion_id, suggestionModel.getId() + "")
-                    .enqueue(new Callback<SuggestionsDataModel>() {
-                        @Override
-                        public void onResponse(Call<SuggestionsDataModel> call, Response<SuggestionsDataModel> response) {
-
-                            if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
-                                if (response.body().getData().size() > 0) {
-                                    List<SuggestionModel.Products> products = new ArrayList<>();
-                                    List<CategoryModel> categoryModelList = new ArrayList<>();
-                                    for (SuggestionModel model : response.body().getData()) {
-
-                                        SuggestionModel.Suggestions suggestions = model.getSuggestions();
-                                        if (suggestions.getProducts().size() > 0) {
-                                            suggestionModel.getSuggestions().setDefaultData(true);
-                                            products.addAll(suggestions.getProducts());
-                                            List<ProductModel> list = new ArrayList<>();
-                                            for (SuggestionModel.Products products1 : suggestions.getProducts()) {
-                                                list.add(products1.getProduct());
-                                            }
-                                            CategoryModel categoryModel = new CategoryModel(model.getId(), model.getDesc(), model.getImage(), model.getType(), model.getIs_final_level(), model.getParent_id(), model.getIs_in_compare(), model.getTrans_title(), new ArrayList<>(), list);
-                                            categoryModelList.add(categoryModel);
-
-                                            List<String> modelList = new ArrayList<>();
-                                            for (SuggestionModel.Products products1 : suggestions.getProducts()) {
-                                                modelList.add(products1.getProduct().getId() + "");
-                                            }
-
-                                            AddBuildModel addBuildModel = new AddBuildModel(model.getId() + "", modelList);
-                                            map.put(finalKey, addBuildModel);
-
-                                        }
-
-                                    }
-
-                                    if (products.size() > 0) {
-                                        suggestionModel.setSub_categoryModel(categoryModelList);
-                                        suggestionModel.setDefault_sub_categoryModel(categoryModelList);
-                                        SuggestionModel.Suggestions suggestions = suggestionModel.getSuggestions();
-                                        suggestions.setProducts(products);
-                                        suggestions.setSelectedProducts(products);
-                                        suggestions.setDefaultData(true);
-                                        suggestionModel.setSuggestions(suggestions);
-                                        Map<Integer, SuggestionModel> modelMap = subCatMap.get(index);
-                                        modelMap.put(finalKey, suggestionModel);
-                                        subCatMap.set(index, modelMap);
-                                    }
-
-                                    int newIndex = index + 1;
-
-                                    getSubCategory(newIndex);
-
-                                }
-
-                            }
-
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<SuggestionsDataModel> call, Throwable t) {
-                            try {
-                                Log.e("error", t.getMessage() + "__");
-
-
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    });
-        } else {
-            for (int pos = 0; pos < subCatMap.size(); pos++) {
-                for (int key : subCatMap.get(pos).keySet()) {
-                    list.set(key, subCatMap.get(pos).get(key));
-
-                }
-            }
-
-            binding.shimmer.stopShimmer();
-            binding.shimmer.setVisibility(View.GONE);
-            binding.llData.setVisibility(View.VISIBLE);
-            calculateTotal_Points();
-            adapter.notifyDataSetChanged();
-            binding.tvNoData.setVisibility(View.GONE);
-            binding.llTotal.setVisibility(View.VISIBLE);
-            binding.flCompare.setVisibility(View.VISIBLE);
-
-            if (map.size() > 0) {
-                canNext = true;
-                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
-                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
-
-            } else {
-                canNext = false;
-                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
-                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
-
-            }
-        }
-    }
 
     public void setItemData(int adapterPosition, SuggestionModel suggestionModel) {
         this.selectedPos = adapterPosition;
@@ -735,12 +754,12 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
 
         } else {
             req = 200;
-            Log.e("cat", suggestionModel.getSuggestions().getCategory_id_to_get_next_level() + "__"+suggestionModel.getSub_categoryModel().size()+"___"+suggestionModel.getSuggestions().getSelectedProducts().size());
+            Log.e("cat", suggestionModel.getSuggestions().getCategory_id_to_get_next_level() + "__" + suggestionModel.getSub_categoryModel().size() + "___" + suggestionModel.getSuggestions().getSelectedProducts().size());
             Intent intent = new Intent(this, SuggestionSubBuildingActivity.class);
             intent.putExtra("data", suggestionModel.getSuggestions().getCategory_id_to_get_next_level());
             intent.putExtra("data2", suggestionModel);
             launcher.launch(intent);
-            Log.e("cat", suggestionModel.getSuggestions().getSelectedProducts().size()+"___"+suggestionModel.getSub_categoryModel().size());
+            Log.e("cat", suggestionModel.getSuggestions().getSelectedProducts().size() + "___" + suggestionModel.getSub_categoryModel().size());
 
         }
 
@@ -748,13 +767,13 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
     }
 
     public void deleteItemData(int adapterPosition, SuggestionModel suggestionModel) {
-        map.remove(adapterPosition);
         suggestionModel.getSuggestions().getSelectedProducts().clear();
         suggestionModel.getSub_categoryModel().clear();
         list.set(adapterPosition, suggestionModel);
         adapter.notifyItemChanged(adapterPosition);
 
-        if (map.size() > 0) {
+
+        if (isListHasData()) {
             canNext = true;
             binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
             binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
@@ -772,27 +791,23 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
         SuggestionModel.Suggestions suggestions = suggestionModel.getSuggestions();
 
 
-        if (suggestions.getProducts().size() > 0) {
-            List<String> modelList = new ArrayList<>();
-            for (SuggestionModel.Products products : suggestions.getProducts()) {
-                modelList.add(products.getProduct().getId() + "");
-            }
 
-            AddBuildModel addBuildModel = new AddBuildModel(suggestionModel.getId() + "", modelList);
-            map.put(adapterPosition, addBuildModel);
-
+        if (suggestionModel.getDefault_sub_categoryModel().size() > 0) {
 
             suggestions.setDefaultData(true);
             suggestions.getSelectedProducts().clear();
-            suggestions.setSelectedProducts(new ArrayList<>(suggestions.getProducts()));
-            if (suggestionModel.getDefault_sub_categoryModel().size()>0){
+            suggestions.setSelectedProducts(new ArrayList<>(suggestionModel.getSuggestions().getDefaultSelectedProducts()));
+
+            if (suggestionModel.getDefault_sub_categoryModel().size() > 0) {
                 suggestionModel.getSub_categoryModel().clear();
                 suggestionModel.setSub_categoryModel(new ArrayList<>(suggestionModel.getDefault_sub_categoryModel()));
             }
 
         } else {
+
             suggestions.setDefaultData(true);
             suggestions.getSelectedProducts().clear();
+            suggestions.setSelectedProducts(new ArrayList<>(suggestionModel.getSuggestions().getDefaultSelectedProducts()));
             suggestionModel.getSub_categoryModel().clear();
 
         }
@@ -801,32 +816,62 @@ public class SuggetionBuildingsActivity extends AppCompatActivity {
         list.set(adapterPosition, suggestionModel);
         adapter.notifyItemChanged(adapterPosition);
 
-        if (map.size() > 0) {
-            canNext = true;
-            binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
-            binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
-
-        } else {
-            canNext = false;
-            binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
-            binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
-
-        }
         calculateTotal_Points();
     }
 
     private void calculateTotal_Points() {
         total = 0;
         double points = 0;
-        for (Integer key : map.keySet()) {
-            SuggestionModel model = list.get(key);
+        for (SuggestionModel model : list) {
+
             for (SuggestionModel.Products productModel : model.getSuggestions().getSelectedProducts()) {
+                Log.e("s", model.getTrans_title() + "___" + productModel.getProduct().getPrice() + "__");
+
                 total += productModel.getProduct().getPrice();
                 points += productModel.getProduct().getPoints();
+
             }
+
+
         }
+
 
         binding.setTotal(total + "");
         binding.setScore(points + "");
+    }
+
+    private int getCategoryHasSubCategoryPos(SuggestionModel suggestionModel) {
+        int pos = -1;
+        for (int index = 0; index < list.size(); index++) {
+            SuggestionModel model = list.get(index);
+            if (model.getId() == suggestionModel.getId()) {
+                pos = index;
+                return pos;
+            }
+        }
+        return pos;
+    }
+
+    private boolean isListHasData(){
+        boolean hasData = false;
+        for (SuggestionModel model : list) {
+
+            for (SuggestionModel.Products productModel : model.getSuggestions().getSelectedProducts()) {
+                hasData = true;
+            }
+
+
+        }
+        return hasData;
+    }
+
+    private List<SuggestionModel> getSelectedSuggestion(){
+        List<SuggestionModel> categoryModelList = new ArrayList<>();
+        for (SuggestionModel suggestionModel:list){
+            if (suggestionModel.getSuggestions().getSelectedProducts().size()>0){
+                categoryModelList.add(suggestionModel);
+            }
+        }
+        return categoryModelList;
     }
 }

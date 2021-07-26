@@ -16,11 +16,13 @@ public class CategoryModel implements Serializable {
     private List<CategoryModel> subCategories = new ArrayList<>();
     //custom
     private List<ProductModel> selectedProduct = new ArrayList<>();
+    private List<ProductModel> defaultSelectedProduct = new ArrayList<>();
+
 
     public CategoryModel() {
     }
 
-    public CategoryModel(int id, String desc, String image, String type, String is_final_level, String parent_id, String is_in_compare, String trans_title, List<CategoryModel> subCategories, List<ProductModel> selectedProduct) {
+    public CategoryModel(int id, String desc, String image, String type, String is_final_level, String parent_id, String is_in_compare, String trans_title, List<CategoryModel> subCategories, List<ProductModel> selectedProduct,List<ProductModel> defaultSelectedProduct) {
         this.id = id;
         this.desc = desc;
         this.image = image;
@@ -31,6 +33,7 @@ public class CategoryModel implements Serializable {
         this.trans_title = trans_title;
         this.subCategories = subCategories;
         this.selectedProduct = selectedProduct;
+        this.defaultSelectedProduct = defaultSelectedProduct;
     }
 
     public int getId() {
@@ -79,5 +82,15 @@ public class CategoryModel implements Serializable {
 
     public void setSub_categories(List<CategoryModel> sub_categories) {
         this.subCategories = sub_categories;
+    }
+
+
+
+    public List<ProductModel> getDefaultSelectedProduct() {
+        return defaultSelectedProduct;
+    }
+
+    public void setDefaultSelectedProduct(List<ProductModel> defaultSelectedProduct) {
+        this.defaultSelectedProduct = defaultSelectedProduct;
     }
 }

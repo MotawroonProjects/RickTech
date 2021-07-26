@@ -19,7 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility='@{model.selectedProduct.size()>0?View.GONE:View.VISIBLE}'
+            android:visibility='@{model.selectedProduct.size()>0?View.GONE:View.VISIBLE,default=visible}'
             >
 
             <LinearLayout
@@ -99,7 +99,7 @@
                 android:visibility='@{model.selectedProduct.size()>0?View.VISIBLE:View.GONE,default=gone}'
                 >
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +124,25 @@
                         android:textSize="15sp"
                         android:text="@{model.trans_title}"
                         />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/circle_primary"
+                        android:text='@{model.selectedProduct.size()+""}'
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:visibility='@{model.selectedProduct.size()>0?View.VISIBLE:View.GONE,default=gone}'
+                        />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -139,6 +157,7 @@
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         image='@{model.selectedProduct.size()>0?model.selectedProduct.get(model.selectedProduct.size()-1).main_image:""}'
+
 
                         />
 
@@ -156,6 +175,7 @@
                             android:textColor="@color/gray7"
                             android:singleLine="true"
                             android:text='@{model.selectedProduct.size()>0?model.selectedProduct.get(model.selectedProduct.size()-1).trans_title:""}'
+
 
                             />
                         <LinearLayout
@@ -182,30 +202,19 @@
                                 android:textColor="@color/colorAccent"
                                 android:textStyle="bold"
                                 android:textSize="16sp"
+
                                 android:text='@{model.selectedProduct.size()>0?model.selectedProduct.get(model.selectedProduct.size()-1).price+" €":""}'
 
+
                                 />
 
-                            <Space
-                                android:layout_width="0dp"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:layout_gravity="center_vertical"
-                                android:background="@drawable/circle_primary"
-                                android:text='@{model.selectedProduct.size()+""}'
-                                android:gravity="center"
-                                android:textSize="13sp"
-                                android:textStyle="bold"
-                                android:visibility='@{model.selectedProduct.size()>0?View.VISIBLE:View.GONE,default=gone}'
-                                />
+
 
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
+
+
             </LinearLayout>
 
             <androidx.cardview.widget.CardView

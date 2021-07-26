@@ -105,6 +105,19 @@
     <string name="build_name">إسم التجميعة</string>
     <string name="created_date">تاريخ الإنشاء:</string>
     <string name="delete">حذف</string>
+    <string name="build">تجميعة</string>
+    <string name="free">مجاني</string>
+    <string name="current_order">الطلبات الحالية</string>
+    <string name="order_details">تفاصيل الطلب</string>
+    <string name="order_number">رقم الطلب :</string>
+    <string name="status">الحالة:</string>
+    <string name="new1">جديد</string>
+    <string name="pending">قيد الانتظار</string>
+    <string name="delivering">جار التوصيل</string>
+    <string name="admin_cancel">تم إلغاؤة(الإدارة)</string>
+    <string name="user_canceled">تم إلغاؤة(العميل)</string>
+    <string name="back_req">طلب إرجاع</string>
+    <string name="backed">مرتجع</string>
 
 
 </resources>

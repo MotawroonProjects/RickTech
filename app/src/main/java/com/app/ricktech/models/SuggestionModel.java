@@ -80,7 +80,8 @@ public class SuggestionModel implements Serializable {
         private String category_id_to_get_next_level;
         private String is_final_level;
         private boolean isDefaultData = true;
-        private List<Products> selectedProducts;
+        private List<Products> selectedProducts = new ArrayList<>();
+        private List<Products> defaultSelectedProducts = new ArrayList<>();
 
 
         public List<Products> getProducts() {
@@ -115,7 +116,13 @@ public class SuggestionModel implements Serializable {
             isDefaultData = defaultData;
         }
 
+        public List<Products> getDefaultSelectedProducts() {
+            return defaultSelectedProducts;
+        }
 
+        public void setDefaultSelectedProducts(List<Products> defaultSelectedProducts) {
+            this.defaultSelectedProducts = defaultSelectedProducts;
+        }
     }
 
     public static class Products implements Serializable

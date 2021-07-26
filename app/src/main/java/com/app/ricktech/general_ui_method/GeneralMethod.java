@@ -1,6 +1,7 @@
 package com.app.ricktech.general_ui_method;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +40,10 @@ public class GeneralMethod {
 
     @BindingAdapter("image")
     public static void image(View view, String endPoint) {
+
+
+        String url =Uri.parse(Tags.IMAGE_URL+endPoint).toString();
+
         if (view instanceof CircleImageView) {
             CircleImageView imageView = (CircleImageView) view;
             if (endPoint != null) {
@@ -109,6 +114,40 @@ public class GeneralMethod {
            if (arr.length>0){
                view.setText(arr[0]);
            }
+       }
+
+    }
+
+    @BindingAdapter("status")
+    public static void status(TextView view, String status) {
+       switch (status){
+           case "new":
+               view.setText(R.string.new1);
+               break;
+           case "pending":
+               view.setText(R.string.pending);
+               break;
+           case "is_delivering":
+               view.setText(R.string.delivering);
+
+               break;
+           case "user_canceled":
+               view.setText(R.string.user_canceled);
+
+               break;
+           case "admin_canceled":
+               view.setText(R.string.admin_cancel);
+
+               break;
+           case "backed_request":
+               view.setText(R.string.back_req);
+
+               break;
+
+           default:
+               view.setText(R.string.backed);
+
+               break;
        }
 
     }

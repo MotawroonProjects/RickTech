@@ -201,7 +201,7 @@ public class HomeActivity extends AppCompatActivity {
 
             if (fragment_cart.isAdded()) {
                 fragmentManager.beginTransaction().show(fragment_cart).commit();
-
+                fragment_cart.updateCart();
             } else {
                 fragmentManager.beginTransaction().add(R.id.fragment_app_container, fragment_cart, "fragment_cart").commit();
 

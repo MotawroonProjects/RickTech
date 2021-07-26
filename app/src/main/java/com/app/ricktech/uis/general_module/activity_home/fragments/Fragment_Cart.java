@@ -16,14 +16,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.app.ricktech.R;
+import com.app.ricktech.adapters.CartAdapter;
 import com.app.ricktech.databinding.FragmentCartBinding;
+import com.app.ricktech.models.CartModel;
+import com.app.ricktech.models.ManageCartModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
+import com.app.ricktech.uis.general_module.activity_cart_details.CartDetailsActivity;
 import com.app.ricktech.uis.general_module.activity_checkout.CheckoutActivity;
 import com.app.ricktech.uis.general_module.activity_home.HomeActivity;
+import com.bumptech.glide.Glide;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.paperdb.Paper;
 
@@ -35,7 +44,10 @@ public class Fragment_Cart extends Fragment {
     private String lang;
     private UserModel userModel;
     private ActivityResultLauncher<Intent> launcher;
-
+    private ManageCartModel manageCartModel;
+    private List<CartModel> list;
+    private CartAdapter adapter;
+    private int selectedPos = -1;
 
 
     public static Fragment_Cart newInstance() {
@@ -53,20 +65,51 @@ public class Fragment_Cart extends Fragment {
 
 
     private void initView() {
+        list = new ArrayList<>();
         activity = (HomeActivity) getActivity();
         preferences = Preferences.getInstance();
         userModel = preferences.getUserData(activity);
         Paper.init(activity);
         lang = Paper.book().read("lang", "ar");
+        Glide.with(activity).asGif().load(R.drawable.small_computer).into(binding.image);
+        updateCart();
 
-        binding.btnCheckout.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, CheckoutActivity.class);
-            launcher.launch(intent);
-        });
+    }
+
+    public void updateCart() {
+        manageCartModel = ManageCartModel.getInstance();
+
+        list.clear();
+
+        if (adapter!=null){
+            adapter.notifyDataSetChanged();
+
+        }
+        list.addAll(manageCartModel.getCartList(activity));
+
+
+        if (list.size() > 0) {
+            adapter = new CartAdapter(activity, list, this);
+            binding.recView.setLayoutManager(new LinearLayoutManager(activity));
+            binding.recView.setAdapter(adapter);
+            binding.tvNoData.setVisibility(View.GONE);
+            binding.image.setVisibility(View.VISIBLE);
+        } else {
+            binding.tvNoData.setVisibility(View.VISIBLE);
+            binding.image.setVisibility(View.GONE);
+
+        }
     }
 
     private void clearCart() {
+        manageCartModel.clearCart(activity);
+        list.remove(selectedPos);
+        adapter.notifyItemRemoved(selectedPos);
+        if (list.size() == 0) {
+            binding.tvNoData.setVisibility(View.VISIBLE);
+            binding.image.setVisibility(View.GONE);
 
+        }
     }
 
     @Override
@@ -75,12 +118,25 @@ public class Fragment_Cart extends Fragment {
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode()== Activity.RESULT_OK){
-                    clearCart();
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    updateCart();
                 }
             }
 
 
         });
+    }
+
+    public void setItemData(CartModel cartModel, int adapterPosition) {
+        selectedPos = adapterPosition;
+        Intent intent = new Intent(activity, CartDetailsActivity.class);
+        launcher.launch(intent);
+
+    }
+
+    public void deleteItemData(CartModel cartModel, int adapterPosition) {
+        selectedPos = adapterPosition;
+
+        clearCart();
     }
 }

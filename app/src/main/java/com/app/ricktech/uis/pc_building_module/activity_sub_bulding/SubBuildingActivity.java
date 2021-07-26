@@ -1,7 +1,5 @@
 package com.app.ricktech.uis.pc_building_module.activity_sub_bulding;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,9 +28,7 @@ import com.app.ricktech.uis.pc_building_module.activity_building_products.Produc
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -46,12 +42,10 @@ public class SubBuildingActivity extends AppCompatActivity {
     private UserModel userModel;
     private Preferences preferences;
     private List<CategoryModel> list;
-    private CategoryModel  parentModel;
+    private CategoryModel parentModel;
     private ActivityResultLauncher<Intent> launcher;
     private int selectedPos = -1;
     private CategoryModel categoryModel;
-
-    private Map<Integer, CategoryModel> map;
     private int req;
     private boolean canNext = false;
     private boolean hasData = false;
@@ -72,14 +66,13 @@ public class SubBuildingActivity extends AppCompatActivity {
     private void getDataFromIntent() {
         Intent intent = getIntent();
         parentModel = (CategoryModel) intent.getSerializableExtra("data");
-        if (parentModel.getSub_categories().size()>0){
+        if (parentModel.getSub_categories().size() > 0) {
             hasData = true;
         }
     }
 
 
     private void initView() {
-        map = new HashMap<>();
         preferences = Preferences.getInstance();
         userModel = preferences.getUserData(this);
         list = new ArrayList<>();
@@ -87,7 +80,7 @@ public class SubBuildingActivity extends AppCompatActivity {
         lang = Paper.book().read("lang", "ar");
         binding.setLang(lang);
         binding.setTitle(parentModel.getTrans_title());
-        binding.recView.setLayoutManager(new GridLayoutManager(this,2));
+        binding.recView.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new SubBuildingAdapter(this, list);
         binding.recView.setAdapter(adapter);
         binding.recView.setItemAnimator(new DefaultItemAnimator());
@@ -107,24 +100,19 @@ public class SubBuildingActivity extends AppCompatActivity {
                     if (selectedPos != -1) {
 
 
-                        if (map.get(selectedPos) != null) {
-                            CategoryModel catModel = map.get(selectedPos);
+                        if (categoryModel != null) {
+                            List<ProductModel> selectedProductList = new ArrayList<>(categoryModel.getSelectedProduct());
 
-                            List<ProductModel> productModelList = new ArrayList<>(catModel.getSelectedProduct());
-                            productModelList.add(productModel);
-                            catModel.setSelectedProduct(productModelList);
-                            map.put(selectedPos, catModel);
-                            list.set(selectedPos,catModel);
 
-                        } else {
-                            List<ProductModel> list1 = new ArrayList<>(list.get(selectedPos).getSelectedProduct());
-                            list1.add(productModel);
-                            CategoryModel categoryModel = list.get(selectedPos);
-                            categoryModel.setSelectedProduct(list1);
-                            list.set(selectedPos,categoryModel);
+                            selectedProductList.add(productModel);
 
-                            map.put(selectedPos, categoryModel);
+                            categoryModel.setSelectedProduct(new ArrayList<>(selectedProductList));
+
+
+
                         }
+
+                        list.set(selectedPos, categoryModel);
 
 
                         adapter.notifyItemChanged(selectedPos);
@@ -133,14 +121,8 @@ public class SubBuildingActivity extends AppCompatActivity {
                 }
 
 
-                if(map.size()>0){
-                    canNext = true;
-                    binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
-                }else {
-                    canNext = false;
-                    binding.btnSave.setBackgroundResource(R.drawable.small_rounded_gray77);
-
-                }
+                canNext = true;
+                binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
 
 
 
@@ -148,22 +130,22 @@ public class SubBuildingActivity extends AppCompatActivity {
         });
 
         binding.btnSave.setOnClickListener(v -> {
-            if (canNext){
-                List<CategoryModel> data = new ArrayList<>(map.values());
+            if (canNext) {
+                List<CategoryModel> data = new ArrayList<>(getSelectedSubCategory());
 
+                Log.e("dara", data.size() + "_");
                 Intent intent = getIntent();
                 intent.putExtra("data", (Serializable) data);
-                setResult(RESULT_OK,intent);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
     }
 
 
-
     private void getSubBuildings() {
         Api.getService(Tags.base_url)
-                .getSubCategoryBuilding(lang,parentModel.getId()+"")
+                .getSubCategoryBuilding(lang, parentModel.getId() + "")
                 .enqueue(new Callback<CategoryBuildingDataModel>() {
                     @Override
                     public void onResponse(Call<CategoryBuildingDataModel> call, Response<CategoryBuildingDataModel> response) {
@@ -206,25 +188,21 @@ public class SubBuildingActivity extends AppCompatActivity {
     private void updateData(List<CategoryModel> data) {
         List<CategoryModel> categoryModelList = new ArrayList<>();
 
-        for (CategoryModel categoryModel:parentModel.getSub_categories()){
+        for (CategoryModel categoryModel : data) {
+            for (CategoryModel model : parentModel.getSub_categories()) {
+                if (categoryModel.getId() == model.getId()) {
+                    categoryModel.setSelectedProduct(model.getSelectedProduct());
 
-            for (int index=0;index<data.size();index++){
-                CategoryModel model = data.get(index);
-                if (categoryModel.getId()==model.getId()){
-                    model.setSelectedProduct(categoryModel.getSelectedProduct());
-                    model.setSub_categories(categoryModel.getSub_categories());
-                    map.put(index, model);
 
                 }
 
-                categoryModelList.add(model);
-
-
             }
+            categoryModelList.add(categoryModel);
 
         }
 
-        if (categoryModelList.size()==0){
+
+        if (categoryModelList.size() == 0) {
             categoryModelList.addAll(data);
         }
 
@@ -232,11 +210,11 @@ public class SubBuildingActivity extends AppCompatActivity {
         list.addAll(categoryModelList);
         adapter.notifyDataSetChanged();
 
-        if(map.size()>0){
+        if (isListHasData()) {
             canNext = true;
             binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
 
-        }else {
+        } else {
             canNext = false;
             binding.btnSave.setBackgroundResource(R.drawable.small_rounded_gray77);
 
@@ -248,6 +226,7 @@ public class SubBuildingActivity extends AppCompatActivity {
     public void setItemData(int adapterPosition, CategoryModel categoryModel) {
         this.selectedPos = adapterPosition;
         this.categoryModel = categoryModel;
+        Log.e("yyyy", categoryModel.getSelectedProduct().size() + "__");
         if (categoryModel.getIs_final_level().equals("yes")) {
             req = 100;
             Intent intent = new Intent(this, ProductBuildingActivity.class);
@@ -262,23 +241,22 @@ public class SubBuildingActivity extends AppCompatActivity {
     }
 
     public void deleteItemData(int adapterPosition, CategoryModel categoryModel) {
-        map.remove(adapterPosition);
+
         categoryModel.getSelectedProduct().clear();
         categoryModel.getSub_categories().clear();
-
-        list.set(adapterPosition,categoryModel);
+        list.set(adapterPosition, categoryModel);
         adapter.notifyItemChanged(adapterPosition);
 
 
-        if(map.size()>0){
+        if (isListHasData()) {
             canNext = true;
             binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
-        }else {
-            if (hasData){
+        } else {
+            if (hasData) {
                 canNext = true;
                 binding.btnSave.setBackgroundResource(R.drawable.small_rounded_primary);
 
-            }else {
+            } else {
                 canNext = false;
                 binding.btnSave.setBackgroundResource(R.drawable.small_rounded_gray77);
 
@@ -287,5 +265,29 @@ public class SubBuildingActivity extends AppCompatActivity {
         }
 
     }
+
+    private boolean isListHasData(){
+        boolean hasData = false;
+        for (CategoryModel model : list) {
+
+            if (model.getSelectedProduct().size()>0){
+                hasData = true;
+            }
+
+
+        }
+        return hasData;
+    }
+
+    private List<CategoryModel> getSelectedSubCategory(){
+        List<CategoryModel> categoryModelList = new ArrayList<>();
+        for (CategoryModel categoryModel:list){
+            if (categoryModel.getSelectedProduct().size()>0){
+                categoryModelList.add(categoryModel);
+            }
+        }
+        return categoryModelList;
+    }
+
 
 }

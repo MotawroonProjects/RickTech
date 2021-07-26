@@ -107,4 +107,17 @@
     <string name="build_name">Build Name</string>
     <string name="created_date">Created date:</string>
     <string name="delete">Delete</string>
+    <string name="build">Build</string>
+    <string name="free">Free</string>
+    <string name="current_order">Current Order</string>
+    <string name="order_details">Order details</string>
+    <string name="order_number">Order number:</string>
+    <string name="status">Status:</string>
+    <string name="new1">New</string>
+    <string name="pending">Pending</string>
+    <string name="delivering">Delivering</string>
+    <string name="admin_cancel">Admin cancel</string>
+    <string name="user_canceled">User canceled</string>
+    <string name="back_req">Back request</string>
+    <string name="backed">Backed</string>
 </resources>

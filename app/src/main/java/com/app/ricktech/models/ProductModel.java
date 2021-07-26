@@ -23,6 +23,7 @@ public class ProductModel implements Serializable {
     private String trans_title;
     private String trans_desc;
     private BrandModel brand;
+    private int count =1;
     private CategoryModel category;
     private List<ComponentModel> components;
     private boolean isSelected = false;
@@ -113,5 +114,13 @@ public class ProductModel implements Serializable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

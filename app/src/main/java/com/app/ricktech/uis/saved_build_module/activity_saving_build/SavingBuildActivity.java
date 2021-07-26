@@ -15,13 +15,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.app.ricktech.R;
 import com.app.ricktech.adapters.SavedAdapter;
 import com.app.ricktech.databinding.ActivitySavingBuildBinding;
 import com.app.ricktech.language.Language;
+import com.app.ricktech.models.AddBuildModel;
+import com.app.ricktech.models.CategoryModel;
+import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.SavedProductDataModel;
 import com.app.ricktech.models.StatusResponse;
+import com.app.ricktech.models.SuggestionModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
@@ -158,6 +163,10 @@ public class SavingBuildActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null&&response.body().getStatus()==200 ) {
                             list.remove(adapterPosition);
                             adapter.notifyItemRemoved(adapterPosition);
+
+                            if (list.size()==0){
+                                binding.tvNoData.setVisibility(View.VISIBLE);
+                            }
                         } else {
                             dialog.dismiss();
 
@@ -180,4 +189,7 @@ public class SavingBuildActivity extends AppCompatActivity {
                 });
 
     }
+
+
+
 }
