@@ -24,6 +24,7 @@ import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.uis.general_module.activity_home.HomeActivity;
 import com.app.ricktech.uis.general_module.activity_language.LanguageActivity;
+import com.app.ricktech.uis.general_module.activity_sign_up.SignUpActivity;
 import com.app.ricktech.uis.orders_module.activity_orders.OrdersActivity;
 import com.app.ricktech.uis.saved_build_module.activity_saving_build.SavingBuildActivity;
 import com.app.ricktech.uis.general_module.activity_web_view.WebViewActivity;
@@ -39,6 +40,7 @@ public class Fragment_Profile extends Fragment {
     private UserModel userModel;
     private String lang;
     private ActivityResultLauncher<Intent> launcher;
+    private int req;
 
 
     public static Fragment_Profile newInstance() {
@@ -71,7 +73,26 @@ public class Fragment_Profile extends Fragment {
         });
 
         binding.llLanguage.setOnClickListener(v -> {
+            req=1;
             Intent intent = new Intent(activity, LanguageActivity.class);
+
+            launcher.launch(intent);
+
+
+        });
+
+        binding.llEdit.setOnClickListener(v -> {
+            req=2;
+            Intent intent = new Intent(activity, SignUpActivity.class);
+
+            launcher.launch(intent);
+
+
+        });
+
+        binding.imageEdit.setOnClickListener(v -> {
+            req=2;
+            Intent intent = new Intent(activity, SignUpActivity.class);
 
             launcher.launch(intent);
 
@@ -115,10 +136,18 @@ public class Fragment_Profile extends Fragment {
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode()== Activity.RESULT_OK&&result.getData()!=null){
-                    String lang = result.getData().getStringExtra("lang");
-                    activity.refreshActivity(lang);
+                if (req==1){
+                    if (result.getResultCode()== Activity.RESULT_OK&&result.getData()!=null){
+                        String lang = result.getData().getStringExtra("lang");
+                        activity.refreshActivity(lang);
+                    }
+                }else if (req==2){
+                    if (result.getResultCode()== Activity.RESULT_OK){
+                        userModel = preferences.getUserData(activity);
+                        binding.setModel(userModel);
+                    }
                 }
+
             }
         });
     }

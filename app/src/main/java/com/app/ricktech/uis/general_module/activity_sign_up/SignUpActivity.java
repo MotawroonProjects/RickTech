@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.app.ricktech.R;
@@ -38,6 +39,7 @@ public class SignUpActivity extends AppCompatActivity {
     private String lang;
     private SignUpModel model;
     private Preferences preferences;
+    private UserModel userModel;
     private ActivityResultLauncher<Intent> launcher;
 
 
@@ -55,6 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void initView() {
         preferences=Preferences.getInstance();
+        userModel = preferences.getUserData(this);
         Paper.init(this);
         lang = Paper.book().read("lang","ar");
         binding.setLang(lang);
@@ -64,7 +67,12 @@ public class SignUpActivity extends AppCompatActivity {
         binding.btnSignUp.setOnClickListener(view -> {
             if (model.isDataValid(this)) {
                 Common.CloseKeyBoard(this, binding.edtUsername);
-                signUp();
+                if (userModel==null){
+                    signUp();
+                }else {
+                   updateProfile();
+                }
+
             }
         });
         binding.tvLogin.setOnClickListener(view -> {
@@ -78,6 +86,17 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
+
+        if (userModel!=null){
+            binding.llSignUp.setVisibility(View.GONE);
+            binding.tvLogin.setVisibility(View.INVISIBLE);
+            binding.btnSignUp.setText(getString(R.string.update_profile));
+            model.setEmail(userModel.getData().getEmail());
+            model.setName(userModel.getData().getName());
+            model.setPassword("123456");
+            model.setRe_password("123456");
+
+        }
 
 
     }
@@ -126,6 +145,54 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 });
     }
+    private void updateProfile() {
+        ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Api.getService(Tags.base_url)
+                .updateProfile("Bearer "+userModel.getData().getToken(),model.getName(), model.getEmail())
+                .enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                        dialog.dismiss();
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (response.body().getStatus() == 200) {
+                                userModel = response.body();
+                                preferences.create_update_userdata(SignUpActivity.this,response.body());
+                                setResult(RESULT_OK);
+                                finish();
+                            } else if (response.body().getStatus() == 403) {
+                                Toast.makeText(SignUpActivity.this, R.string.email_found, Toast.LENGTH_SHORT).show();
+
+                            } else if (response.body().getStatus() == 402) {
+                                Toast.makeText(SignUpActivity.this, R.string.un_found, Toast.LENGTH_SHORT).show();
+
+                            }
+                        }else {
+                            Log.e("code", response.code()+"__");
+                            try {
+                                Log.e("errorbody", response.errorBody().string()+"__");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+
+                            Log.e("error", t.getMessage()+"__");
+
+                        }catch (Exception e){}
+
+                    }
+                });
+    }
+
 
     private void navigateToVerificationCodeActivity(UserModel userModel) {
         Log.e("dd", userModel.getData().getEmail_activation_code()+"__");
@@ -148,6 +215,11 @@ public class SignUpActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        navigateToLoginActivity();
+        if (userModel==null){
+            navigateToLoginActivity();
+
+        }else {
+            finish();
+        }
     }
 }

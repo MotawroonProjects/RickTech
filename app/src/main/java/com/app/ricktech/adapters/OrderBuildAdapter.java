@@ -48,6 +48,9 @@ public class OrderBuildAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         MyHolder myHolder = (MyHolder) holder;
         myHolder.binding.setModel(list.get(position));
 
+        myHolder.itemView.setOnClickListener(v -> {
+            activity.setItemData(list.get(myHolder.getAdapterPosition()));
+        });
 
     }
 

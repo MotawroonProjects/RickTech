@@ -111,102 +111,111 @@
                     android:background="@color/gray4"/>
 
                 <LinearLayout
+                    android:id="@+id/llSignUp"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/transparent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     >
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_mail"
-                        android:padding="3dp"
-                        app:tint="@color/black"
-                        />
-                    <EditText
-                        android:id="@+id/edtEmail"
+                    <LinearLayout
+
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="5dp"
                         android:background="@color/transparent"
-                        android:textColor="@color/black"
-                        android:textSize="15sp"
-                        android:hint="@string/email_address"
-                        android:paddingStart="22dp"
-                        android:paddingEnd="22dp"
-                        android:textColorHint="@color/gray6"
-                        android:singleLine="true"
-                        android:inputType="textEmailAddress"
-                        android:text="@={model.email}"
-                        error="@{model.error_email}"
-                        />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        >
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_mail"
+                            android:padding="3dp"
+                            app:tint="@color/black"
+                            />
+                        <EditText
+                            android:id="@+id/edtEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/transparent"
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:hint="@string/email_address"
+                            android:paddingStart="22dp"
+                            android:paddingEnd="22dp"
+                            android:textColorHint="@color/gray6"
+                            android:singleLine="true"
+                            android:inputType="textEmailAddress"
+                            android:text="@={model.email}"
+                            error="@{model.error_email}"
+                            />
 
 
 
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="@color/gray4"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:hintEnabled="false"
+                        app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="@color/black"
+                        android:layout_marginTop="5dp"
+                        app:startIconDrawable="@drawable/ic_lock"
+                        app:startIconTint="@color/black"
+                        >
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/transparent"
+                            android:inputType="textPassword"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:hint="@string/password"
+                            android:singleLine="true"
+                            android:text="@={model.password}"
+                            error="@{model.error_password}"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="@color/gray4"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:hintEnabled="false"
+                        app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="@color/black"
+                        android:layout_marginTop="5dp"
+                        app:startIconDrawable="@drawable/ic_lock"
+                        app:startIconTint="@color/black"
+                        >
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/transparent"
+                            android:inputType="textPassword"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:hint="@string/re_password"
+                            android:singleLine="true"
+                            android:text="@={model.re_password}"
+                            error="@{model.error_re_password}"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="@color/gray4"/>
                 </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/gray4"/>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    app:hintEnabled="false"
-                    app:passwordToggleEnabled="true"
-                    app:passwordToggleTint="@color/black"
-                    android:layout_marginTop="5dp"
-                    app:startIconDrawable="@drawable/ic_lock"
-                    app:startIconTint="@color/black"
-                    >
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/transparent"
-                        android:inputType="textPassword"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:hint="@string/password"
-                        android:singleLine="true"
-                        android:text="@={model.password}"
-                        error="@{model.error_password}"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/gray4"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    app:hintEnabled="false"
-                    app:passwordToggleEnabled="true"
-                    app:passwordToggleTint="@color/black"
-                    android:layout_marginTop="5dp"
-                    app:startIconDrawable="@drawable/ic_lock"
-                    app:startIconTint="@color/black"
-                    >
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/transparent"
-                        android:inputType="textPassword"
-                        android:textSize="15sp"
-                        android:textColor="@color/black"
-                        android:hint="@string/re_password"
-                        android:singleLine="true"
-                        android:text="@={model.re_password}"
-                        error="@{model.error_re_password}"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/gray4"/>
 
 
             </LinearLayout>

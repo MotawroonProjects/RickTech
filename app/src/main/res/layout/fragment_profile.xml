@@ -69,6 +69,7 @@
                         />
                 </LinearLayout>
                 <ImageView
+                    android:id="@+id/imageEdit"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
@@ -233,6 +234,7 @@
                         />
 
                     <LinearLayout
+                        android:id="@+id/llEdit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"

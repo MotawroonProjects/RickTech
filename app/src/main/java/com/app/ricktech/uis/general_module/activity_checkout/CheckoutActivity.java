@@ -18,6 +18,7 @@ import com.app.ricktech.databinding.ActivityCheckoutBinding;
 import com.app.ricktech.language.Language;
 import com.app.ricktech.models.CartModel;
 import com.app.ricktech.models.ManageCartModel;
+import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.SelectedLocation;
 import com.app.ricktech.models.StatusResponse;
 import com.app.ricktech.models.UserModel;
@@ -111,6 +112,7 @@ public class CheckoutActivity extends AppCompatActivity {
         cartModel.setLocation_details(locationDetails);
 
         List<CartModel.BuildProduct> pc_buidings = cartModel.getPc_buidings();
+        Log.e("build_size", pc_buidings.size()+"__");
         for (CartModel.BuildProduct buildProduct:pc_buidings){
             Log.e("name", buildProduct.getTitle()+"__"+buildProduct.getPrice()+"__"+buildProduct.getAmount());
 
@@ -120,6 +122,10 @@ public class CheckoutActivity extends AppCompatActivity {
                 List<Integer> product_ids = component.getProduct_ids();
                 for (Integer integer :product_ids){
                     Log.e("id", integer+"__");
+                }
+
+                for (CartModel.SingleProduct model :component.getComponentItemList()){
+                    Log.e("id", model.getId()+"__"+model.getName());
                 }
 
             }

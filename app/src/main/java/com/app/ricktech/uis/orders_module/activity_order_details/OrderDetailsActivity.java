@@ -29,6 +29,7 @@ import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
 import com.app.ricktech.tags.Tags;
+import com.app.ricktech.uis.orders_module.activity_order_build_details.OrderBuildDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,4 +152,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }
     }
 
+    public void setItemData(OrderModel.OrderPc orderPc) {
+        Intent intent = new Intent(this, OrderBuildDetailsActivity.class);
+        intent.putExtra("data", orderPc);
+        startActivity(intent);
+
+    }
 }

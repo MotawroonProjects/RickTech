@@ -251,5 +251,18 @@ public interface Service {
                                           @Field("order_id") String order_id
     );
 
+    @FormUrlEncoded
+    @POST("api/getDetailsOfSinglePcOrder")
+    Call<SuggestionsDataModel> getPcOrder(@Header("lang") String lang,
+                                          @Field("pc_id") int pc_id
+    );
+
+    @FormUrlEncoded
+    @POST("api/updateProfile")
+    Call<UserModel> updateProfile(@Header("Authorization") String bearer_token,
+                                  @Field("username") String username,
+                                  @Field("email") String email
+    );
+
 }
 

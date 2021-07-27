@@ -123,4 +123,8 @@ public class ProductModel implements Serializable {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 }

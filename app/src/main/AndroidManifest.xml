@@ -25,7 +25,8 @@
         android:theme="@style/Theme.RickTech"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".uis.orders_module.activity_order_details.OrderDetailsActivity"></activity>
+        <activity android:name=".uis.orders_module.activity_order_build_details.OrderBuildDetailsActivity"></activity>
+        <activity android:name=".uis.orders_module.activity_order_details.OrderDetailsActivity" />
         <activity android:name=".uis.orders_module.activity_orders.OrdersActivity" />
         <activity android:name=".uis.general_module.activity_cart_details.CartDetailsActivity" />
         <activity
