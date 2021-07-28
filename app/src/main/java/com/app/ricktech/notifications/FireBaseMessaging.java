@@ -115,7 +115,7 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         taskStackBuilder.addNextIntent(intent);
         PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avatar);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logo1);
         builder.setLargeIcon(bitmap);
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (manager != null) {
@@ -154,7 +154,7 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         taskStackBuilder.addNextIntent(intent);
         PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avatar);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logo1);
         builder.setLargeIcon(bitmap);
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (manager != null) {
