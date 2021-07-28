@@ -55,7 +55,6 @@ public class Fragment_Profile extends Fragment {
         return binding.getRoot();
     }
 
-
     private void initView() {
         activity = (HomeActivity) getActivity();
         preferences = Preferences.getInstance();
@@ -128,8 +127,7 @@ public class Fragment_Profile extends Fragment {
         startActivity(intent);
 
     }
-
-
+    
     @Override
     public void onAttach(@NonNull  Context context) {
         super.onAttach(context);
@@ -151,8 +149,6 @@ public class Fragment_Profile extends Fragment {
             }
         });
     }
-
-
 
 
 }

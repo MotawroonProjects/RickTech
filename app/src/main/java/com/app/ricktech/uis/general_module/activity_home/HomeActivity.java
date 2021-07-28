@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -408,6 +409,8 @@ public class HomeActivity extends AppCompatActivity {
                         dialog.dismiss();
                         if (response.isSuccessful()) {
                             if (response.body() != null && response.body().getStatus() == 200) {
+                                NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                manager.cancel(Tags.not_tag,Tags.not_id);
                                 navigateToSignInActivity();
                             }
 

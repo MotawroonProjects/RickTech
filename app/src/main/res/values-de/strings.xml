@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RickTech</string>
+    <string name="app_name">RikTech</string>
     <string name="map_api_key">AIzaSyAnjvMAJEmiAv3yeCDUXWv-PboXiT_uaoQ</string>
     <string name="field_required">Feld erforderlich</string>
     <string name="inv_email">Inviald E-Mail</string>

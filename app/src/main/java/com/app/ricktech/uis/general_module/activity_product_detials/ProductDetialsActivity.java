@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -15,7 +16,9 @@ import com.app.ricktech.R;
 import com.app.ricktech.adapters.DetialsAdapter;
 import com.app.ricktech.databinding.ActivityProductDetialsBinding;
 import com.app.ricktech.language.Language;
+import com.app.ricktech.models.CartModel;
 import com.app.ricktech.models.ComponentModel;
+import com.app.ricktech.models.ManageCartModel;
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.SingleProductModel;
 import com.app.ricktech.models.UserModel;
@@ -42,6 +45,7 @@ public class ProductDetialsActivity extends AppCompatActivity {
     private String product_id="";
     private SkeletonScreen skeletonScreen;
     private ProductModel productModel;
+    private ManageCartModel manageCartModel;
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -64,6 +68,8 @@ public class ProductDetialsActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        manageCartModel = ManageCartModel.getInstance();
+
         preferences = Preferences.getInstance();
         userModel = preferences.getUserData(this);
         list = new ArrayList<>();
@@ -84,6 +90,12 @@ public class ProductDetialsActivity extends AppCompatActivity {
                 .show();
 */
 
+
+        binding.flAddToCart.setOnClickListener(v -> {
+            CartModel.SingleProduct product = new CartModel.SingleProduct(productModel.getId(),productModel.getTrans_title(),productModel.getMain_image(),1, productModel.getPrice());
+            manageCartModel.addSingleProduct(this,product);
+            Toast.makeText(this, getString(R.string.suc), Toast.LENGTH_SHORT).show();
+        });
         binding.shimmer.startShimmer();
         binding.tvOldPrice.setPaintFlags(binding.tvOldPrice.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
         getProductById();
