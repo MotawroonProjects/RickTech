@@ -44,7 +44,7 @@ public class CartDetailsActivity extends AppCompatActivity {
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
-        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
+        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "de")));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CartDetailsActivity extends AppCompatActivity {
         singleProductList = new ArrayList<>();
         buildProductList = new ArrayList<>();
         Paper.init(this);
-        lang = Paper.book().read("lang", "ar");
+        lang = Paper.book().read("lang", "de");
         binding.setLang(lang);
         binding.llBack.setOnClickListener(v -> back());
         binding.btnCancel.setOnClickListener(v -> back());

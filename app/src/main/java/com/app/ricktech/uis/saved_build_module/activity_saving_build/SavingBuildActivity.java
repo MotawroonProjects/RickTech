@@ -53,7 +53,7 @@ public class SavingBuildActivity extends AppCompatActivity {
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
-        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
+        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "de")));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SavingBuildActivity extends AppCompatActivity {
         userModel = preferences.getUserData(this);
         list = new ArrayList<>();
         Paper.init(this);
-        lang = Paper.book().read("lang", "ar");
+        lang = Paper.book().read("lang", "de");
         binding.setLang(lang);
         binding.recView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new SavedAdapter(this, list);

@@ -45,7 +45,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
-        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
+        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "de")));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class SignUpActivity extends AppCompatActivity {
         preferences=Preferences.getInstance();
         userModel = preferences.getUserData(this);
         Paper.init(this);
-        lang = Paper.book().read("lang","ar");
+        lang = Paper.book().read("lang", "de");
         binding.setLang(lang);
         model = new SignUpModel();
         binding.setModel(model);

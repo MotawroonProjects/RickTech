@@ -70,7 +70,7 @@ public class Fragment_Cart extends Fragment {
         preferences = Preferences.getInstance();
         userModel = preferences.getUserData(activity);
         Paper.init(activity);
-        lang = Paper.book().read("lang", "ar");
+        lang = Paper.book().read("lang", "de");
         Glide.with(activity).asGif().load(R.drawable.small_computer).into(binding.image);
         updateCart();
 

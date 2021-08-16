@@ -39,7 +39,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
-        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
+        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "de")));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
     private void initView() {
         Paper.init(this);
-        lang = Paper.book().read("lang","ar");
+        lang = Paper.book().read("lang", "de");
         binding.setLang(lang);
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {

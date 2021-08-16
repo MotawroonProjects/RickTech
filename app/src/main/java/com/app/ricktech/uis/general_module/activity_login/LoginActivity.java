@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
-        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
+        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "de")));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     private void initView() {
         preferences = Preferences.getInstance();
         Paper.init(this);
-        lang = Paper.book().read("lang", "ar");
+        lang = Paper.book().read("lang", "de");
         binding.setLang(lang);
         loginModel = new LoginModel();
         binding.setModel(loginModel);

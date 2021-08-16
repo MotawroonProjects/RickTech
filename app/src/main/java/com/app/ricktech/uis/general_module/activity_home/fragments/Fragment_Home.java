@@ -85,7 +85,7 @@ public class Fragment_Home extends Fragment {
         preferences = Preferences.getInstance();
         userModel = preferences.getUserData(activity);
         Paper.init(activity);
-        lang = Paper.book().read("lang", "ar");
+        lang = Paper.book().read("lang", "de");
         binding.setLang(lang);
 
         binding.cardAccessories.setOnClickListener(v -> {

@@ -33,7 +33,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         inflater = LayoutInflater.from(context);
         activity = (AppCompatActivity) context;
         Paper.init(context);
-        lang = Paper.book().read("lang","ar");
+        lang = Paper.book().read("lang", "de");
     }
 
 

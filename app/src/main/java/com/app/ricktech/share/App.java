@@ -24,7 +24,7 @@ public class App extends MultiDexApplication {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(Language.updateResources(newBase,"ar"));
+        super.attachBaseContext(Language.updateResources(newBase,"de"));
     }
 
 
@@ -77,7 +77,7 @@ public class App extends MultiDexApplication {
 
     private void updateFont() {
         Paper.init(this);
-        String lang = Paper.book().read("lang","ar");
+        String lang = Paper.book().read("lang", "de");
 
         if (lang.equals("ar")){
             TypefaceUtil.setDefaultFont(this, "DEFAULT", "fonts/font.ttf");

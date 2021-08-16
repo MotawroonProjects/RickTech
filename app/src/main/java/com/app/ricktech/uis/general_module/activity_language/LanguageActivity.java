@@ -20,7 +20,7 @@ public class LanguageActivity extends AppCompatActivity {
     private String selectedLang="";
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
-        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
+        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "de")));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class LanguageActivity extends AppCompatActivity {
 
     private void initView() {
         Paper.init(this);
-        myLang = Paper.book().read("lang","ar");
+        myLang = Paper.book().read("lang", "de");
 
         if (myLang.equals("ar")){
             updateUiAr();

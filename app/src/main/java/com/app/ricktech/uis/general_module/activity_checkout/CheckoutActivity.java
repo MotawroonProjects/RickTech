@@ -51,7 +51,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
-        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
+        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "de")));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class CheckoutActivity extends AppCompatActivity {
         userModel = preferences.getUserData(this);
         manageCartModel = ManageCartModel.getInstance();
         Paper.init(this);
-        lang = Paper.book().read("lang","ar");
+        lang = Paper.book().read("lang", "de");
         binding.setLang(lang);
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode()==RESULT_OK&&result.getData()!=null){

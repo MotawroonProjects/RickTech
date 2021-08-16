@@ -44,7 +44,7 @@ public class VerificationCodeActivity extends AppCompatActivity {
     @Override
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
-        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
+        super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "de")));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class VerificationCodeActivity extends AppCompatActivity {
         preferences = Preferences.getInstance();
 
         Paper.init(this);
-        lang = Paper.book().read("lang", "ar");
+        lang = Paper.book().read("lang", "de");
 
         binding.setEmail(userModel.getData().getEmail());
         binding.tvResend.setOnClickListener(view -> {
