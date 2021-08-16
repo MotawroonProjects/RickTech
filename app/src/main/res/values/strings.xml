@@ -43,7 +43,7 @@
     <string name="logout">Logout</string>
     <string name="offers">Offers</string>
     <string name="cart">Cart</string>
-    <string name="pc_building">PC Building</string>
+    <string name="pc_building">Bulid Your PC</string>
     <string name="laptops_gaming">Laptops-Gaming</string>
     <string name="accessories_and">Accessories And</string>
     <string name="software_support">Software Support</string>
@@ -120,4 +120,13 @@
     <string name="user_canceled">User canceled</string>
     <string name="back_req">Back request</string>
     <string name="backed">Backed</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="parts">Parts</string>
+    <string name="pcs">PCs</string>
+    <string name="gaming_laptops">Gaming laptops</string>
+    <string name="gaming_pcs">Gaming PCs</string>
+    <string name="note_books">Note Books</string>
+    <string name="riktick">Riktick</string>
+    <string name="most_search">Most Search</string>
 </resources>

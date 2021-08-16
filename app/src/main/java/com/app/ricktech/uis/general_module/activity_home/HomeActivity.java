@@ -2,7 +2,11 @@ package com.app.ricktech.uis.general_module.activity_home;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,9 +15,11 @@ import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 
 import com.app.ricktech.R;
 import com.app.ricktech.databinding.ActivityHomeBinding;
@@ -54,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
     private UserModel userModel;
     private String lang;
     private boolean backPressed= false;
-
+    private ActionBarDrawerToggle toggle;
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -83,7 +89,23 @@ public class HomeActivity extends AppCompatActivity {
 
 
         displayFragmentMain();
+        toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.open, R.string.close);
+        toggle.setDrawerIndicatorEnabled(false);
 
+        toggle.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (binding.drawer.isDrawerVisible(GravityCompat.START)) {
+                    binding.drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    binding.drawer.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+        toggle.syncState();
+       binding.toolbar.getNavigationIcon().setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 
         binding.flNotification.setOnClickListener(v -> {
             binding.setNotCount(0);
