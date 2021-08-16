@@ -120,13 +120,13 @@
     <string name="user_canceled">Benutzer abgebrochen</string>
     <string name="back_req">Rückfrage</string>
     <string name="backed">Unterstützt</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-    <string name="parts">Parts</string>
-    <string name="pcs">PCs</string>
-    <string name="gaming_laptops">Gaming laptops</string>
-    <string name="gaming_pcs">Gaming PCs</string>
-    <string name="note_books">Note Books</string>
+    <string name="open">Offen</string>
+    <string name="close">Schließen</string>
+    <string name="parts">Teile</string>
+    <string name="pcs">Stck</string>
+    <string name="gaming_laptops">Gaming-Laptops</string>
+    <string name="gaming_pcs">Gaming-PCs</string>
+    <string name="note_books">Notizbücher</string>
     <string name="riktick">Riktick</string>
-    <string name="most_search">Most Search</string>
+    <string name="most_search">Meiste Suche</string>
 </resources>

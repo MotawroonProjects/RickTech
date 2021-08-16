@@ -118,15 +118,15 @@
     <string name="user_canceled">تم إلغاؤة(العميل)</string>
     <string name="back_req">طلب إرجاع</string>
     <string name="backed">مرتجع</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-    <string name="parts">Parts</string>
-    <string name="pcs">PCs</string>
-    <string name="gaming_laptops">Gaming laptops</string>
-    <string name="gaming_pcs">Gaming PCs</string>
-    <string name="note_books">Note Books</string>
-    <string name="riktick">Riktick</string>
-    <string name="most_search">Most Search</string>
+    <string name="open">مفتوح</string>
+    <string name="close">مغلق</string>
+    <string name="parts">أجزاء</string>
+    <string name="pcs">أجهزه</string>
+    <string name="gaming_laptops">أجهزه محموله للالعاب</string>
+    <string name="gaming_pcs"> أجهزه للالعاب</string>
+    <string name="note_books">دفتر الملاحظات</string>
+    <string name="riktick">ريك تك</string>
+    <string name="most_search">الاكثر بحثا</string>
 
 
 </resources>

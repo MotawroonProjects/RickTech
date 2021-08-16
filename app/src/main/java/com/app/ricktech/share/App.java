@@ -1,6 +1,9 @@
 package com.app.ricktech.share;
 
 
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO;
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -8,9 +11,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
 import com.app.ricktech.language.Language;
+import com.app.ricktech.preferences.Preferences;
 
 import io.paperdb.Paper;
 
@@ -30,6 +35,11 @@ public class App extends MultiDexApplication {
             @Override
             public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
                 updateFont();
+                if(Preferences.getInstance().getDarkMode(getApplicationContext()).equals("yes")){
+                    AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
+                }
+                else {
+                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);}
             }
 
             @Override

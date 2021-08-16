@@ -1,5 +1,9 @@
 package com.app.ricktech.uis.general_module.activity_home;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -11,6 +15,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,6 +40,7 @@ import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Cart
 import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Home;
 import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Offers;
 import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Profile;
+import com.app.ricktech.uis.general_module.activity_language.LanguageActivity;
 import com.app.ricktech.uis.general_module.activity_login.LoginActivity;
 import com.app.ricktech.uis.general_module.activity_notifications.NotificationActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -59,9 +65,10 @@ public class HomeActivity extends AppCompatActivity {
     private Fragment_Offers fragment_offers;
     private UserModel userModel;
     private String lang;
-    private boolean backPressed= false;
+    private boolean backPressed = false;
     private ActionBarDrawerToggle toggle;
-
+    private ActivityResultLauncher<Intent> launcher;
+    private int req;
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
         super.attachBaseContext(Language.updateResources(newBase, Paper.book().read("lang", "ar")));
@@ -72,6 +79,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
+      //  AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
         initView();
 
 
@@ -85,7 +94,9 @@ public class HomeActivity extends AppCompatActivity {
         lang = Paper.book().read("lang", "ar");
         binding.setLang(lang);
 
-
+        if (userModel != null) {
+            binding.setModel(userModel);
+        }
 
 
         displayFragmentMain();
@@ -105,11 +116,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         toggle.syncState();
-       binding.toolbar.getNavigationIcon().setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        binding.toolbar.getNavigationIcon().setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 
         binding.flNotification.setOnClickListener(v -> {
             binding.setNotCount(0);
-            Intent intent=new Intent(HomeActivity.this, NotificationActivity.class);
+            Intent intent = new Intent(HomeActivity.this, NotificationActivity.class);
             startActivity(intent);
         });
         if (userModel != null) {
@@ -118,10 +129,30 @@ public class HomeActivity extends AppCompatActivity {
             getUnreadNotificationCount();
 
         }
+           launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (req==1){
+                    if (result.getResultCode()== Activity.RESULT_OK&&result.getData()!=null){
+                        String lang = result.getData().getStringExtra("lang");
+                      refreshActivity(lang);
+                    }
+                }
+            }
+           });
+        binding.imLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                req=1;
+                Intent intent = new Intent(HomeActivity.this, LanguageActivity.class);
+
+                launcher.launch(intent);
+            }
+        });
 
         binding.bottomNavView.setOnNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            switch (id){
+            switch (id) {
                 case R.id.offer:
                     displayFragmentOffer();
                     break;
@@ -132,14 +163,13 @@ public class HomeActivity extends AppCompatActivity {
                     displayFragmentProfile();
                     break;
                 default:
-                    if (!backPressed){
+                    if (!backPressed) {
                         displayFragmentMain();
                     }
                     break;
             }
             return true;
         });
-
 
 
     }
@@ -267,9 +297,9 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    private void getUnreadNotificationCount(){
+    private void getUnreadNotificationCount() {
         Api.getService(Tags.base_url)
-                .getUnreadNotificationCount(lang,"Bearer " + userModel.getData().getToken())
+                .getUnreadNotificationCount(lang, "Bearer " + userModel.getData().getToken())
                 .enqueue(new Callback<NotificationCount>() {
                     @Override
                     public void onResponse(Call<NotificationCount> call, Response<NotificationCount> response) {
@@ -370,7 +400,7 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseMessaging.getInstance()
                 .getToken()
                 .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()&&task.getResult()!=null){
+                    if (task.isSuccessful() && task.getResult() != null) {
                         String token = task.getResult();
                         try {
                             Api.getService(Tags.base_url)
@@ -378,7 +408,7 @@ public class HomeActivity extends AppCompatActivity {
                                     .enqueue(new Callback<StatusResponse>() {
                                         @Override
                                         public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
-                                            if (response.isSuccessful() && response.body() != null&&response.body().getStatus()==200) {
+                                            if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
                                                 userModel.getData().setFirebase_token(token);
                                                 preferences.create_update_userdata(HomeActivity.this, userModel);
 
@@ -415,7 +445,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void logout() {
 
-        if (userModel==null){
+        if (userModel == null) {
             finish();
             return;
         }
@@ -432,7 +462,7 @@ public class HomeActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             if (response.body() != null && response.body().getStatus() == 200) {
                                 NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                                manager.cancel(Tags.not_tag,Tags.not_id);
+                                manager.cancel(Tags.not_tag, Tags.not_id);
                                 navigateToSignInActivity();
                             }
 

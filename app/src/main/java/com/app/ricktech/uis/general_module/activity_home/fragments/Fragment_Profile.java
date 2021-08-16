@@ -1,5 +1,8 @@
 package com.app.ricktech.uis.general_module.activity_home.fragments;
 
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO;
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -68,7 +71,11 @@ public class Fragment_Profile extends Fragment {
         binding.setModel(userModel);
 
 
-
+        if(Preferences.getInstance().getDarkMode(activity).equals("yes")){
+          binding.switchtheme.setChecked(true);
+        }
+        else {
+            binding.switchtheme.setChecked(false);}
         binding.llLogout.setOnClickListener(v -> {
             activity.logout();
         });
@@ -89,16 +96,21 @@ public class Fragment_Profile extends Fragment {
 
 
         });
+
         binding.switchtheme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    preferences.setDarkMode(activity,"yes");
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 } else {
+                    preferences.setDarkMode(activity,"No");
+
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 }
             }
         });
+
 
         binding.imageEdit.setOnClickListener(v -> {
             req=2;

@@ -18,7 +18,9 @@
         <variable
             name="lang"
             type="String" />
-
+<variable
+    name="model"
+    type="com.app.ricktech.models.UserModel" />
 
     </data>
 
@@ -62,20 +64,21 @@
                             android:orientation="horizontal">
 
                             <ImageView
-                                android:layout_width="120dp"
-                                android:layout_height="50dp"
+                                android:id="@+id/imLanguage"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginEnd="10dp"
-                                android:padding="5dp"
+
+                                android:padding="2dp"
                                 android:src="@drawable/ic_language" />
 
                             <LinearLayout
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginEnd="16dp"
+                                android:layout_weight="1"
                                 android:background="@drawable/small_rounded_gray7"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal"
@@ -197,6 +200,56 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorAccent"
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        >
+
+                        <com.makeramen.roundedimageview.RoundedImageView
+                            android:id="@+id/image"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="40dp"
+                            app:civ_border_color="@color/white"
+                            app:civ_border_width="2dp"
+                            image="@{model.data.logo}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/user_avatar"
+                            tools:ignore="RtlCompat" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="40dp"
+                            android:layout_marginEnd="10dp"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/image"
+                            app:layout_constraintTop_toTopOf="parent">
+
+
+                            <TextView
+                                android:id="@+id/tvName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:text="@{model.data.name}"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                     <LinearLayout
@@ -206,6 +259,7 @@
                         android:layout_marginEnd="10dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
+                        android:layout_marginTop="30dp"
 
                         >
 
@@ -377,7 +431,7 @@
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
                             android:text="@string/most_search"
-android:textColor="@color/black"
+                            android:textColor="@color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
 

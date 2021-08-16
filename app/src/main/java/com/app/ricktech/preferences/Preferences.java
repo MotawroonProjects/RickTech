@@ -142,6 +142,18 @@ public class Preferences {
         SharedPreferences preferences = context.getSharedPreferences("visit", Context.MODE_PRIVATE);
         return preferences.getString("lastVisit", "0");
     }
+    public void setDarkMode(Context context, String mode) {
+        SharedPreferences preferences = context.getSharedPreferences("mode", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("mode", mode);
+        editor.apply();
+
+    }
+
+    public String getDarkMode(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("mode", Context.MODE_PRIVATE);
+        return preferences.getString("mode", "No");
+    }
 
     public void clear(Context context) {
         SharedPreferences preferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
