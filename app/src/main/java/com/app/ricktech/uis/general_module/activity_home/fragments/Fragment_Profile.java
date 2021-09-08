@@ -97,18 +97,17 @@ public class Fragment_Profile extends Fragment {
 
         });
 
-        binding.switchtheme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    preferences.setDarkMode(activity,"yes");
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                } else {
-                    preferences.setDarkMode(activity,"No");
+        binding.switchtheme.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                preferences.setDarkMode(activity.getApplicationContext(),"yes");
+                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                preferences.setDarkMode(activity.getApplicationContext(),"No");
 
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
+               // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
+
+            activity.refreshActivityTheme();
         });
 
 

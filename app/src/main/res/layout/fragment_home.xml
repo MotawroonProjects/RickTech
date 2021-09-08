@@ -11,11 +11,15 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/gray0"
+        >
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:background="@color/gray0"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -68,13 +72,16 @@
 
                             >
 
-                            <ImageView
+                            <com.makeramen.roundedimageview.RoundedImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginBottom="8dp"
                                 android:background="@drawable/small_rounded_white"
                                 android:padding="1dp"
-                                android:src="@drawable/lab_top_bg" />
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/lab_top_bg"
+                                app:riv_corner_radius="5dp"
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -84,7 +91,7 @@
                                 android:layout_marginEnd="8dp"
                                 android:layout_marginBottom="20dp"
                                 android:text="@string/laptops_gaming"
-                                android:textColor="@color/black"
+                                android:textColor="@color/txt_category"
                                 android:textSize="15sp" />
                         </FrameLayout>
 
@@ -126,13 +133,17 @@
 
                             >
 
-                            <ImageView
+                            <com.makeramen.roundedimageview.RoundedImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginBottom="8dp"
                                 android:background="@drawable/small_rounded_white"
                                 android:padding="1dp"
-                                android:src="@drawable/pc_bg" />
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/pc_bg"
+                                app:riv_corner_radius="5dp"
+
+                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -142,7 +153,7 @@
                                 android:layout_marginEnd="8dp"
                                 android:layout_marginBottom="20dp"
                                 android:text="@string/pc_building"
-                                android:textColor="@color/black"
+                                android:textColor="@color/txt_category"
                                 android:textSize="15sp" />
                         </FrameLayout>
 

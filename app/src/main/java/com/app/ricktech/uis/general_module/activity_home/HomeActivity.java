@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -24,7 +23,6 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 
 import com.app.ricktech.R;
 import com.app.ricktech.databinding.ActivityHomeBinding;
@@ -43,6 +41,11 @@ import com.app.ricktech.uis.general_module.activity_home.fragments.Fragment_Prof
 import com.app.ricktech.uis.general_module.activity_language.LanguageActivity;
 import com.app.ricktech.uis.general_module.activity_login.LoginActivity;
 import com.app.ricktech.uis.general_module.activity_notifications.NotificationActivity;
+import com.app.ricktech.uis.general_module.activity_search.SearchActivity;
+import com.app.ricktech.uis.separate_gaming_module.separate_gaming_brand.SeparateGamingBrandActivity;
+import com.app.ricktech.uis.separate_laptop_gaming_module.separate_laptop_gaming_brand.SeparateLaptopGamingBrandActivity;
+import com.app.ricktech.uis.separate_not_book_module.separate_note_book_brand.SeparateNoteBookBrandActivity;
+import com.app.ricktech.uis.separate_pc_module.separate_pc_brand.SeparatePcBrandActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,6 +71,7 @@ public class HomeActivity extends AppCompatActivity {
     private boolean backPressed = false;
     private ActionBarDrawerToggle toggle;
     private ActivityResultLauncher<Intent> launcher;
+    private Bundle savedInstanceState;
     private int req;
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -78,15 +82,19 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.savedInstanceState = savedInstanceState;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
       //  AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
         initView();
 
 
     }
 
+
+
     private void initView() {
+
+
         fragmentManager = getSupportFragmentManager();
         preferences = Preferences.getInstance();
         userModel = preferences.getUserData(this);
@@ -100,19 +108,18 @@ public class HomeActivity extends AppCompatActivity {
 
 
         displayFragmentMain();
+        binding.bottomNavView.setSelectedItemId(R.id.home);
+
         toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.open, R.string.close);
         toggle.setDrawerIndicatorEnabled(false);
 
         toggle.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (binding.drawer.isDrawerVisible(GravityCompat.START)) {
-                    binding.drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    binding.drawer.openDrawer(GravityCompat.START);
-                }
+        toggle.setToolbarNavigationClickListener(v -> {
+            if (binding.drawer.isDrawerVisible(GravityCompat.START)) {
+                binding.drawer.closeDrawer(GravityCompat.START);
+            } else {
+                binding.drawer.openDrawer(GravityCompat.START);
             }
         });
         toggle.syncState();
@@ -140,16 +147,19 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
            });
-        binding.imLanguage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                req=1;
-                Intent intent = new Intent(HomeActivity.this, LanguageActivity.class);
+        binding.imLanguage.setOnClickListener(v -> {
+            req=1;
+            Intent intent = new Intent(HomeActivity.this, LanguageActivity.class);
 
-                launcher.launch(intent);
-            }
+            launcher.launch(intent);
         });
 
+        binding.llSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.putExtra("data", "all");
+            startActivity(intent);
+
+        });
         binding.bottomNavView.setOnNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             switch (id) {
@@ -172,8 +182,40 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-    }
+        binding.llParts.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.putExtra("data", "part");
+            startActivity(intent);
+        });
 
+        binding.llRickTick.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.putExtra("data", "complete");
+            startActivity(intent);
+        });
+
+        binding.llPc.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SeparatePcBrandActivity.class);
+            startActivity(intent);
+        });
+
+        binding.llGamingPcs.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SeparateGamingBrandActivity.class);
+            startActivity(intent);
+        });
+
+        binding.llLaptopGamingPcs.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SeparateLaptopGamingBrandActivity.class);
+            startActivity(intent);
+        });
+
+        binding.llNoteBook.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SeparateNoteBookBrandActivity.class);
+            startActivity(intent);
+        });
+
+
+    }
 
     public void displayFragmentMain() {
         try {
@@ -338,6 +380,22 @@ public class HomeActivity extends AppCompatActivity {
                 });
     }
 
+    public void refreshActivityTheme() {
+
+        new Handler()
+                .postDelayed(() -> {
+
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                }, 500);
+
+
+
+
+
+    }
+
     public void refreshActivity(String lang) {
         Paper.book().write("lang", lang);
         Language.setNewLocale(this, lang);
@@ -355,15 +413,22 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        backPressed = true;
-        binding.bottomNavView.setSelectedItemId(R.id.home);
-        backPressed = false;
 
-        if (fragment_home != null && fragment_home.isAdded() && fragment_home.isVisible()) {
-            finish();
-        } else {
-            displayFragmentMain();
+        if (binding.drawer.isDrawerOpen(GravityCompat.START)){
+            binding.drawer.closeDrawer(GravityCompat.START);
+        }else {
+            backPressed = true;
+            binding.bottomNavView.setSelectedItemId(R.id.home);
+            backPressed = false;
+
+            if (fragment_home != null && fragment_home.isAdded() && fragment_home.isVisible()) {
+                finish();
+            } else {
+                displayFragmentMain();
+            }
         }
+
+
     }
 
     @Override

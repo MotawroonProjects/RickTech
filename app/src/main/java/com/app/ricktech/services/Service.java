@@ -13,6 +13,7 @@ import com.app.ricktech.models.PlaceGeocodeData;
 import com.app.ricktech.models.PlaceMapDetailsData;
 import com.app.ricktech.models.ProductDataModel;
 import com.app.ricktech.models.SavedProductDataModel;
+import com.app.ricktech.models.SearchDataModel;
 import com.app.ricktech.models.SettingDataModel;
 import com.app.ricktech.models.SingleOrderModel;
 import com.app.ricktech.models.SingleProductModel;
@@ -263,6 +264,85 @@ public interface Service {
                                   @Field("username") String username,
                                   @Field("email") String email
     );
+
+    @FormUrlEncoded
+    @POST("api/filterProducts")
+    Call<SearchDataModel> search(@Header("lang") String lang,
+                                 @Field("filter_type") String filter_type,
+                                 @Field("filter_string") String filter_string,
+                                 @Field("page") int page
+
+    );
+
+    @GET("api/getBrandsOfReadyPcs")
+    Call<BrandDataModel> getSeparatePcBrand(@Header("lang") String lang);
+
+
+    @FormUrlEncoded
+    @POST("api/getCategoriesOfReadyPcs")
+    Call<CategoryBuildingDataModel> getSeparateCategoryBuildingByBrandId(@Header("lang") String lang,
+                                                                         @Field("brand_id") String brand_id
+    );
+
+    @FormUrlEncoded
+    @POST("api/getSubCategoriesOfReadyPcs")
+    Call<CategoryBuildingDataModel> getSeparateSubCategoryBuilding(@Header("lang") String lang,
+                                                                   @Field("category_id") String category_id,
+                                                                   @Field("brand_id") String brand_id
+    );
+
+    @GET("api/getBrandsOfGamingPcs")
+    Call<BrandDataModel> getSeparateGamingBrand(@Header("lang") String lang);
+
+    @FormUrlEncoded
+    @POST("api/getCategoriesOfGamingPcs")
+    Call<CategoryBuildingDataModel> getSeparateGamingCategoryBuildingByBrandId(@Header("lang") String lang,
+                                                                               @Field("brand_id") String brand_id
+    );
+
+    @FormUrlEncoded
+    @POST("api/getSubCategoriesOfGamingPcs")
+    Call<CategoryBuildingDataModel> getSeparateGamingSubCategoryBuilding(@Header("lang") String lang,
+                                                                         @Field("category_id") String category_id,
+                                                                         @Field("brand_id") String brand_id
+    );
+
+
+    @GET("api/getBrandsOfGamingLabtobs")
+    Call<BrandDataModel> getSeparateLaptopGamingBrand(@Header("lang") String lang);
+
+    @FormUrlEncoded
+    @POST("api/getCategoriesOfGamingLabtobs")
+    Call<CategoryBuildingDataModel> getSeparateLaptopGamingCategoryBuildingByBrandId(@Header("lang") String lang,
+                                                                                     @Field("brand_id") String brand_id
+    );
+
+    @FormUrlEncoded
+    @POST("api/getSubCategoriesOfGamingLabtobs")
+    Call<CategoryBuildingDataModel> getSeparateLaptopGamingSubCategoryBuilding(@Header("lang") String lang,
+                                                                               @Field("category_id") String category_id,
+                                                                               @Field("brand_id") String brand_id
+    );
+
+
+
+    @GET("api/getBrandsOfNoteBook")
+    Call<BrandDataModel> getSeparateNoteBookBrand(@Header("lang") String lang);
+
+    @FormUrlEncoded
+    @POST("api/getCategoriesOfNoteBook")
+    Call<CategoryBuildingDataModel> getSeparateNoteBookCategoryBuildingByBrandId(@Header("lang") String lang,
+                                                                                     @Field("brand_id") String brand_id
+    );
+
+    @FormUrlEncoded
+    @POST("api/getSubCategoriesOfNoteBook")
+    Call<CategoryBuildingDataModel> getSeparateNoteBookSubCategoryBuilding(@Header("lang") String lang,
+                                                                               @Field("category_id") String category_id,
+                                                                               @Field("brand_id") String brand_id
+    );
+
+
 
 }
 

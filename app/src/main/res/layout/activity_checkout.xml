@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         tools:context=".uis.general_module.activity_checkout.CheckoutActivity"
         android:orientation="vertical"
-        android:background="@color/white"
+        android:background="@color/gray0"
         >
 
         <com.google.android.material.appbar.AppBarLayout

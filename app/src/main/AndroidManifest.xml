@@ -25,7 +25,51 @@
         android:theme="@style/Theme.RickTech"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".uis.orders_module.activity_order_build_details.OrderBuildDetailsActivity"></activity>
+
+        <activity
+            android:name=".uis.separate_not_book_module.activity_separate_note_book_sub_building.SeparateNoteBookSubBuildingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.separate_not_book_module.separate_note_book_categories.SeparateNoteBookCategoriesActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.separate_not_book_module.separate_note_book_brand.SeparateNoteBookBrandActivity"
+            android:exported="true" />
+
+
+
+        <activity
+            android:name=".uis.separate_laptop_gaming_module.activity_separate_laptop_gaming_sub_building.SeparateLaptopGamingSubBuildingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.separate_laptop_gaming_module.separate_laptop_gaming_categories.SeparateLaptopGamingCategoriesActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.separate_laptop_gaming_module.separate_laptop_gaming_brand.SeparateLaptopGamingBrandActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".uis.separate_gaming_module.activity_separate_gaming_sub_building.SeparateGamingSubBuildingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.separate_gaming_module.separate_gaming_categories.SeparateGamingCategoriesActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.separate_gaming_module.separate_gaming_brand.SeparateGamingBrandActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.separate_pc_module.activity_separate_pc_sub_building.SeparatePcSubBuildingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.separate_pc_module.separate_pc_categories.SeparatePcCategoriesActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.separate_pc_module.separate_pc_brand.SeparatePcBrandActivity"
+            android:exported="true" />
+        <activity
+            android:name=".uis.general_module.activity_search.SearchActivity"
+            android:exported="true" />
+        <activity android:name=".uis.orders_module.activity_order_build_details.OrderBuildDetailsActivity" />
         <activity android:name=".uis.orders_module.activity_order_details.OrderDetailsActivity" />
         <activity android:name=".uis.orders_module.activity_orders.OrdersActivity" />
         <activity android:name=".uis.general_module.activity_cart_details.CartDetailsActivity" />

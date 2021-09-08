@@ -18,9 +18,10 @@
         <variable
             name="lang"
             type="String" />
-<variable
-    name="model"
-    type="com.app.ricktech.models.UserModel" />
+
+        <variable
+            name="model"
+            type="com.app.ricktech.models.UserModel" />
 
     </data>
 
@@ -28,7 +29,7 @@
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:openDrawer="end">
+        tools:openDrawer="start">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -73,6 +74,7 @@
                                 android:src="@drawable/ic_language" />
 
                             <LinearLayout
+                                android:id="@+id/llSearch"
                                 android:layout_width="0dp"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center_vertical"
@@ -85,16 +87,17 @@
                                 android:paddingStart="10dp"
                                 android:paddingEnd="10dp">
 
-                                <EditText
+                                <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
                                     android:background="@color/transparent"
                                     android:hint="@string/search"
-                                    android:singleLine="true"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/gray6"
-                                    android:textSize="14sp" />
+                                    android:textSize="14sp"
+                                    android:gravity="center_vertical"
+                                    />
 
                                 <ImageView
                                     android:layout_width="24dp"
@@ -200,16 +203,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/colorAccent"
                         android:orientation="horizontal"
-                        android:padding="5dp"
-                        >
+                        android:padding="5dp">
 
                         <com.makeramen.roundedimageview.RoundedImageView
                             android:id="@+id/image"
+                            image="@{model.data.logo}"
                             android:layout_width="120dp"
                             android:layout_height="120dp"
                             android:layout_gravity="center_horizontal"
@@ -217,7 +221,6 @@
                             android:layout_marginTop="40dp"
                             app:civ_border_color="@color/white"
                             app:civ_border_width="2dp"
-                            image="@{model.data.logo}"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -253,13 +256,14 @@
 
 
                     <LinearLayout
+                        android:id="@+id/llParts"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginStart="10dp"
+                        android:layout_marginTop="30dp"
                         android:layout_marginEnd="10dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:layout_marginTop="30dp"
 
                         >
 
@@ -280,6 +284,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/llPc"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginStart="10dp"
@@ -306,6 +311,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/llGamingPcs"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginStart="10dp"
@@ -332,6 +338,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/llNoteBook"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginStart="10dp"
@@ -358,6 +365,8 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/llLaptopGamingPcs"
+
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginStart="10dp"
@@ -384,6 +393,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/llRickTick"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginStart="10dp"

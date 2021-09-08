@@ -43,7 +43,6 @@ public class SliderAdapter extends PagerAdapter {
         View view = inflater.inflate(R.layout.slider_row, container, false);
         ImageView imageView = view.findViewById(R.id.image);
         String url = Tags.IMAGE_URL + list.get(position).getImage();
-        Log.e("url", url);
         Picasso.get().load(Uri.parse(url)).fit().into(imageView);
         view.setOnClickListener(v -> {
             fragment_home.setSliderItemData(list.get(position).getProduct());

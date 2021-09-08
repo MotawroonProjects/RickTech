@@ -5,16 +5,18 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.ricktech.R;
 import com.app.ricktech.databinding.BuildingRowBinding;
-import com.app.ricktech.databinding.CategoryRowBinding;
-import com.app.ricktech.models.BrandModel;
 import com.app.ricktech.models.CategoryModel;
-import com.app.ricktech.uis.gaming_laptop_module.activity_categories.CategoriesActivity;
 import com.app.ricktech.uis.pc_building_module.activity_building.BulidingActivity;
+import com.app.ricktech.uis.separate_gaming_module.separate_gaming_categories.SeparateGamingCategoriesActivity;
+import com.app.ricktech.uis.separate_laptop_gaming_module.separate_laptop_gaming_categories.SeparateLaptopGamingCategoriesActivity;
+import com.app.ricktech.uis.separate_not_book_module.separate_note_book_categories.SeparateNoteBookCategoriesActivity;
+import com.app.ricktech.uis.separate_pc_module.separate_pc_categories.SeparatePcCategoriesActivity;
 
 import java.util.List;
 
@@ -22,12 +24,12 @@ public class BuildingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<CategoryModel> list;
     private Context context;
     private LayoutInflater inflater;
-    private BulidingActivity activity;
+    private AppCompatActivity activity;
     public BuildingAdapter(Context context, List<CategoryModel> list) {
         this.list = list;
         this.context = context;
         inflater = LayoutInflater.from(context);
-        activity = (BulidingActivity) context;
+        activity = (AppCompatActivity) context;
     }
 
 
@@ -45,11 +47,53 @@ public class BuildingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         MyHolder myHolder = (MyHolder) holder;
         myHolder.binding.setModel(list.get(position));
         myHolder.itemView.setOnClickListener(v -> {
-            activity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+            if (activity instanceof BulidingActivity){
+                BulidingActivity bulidingActivity = (BulidingActivity) activity;
+                bulidingActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }else if (activity instanceof SeparatePcCategoriesActivity){
+                SeparatePcCategoriesActivity separatePcCategoriesActivity = (SeparatePcCategoriesActivity) activity;
+                separatePcCategoriesActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }else if (activity instanceof SeparateGamingCategoriesActivity){
+                SeparateGamingCategoriesActivity separateGamingCategoriesActivity = (SeparateGamingCategoriesActivity) activity;
+                separateGamingCategoriesActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }else if (activity instanceof SeparateLaptopGamingCategoriesActivity){
+                SeparateLaptopGamingCategoriesActivity separateLaptopGamingCategoriesActivity = (SeparateLaptopGamingCategoriesActivity) activity;
+                separateLaptopGamingCategoriesActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }else if (activity instanceof SeparateNoteBookCategoriesActivity){
+                SeparateNoteBookCategoriesActivity separateNoteBookCategoriesActivity = (SeparateNoteBookCategoriesActivity) activity;
+                separateNoteBookCategoriesActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }
+
         });
 
         myHolder.binding.imageDelete.setOnClickListener(v -> {
-            activity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+            if (activity instanceof BulidingActivity){
+                BulidingActivity bulidingActivity = (BulidingActivity) activity;
+                bulidingActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }else if (activity instanceof SeparatePcCategoriesActivity){
+                SeparatePcCategoriesActivity separatePcCategoriesActivity = (SeparatePcCategoriesActivity) activity;
+                separatePcCategoriesActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }else if (activity instanceof SeparateGamingCategoriesActivity){
+                SeparateGamingCategoriesActivity separateGamingCategoriesActivity = (SeparateGamingCategoriesActivity) activity;
+                separateGamingCategoriesActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }else if (activity instanceof SeparateLaptopGamingCategoriesActivity){
+                SeparateLaptopGamingCategoriesActivity separateLaptopGamingCategoriesActivity = (SeparateLaptopGamingCategoriesActivity) activity;
+                separateLaptopGamingCategoriesActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }else if (activity instanceof SeparateNoteBookCategoriesActivity){
+                SeparateNoteBookCategoriesActivity separateNoteBookCategoriesActivity = (SeparateNoteBookCategoriesActivity) activity;
+                separateNoteBookCategoriesActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
+
+            }
+
         });
 
     }

@@ -7,6 +7,7 @@ import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -24,7 +25,8 @@ public class App extends MultiDexApplication {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(Language.updateResources(newBase,"de"));
+        super.attachBaseContext(Language.updateResources(newBase, "de"));
+
     }
 
 
@@ -35,11 +37,11 @@ public class App extends MultiDexApplication {
             @Override
             public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
                 updateFont();
-                if(Preferences.getInstance().getDarkMode(getApplicationContext()).equals("yes")){
+                if (Preferences.getInstance().getDarkMode(getApplicationContext()).equals("yes")) {
                     AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);
                 }
-                else {
-                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);}
             }
 
             @Override
@@ -79,13 +81,13 @@ public class App extends MultiDexApplication {
         Paper.init(this);
         String lang = Paper.book().read("lang", "de");
 
-        if (lang.equals("ar")){
+        if (lang.equals("ar")) {
             TypefaceUtil.setDefaultFont(this, "DEFAULT", "fonts/font.ttf");
             TypefaceUtil.setDefaultFont(this, "MONOSPACE", "fonts/font.ttf");
             TypefaceUtil.setDefaultFont(this, "SERIF", "fonts/font.ttf");
             TypefaceUtil.setDefaultFont(this, "SANS_SERIF", "fonts/font.ttf");
 
-        }else {
+        } else {
             TypefaceUtil.setDefaultFont(this, "DEFAULT", "fonts/en_font.ttf");
             TypefaceUtil.setDefaultFont(this, "MONOSPACE", "fonts/en_font.ttf");
             TypefaceUtil.setDefaultFont(this, "SERIF", "fonts/en_font.ttf");

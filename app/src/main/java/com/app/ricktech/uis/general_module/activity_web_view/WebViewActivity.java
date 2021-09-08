@@ -71,7 +71,9 @@ public class WebViewActivity extends AppCompatActivity {
         });
 
 
-        getSettings();
+        //getSettings();
+        String url = Tags.base_url+"settings";
+        setUpWebView(url);
 
     }
 
