@@ -110,7 +110,7 @@ public class SeparateGamingBrandActivity extends AppCompatActivity {
 
     public void setItemData(BrandModel brandModel) {
         Intent intent=new Intent(this, SeparateGamingCategoriesActivity.class);
-        intent.putExtra("data", brandModel.getId()+"");
+        intent.putExtra("data1", brandModel);
         startActivity(intent);
     }
 }

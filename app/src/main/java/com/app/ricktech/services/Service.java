@@ -280,13 +280,13 @@ public interface Service {
 
     @FormUrlEncoded
     @POST("api/getCategoriesOfReadyPcs")
-    Call<CategoryBuildingDataModel> getSeparateCategoryBuildingByBrandId(@Header("lang") String lang,
+    Call<SuggestionsDataModel> getSeparateCategoryBuildingByBrandId(@Header("lang") String lang,
                                                                          @Field("brand_id") String brand_id
     );
 
     @FormUrlEncoded
     @POST("api/getSubCategoriesOfReadyPcs")
-    Call<CategoryBuildingDataModel> getSeparateSubCategoryBuilding(@Header("lang") String lang,
+    Call<SuggestionsDataModel> getSeparateSubCategoryBuilding(@Header("lang") String lang,
                                                                    @Field("category_id") String category_id,
                                                                    @Field("brand_id") String brand_id
     );
@@ -296,13 +296,13 @@ public interface Service {
 
     @FormUrlEncoded
     @POST("api/getCategoriesOfGamingPcs")
-    Call<CategoryBuildingDataModel> getSeparateGamingCategoryBuildingByBrandId(@Header("lang") String lang,
+    Call<SuggestionsDataModel> getSeparateGamingCategoryBuildingByBrandId(@Header("lang") String lang,
                                                                                @Field("brand_id") String brand_id
     );
 
     @FormUrlEncoded
     @POST("api/getSubCategoriesOfGamingPcs")
-    Call<CategoryBuildingDataModel> getSeparateGamingSubCategoryBuilding(@Header("lang") String lang,
+    Call<SuggestionsDataModel> getSeparateGamingSubCategoryBuilding(@Header("lang") String lang,
                                                                          @Field("category_id") String category_id,
                                                                          @Field("brand_id") String brand_id
     );
@@ -313,13 +313,13 @@ public interface Service {
 
     @FormUrlEncoded
     @POST("api/getCategoriesOfGamingLabtobs")
-    Call<CategoryBuildingDataModel> getSeparateLaptopGamingCategoryBuildingByBrandId(@Header("lang") String lang,
+    Call<SuggestionsDataModel> getSeparateLaptopGamingCategoryBuildingByBrandId(@Header("lang") String lang,
                                                                                      @Field("brand_id") String brand_id
     );
 
     @FormUrlEncoded
     @POST("api/getSubCategoriesOfGamingLabtobs")
-    Call<CategoryBuildingDataModel> getSeparateLaptopGamingSubCategoryBuilding(@Header("lang") String lang,
+    Call<SuggestionsDataModel> getSeparateLaptopGamingSubCategoryBuilding(@Header("lang") String lang,
                                                                                @Field("category_id") String category_id,
                                                                                @Field("brand_id") String brand_id
     );
@@ -331,13 +331,13 @@ public interface Service {
 
     @FormUrlEncoded
     @POST("api/getCategoriesOfNoteBook")
-    Call<CategoryBuildingDataModel> getSeparateNoteBookCategoryBuildingByBrandId(@Header("lang") String lang,
+    Call<SuggestionsDataModel> getSeparateNoteBookCategoryBuildingByBrandId(@Header("lang") String lang,
                                                                                      @Field("brand_id") String brand_id
     );
 
     @FormUrlEncoded
     @POST("api/getSubCategoriesOfNoteBook")
-    Call<CategoryBuildingDataModel> getSeparateNoteBookSubCategoryBuilding(@Header("lang") String lang,
+    Call<SuggestionsDataModel> getSeparateNoteBookSubCategoryBuilding(@Header("lang") String lang,
                                                                                @Field("category_id") String category_id,
                                                                                @Field("brand_id") String brand_id
     );

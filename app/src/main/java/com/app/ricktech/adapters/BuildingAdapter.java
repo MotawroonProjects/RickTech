@@ -51,22 +51,6 @@ public class BuildingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 BulidingActivity bulidingActivity = (BulidingActivity) activity;
                 bulidingActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
 
-            }else if (activity instanceof SeparatePcCategoriesActivity){
-                SeparatePcCategoriesActivity separatePcCategoriesActivity = (SeparatePcCategoriesActivity) activity;
-                separatePcCategoriesActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
-
-            }else if (activity instanceof SeparateGamingCategoriesActivity){
-                SeparateGamingCategoriesActivity separateGamingCategoriesActivity = (SeparateGamingCategoriesActivity) activity;
-                separateGamingCategoriesActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
-
-            }else if (activity instanceof SeparateLaptopGamingCategoriesActivity){
-                SeparateLaptopGamingCategoriesActivity separateLaptopGamingCategoriesActivity = (SeparateLaptopGamingCategoriesActivity) activity;
-                separateLaptopGamingCategoriesActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
-
-            }else if (activity instanceof SeparateNoteBookCategoriesActivity){
-                SeparateNoteBookCategoriesActivity separateNoteBookCategoriesActivity = (SeparateNoteBookCategoriesActivity) activity;
-                separateNoteBookCategoriesActivity.setItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
-
             }
 
         });
@@ -75,22 +59,6 @@ public class BuildingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (activity instanceof BulidingActivity){
                 BulidingActivity bulidingActivity = (BulidingActivity) activity;
                 bulidingActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
-
-            }else if (activity instanceof SeparatePcCategoriesActivity){
-                SeparatePcCategoriesActivity separatePcCategoriesActivity = (SeparatePcCategoriesActivity) activity;
-                separatePcCategoriesActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
-
-            }else if (activity instanceof SeparateGamingCategoriesActivity){
-                SeparateGamingCategoriesActivity separateGamingCategoriesActivity = (SeparateGamingCategoriesActivity) activity;
-                separateGamingCategoriesActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
-
-            }else if (activity instanceof SeparateLaptopGamingCategoriesActivity){
-                SeparateLaptopGamingCategoriesActivity separateLaptopGamingCategoriesActivity = (SeparateLaptopGamingCategoriesActivity) activity;
-                separateLaptopGamingCategoriesActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
-
-            }else if (activity instanceof SeparateNoteBookCategoriesActivity){
-                SeparateNoteBookCategoriesActivity separateNoteBookCategoriesActivity = (SeparateNoteBookCategoriesActivity) activity;
-                separateNoteBookCategoriesActivity.deleteItemData(myHolder.getAdapterPosition(),list.get(myHolder.getAdapterPosition()));
 
             }
 

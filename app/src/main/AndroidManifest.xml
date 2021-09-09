@@ -57,9 +57,7 @@
         <activity
             android:name=".uis.separate_gaming_module.separate_gaming_brand.SeparateGamingBrandActivity"
             android:exported="true" />
-        <activity
-            android:name=".uis.separate_pc_module.activity_separate_pc_sub_building.SeparatePcSubBuildingActivity"
-            android:exported="true" />
+
         <activity
             android:name=".uis.separate_pc_module.separate_pc_categories.SeparatePcCategoriesActivity"
             android:exported="true" />

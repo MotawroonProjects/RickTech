@@ -19,17 +19,23 @@ import android.widget.Toast;
 
 import com.app.ricktech.R;
 import com.app.ricktech.adapters.BuildingAdapter;
+import com.app.ricktech.adapters.SeparateBuildingAdapter;
+import com.app.ricktech.adapters.SuggestionBuildingAdapter;
 import com.app.ricktech.databinding.ActivitySeparatePcCategoriesBinding;
+import com.app.ricktech.databinding.ActivitySuggetionBuildingsBinding;
 import com.app.ricktech.language.Language;
 import com.app.ricktech.models.AddBuildModel;
 import com.app.ricktech.models.AddCompareModel;
 import com.app.ricktech.models.AddToBuildDataModel;
+import com.app.ricktech.models.BrandModel;
 import com.app.ricktech.models.CategoryBuildingDataModel;
 import com.app.ricktech.models.CategoryModel;
 import com.app.ricktech.models.ManageCartModel;
 import com.app.ricktech.models.ProductModel;
 import com.app.ricktech.models.StatusResponse;
 import com.app.ricktech.models.SuggestionGameDataModel;
+import com.app.ricktech.models.SuggestionModel;
+import com.app.ricktech.models.SuggestionsDataModel;
 import com.app.ricktech.models.UserModel;
 import com.app.ricktech.preferences.Preferences;
 import com.app.ricktech.remote.Api;
@@ -38,7 +44,8 @@ import com.app.ricktech.tags.Tags;
 import com.app.ricktech.uis.pc_building_module.activity_building_products.ProductBuildingActivity;
 import com.app.ricktech.uis.pc_building_module.activity_games.GamesActivity;
 import com.app.ricktech.uis.pc_building_module.activity_sub_bulding.SubBuildingActivity;
-import com.app.ricktech.uis.separate_pc_module.activity_separate_pc_sub_building.SeparatePcSubBuildingActivity;
+import com.app.ricktech.uis.suggestions_module.activity_suggestion_buildings.SuggetionBuildingsActivity;
+import com.app.ricktech.uis.suggestions_module.activity_suggestion_sub_building.SuggestionSubBuildingActivity;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -51,22 +58,24 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SeparatePcCategoriesActivity extends AppCompatActivity {
-
-    private ActivitySeparatePcCategoriesBinding binding;
+    private ActivitySuggetionBuildingsBinding binding;
     private String lang;
-    private BuildingAdapter adapter;
+    private SeparateBuildingAdapter adapter;
     private UserModel userModel;
     private Preferences preferences;
-    private List<CategoryModel> list;
-    private ActivityResultLauncher<Intent> launcher;
+    private List<SuggestionModel> list;
     private int selectedPos = -1;
-    private CategoryModel selectedMainCategoryModel;
+    private SuggestionModel suggestionModel;
+    private String brand_id = "";
+    private BrandModel brandModel;
     private int req;
     private boolean canNext = false;
     double total = 0;
-    private ManageCartModel manageCartModel;
-    private String brand_id = "";
+    private List<SuggestionModel> categoryHasSubCategoryList = new ArrayList<>();
 
+    private boolean hasSuggestions = false;
+
+    private ManageCartModel manageCartModel;
 
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
@@ -76,15 +85,15 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_separate_pc_categories);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_suggetion_buildings);
         getDataFromIntent();
         initView();
     }
 
     private void getDataFromIntent() {
         Intent intent = getIntent();
-        brand_id = intent.getStringExtra("data");
-
+        brandModel = (BrandModel) intent.getSerializableExtra("data1");
+        brand_id = brandModel.getId() + "";
     }
 
 
@@ -98,135 +107,57 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
         lang = Paper.book().read("lang", "de");
         binding.setLang(lang);
         binding.recView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new BuildingAdapter(this, list);
+        adapter = new SeparateBuildingAdapter(this, list);
         binding.recView.setAdapter(adapter);
         binding.recView.setItemAnimator(new DefaultItemAnimator());
         binding.llBack.setOnClickListener(v -> finish());
 
         binding.setScore("0");
         binding.setTotal("0.0");
-
+        binding.setModel(brandModel);
         binding.shimmer.startShimmer();
         getBuildings();
 
-        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if (req == 100 && result.getResultCode() == RESULT_OK && result.getData() != null)
-                {
-
-                    ProductModel productModel = (ProductModel) result.getData().getSerializableExtra("data");
-                    if (productModel != null) {
-                        if (selectedPos != -1) {
-                            if (selectedMainCategoryModel!=null){
-                                List<ProductModel> selectedProductList = new ArrayList<>(selectedMainCategoryModel.getSelectedProduct());
-
-                                selectedProductList.add(productModel);
-
-                                selectedMainCategoryModel.setSelectedProduct(selectedProductList);
-
-
-                            }
-
-                            list.set(selectedPos, selectedMainCategoryModel);
-
-                            adapter.notifyItemChanged(selectedPos);
-
-                        }
-                    }
-
-
-                    calculateTotal_Points();
-
-                    canNext = true;
-                    binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
-                    binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
-
-                }
-                else if (req == 200 && result.getResultCode() == RESULT_OK && result.getData() != null){
-                    List<CategoryModel> data = (List<CategoryModel>) result.getData().getSerializableExtra("data");
-
-
-                    if (selectedPos!=-1){
-                        if (data!=null){
-
-
-                            if (data.size()>0){
-                                List<ProductModel> list1 = new ArrayList<>();
-                                for (CategoryModel categoryModel:data){
-                                    list1.addAll(categoryModel.getSelectedProduct());
-                                }
-
-                                selectedMainCategoryModel.setSelectedProduct(new ArrayList<>(list1));
-
-                            }else {
-
-                                selectedMainCategoryModel.getSelectedProduct().clear();
-                                selectedMainCategoryModel.getSub_categories().clear();
-                            }
-
-
-                            selectedMainCategoryModel.setSub_categories(new ArrayList<>(data));
-                            list.set(selectedPos, selectedMainCategoryModel);
-
-                            adapter.notifyItemChanged(selectedPos);
-
-                            calculateTotal_Points();
-
-                            if (isListHasData()){
-                                canNext = true;
-                                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
-                                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
-
-                            }else {
-                                canNext = false;
-                                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
-                                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
-
-                            }
-                        }
-                    }
-                }
-            }
-        });
 
         binding.btnNext.setOnClickListener(v -> {
-            if (canNext){
+            if (canNext) {
                 binding.flDialog.setVisibility(View.VISIBLE);
             }
         });
 
         binding.btnCompare.setOnClickListener(v -> {
-            if (canNext){
+            if (canNext) {
+
+
                 List<AddBuildModel> list = new ArrayList<>();
 
-                List<CategoryModel> categoryModelList = new ArrayList<>(getSelectedCategory());
-                for (CategoryModel categoryModel :categoryModelList){
-                    if (categoryModel.getIs_final_level().equals("yes")){
+                List<SuggestionModel> selectedSuggestion = new ArrayList<>(getSelectedSuggestion());
+                for (SuggestionModel suggestionModel :selectedSuggestion){
+                    if (suggestionModel.getIs_final_level().equals("yes")){
 
                         List<String> products_ids = new ArrayList<>();
                         List<ProductModel> productModelList = new ArrayList<>();
-                        for (ProductModel model :categoryModel.getSelectedProduct()){
-                            products_ids.add(model.getId()+"");
-                            productModelList.add(model);
+                        for (SuggestionModel.Products model :suggestionModel.getSuggestions().getSelectedProducts()){
+                            products_ids.add(model.getProduct().getId()+"");
+                            productModelList.add(model.getProduct());
                         }
 
-                        AddBuildModel addBuildModel = new AddBuildModel(categoryModel.getId()+"",products_ids);
-                        addBuildModel.setCategory_id(categoryModel.getId()+"");
-                        addBuildModel.setCategory_name(categoryModel.getTrans_title());
-                        addBuildModel.setCategory_image(categoryModel.getImage());
+                        AddBuildModel addBuildModel = new AddBuildModel(suggestionModel.getId()+"",products_ids);
+                        addBuildModel.setCategory_id(suggestionModel.getId()+"");
+                        addBuildModel.setCategory_name(suggestionModel.getTrans_title());
+                        addBuildModel.setCategory_image(suggestionModel.getImage());
                         addBuildModel.setProductModelList(productModelList);
                         list.add(addBuildModel);
 
                     }else {
 
-                        for (CategoryModel model:categoryModel.getSub_categories()){
+                        for (CategoryModel model:suggestionModel.getSub_categoryModel()){
                             Log.e("eee2", model.getTrans_title());
                             List<String> sub_products_ids = new ArrayList<>();
                             List<ProductModel> subProductModelList = new ArrayList<>();
 
                             for (ProductModel productModel:model.getSelectedProduct()){
-                                Log.e("titlexx", productModel.getTrans_title());
+                                Log.e("title", productModel.getTrans_title());
                                 sub_products_ids.add(productModel.getId()+"");
                                 subProductModelList.add(productModel);
                             }
@@ -246,11 +177,8 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
                 }
 
 
-                Log.e("efdfd", list.size()+"_");
-
                 AddCompareModel model = new AddCompareModel(list);
                 compare(model);
-
             }
         });
 
@@ -259,31 +187,237 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
 
             binding.flDialog.setVisibility(View.GONE);
         });
+        binding.btnBuild.setOnClickListener(v -> {
+            String name = binding.edtName.getText().toString();
+            if (!name.isEmpty()) {
+                binding.edtName.setError(null);
+                Common.CloseKeyBoard(this, binding.edtName);
+                addToBuild(name);
+            } else {
+                binding.edtName.setError(getString(R.string.field_req));
+
+            }
+        });
 
         binding.flAddToCart.setOnClickListener(v -> {
             String name = binding.edtName.getText().toString();
-            if (!name.isEmpty()){
+            if (!name.isEmpty()) {
                 binding.edtName.setError(null);
-                Common.CloseKeyBoard(this,binding.edtName);
+                Common.CloseKeyBoard(this, binding.edtName);
                 addToCart(name);
-            }else {
+            } else {
                 binding.edtName.setError(getString(R.string.field_req));
 
             }
         });
-        binding.btnBuild.setOnClickListener(v -> {
-            String name = binding.edtName.getText().toString();
-            if (!name.isEmpty()){
-                binding.edtName.setError(null);
-                Common.CloseKeyBoard(this,binding.edtName);
-                addToBuild(name);
-            }else {
-                binding.edtName.setError(getString(R.string.field_req));
+    }
+
+    private void getBuildings() {
+        Api.getService(Tags.base_url)
+                .getSeparateCategoryBuildingByBrandId(lang, brand_id)
+                .enqueue(new Callback<SuggestionsDataModel>() {
+                    @Override
+                    public void onResponse(Call<SuggestionsDataModel> call, Response<SuggestionsDataModel> response) {
+
+                        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
+                            if (response.body().getData().size() > 0) {
+                                updateData(response.body().getData());
+                            } else {
+                                binding.tvNoData.setVisibility(View.VISIBLE);
+                                binding.llTotal.setVisibility(View.GONE);
+                                binding.flCompare.setVisibility(View.GONE);
+
+                            }
+
+                        } else {
+                            binding.shimmer.stopShimmer();
+                            binding.shimmer.setVisibility(View.GONE);
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<SuggestionsDataModel> call, Throwable t) {
+                        try {
+                            Log.e("error", t.getMessage() + "__");
+                            binding.shimmer.stopShimmer();
+                            binding.shimmer.setVisibility(View.GONE);
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+
+    }
+
+    private void updateData(List<SuggestionModel> data) {
+        list.clear();
+
+
+        for (int index = 0; index < data.size(); index++) {
+            SuggestionModel model = data.get(index);
+            SuggestionModel.Suggestions suggestions = model.getSuggestions();
+
+            if (suggestions != null) {
+                List<SuggestionModel.Products> productModelList = new ArrayList<>();
+                if (suggestions.getProducts() != null && suggestions.getProducts().size() > 0) {
+                    hasSuggestions = true;
+                    productModelList.addAll(suggestions.getProducts());
+                }
+
+                suggestions.setSelectedProducts(productModelList);
+                suggestions.setDefaultSelectedProducts(new ArrayList<>(productModelList));
+                model.setSuggestions(suggestions);
+
+                if (model.getIs_final_level().equals("no")) {
+                    hasSuggestions = true;
+                    categoryHasSubCategoryList.add(model);
+                }
+                list.add(model);
+
 
             }
-        });
+
+        }
 
 
+        if (categoryHasSubCategoryList.size() > 0) {
+            getSubCategory(0);
+        } else {
+            calculateTotal_Points();
+            adapter.notifyDataSetChanged();
+            binding.tvNoData.setVisibility(View.GONE);
+            binding.llTotal.setVisibility(View.VISIBLE);
+            binding.flCompare.setVisibility(View.VISIBLE);
+
+            if (hasSuggestions) {
+                canNext = true;
+                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
+                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
+
+            } else {
+                canNext = false;
+                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
+                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
+
+            }
+        }
+
+    }
+
+    private void getSubCategory(int index) {
+
+        if (index < categoryHasSubCategoryList.size()) {
+
+            SuggestionModel suggestionModel = categoryHasSubCategoryList.get(index);
+
+            Api.getService(Tags.base_url)
+                    .getSeparateSubCategoryBuilding(lang,suggestionModel.getId() + "",brand_id )
+                    .enqueue(new Callback<SuggestionsDataModel>() {
+                        @Override
+                        public void onResponse(Call<SuggestionsDataModel> call, Response<SuggestionsDataModel> response) {
+
+                            if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
+                                if (response.body().getData().size() > 0) {
+
+                                    List<SuggestionModel.Products> products = new ArrayList<>();
+                                    List<CategoryModel> allSubCategoryList = new ArrayList<>();
+                                    for (SuggestionModel model : response.body().getData()) {
+                                        SuggestionModel.Suggestions suggestions = model.getSuggestions();
+
+                                        if (suggestions.getProducts().size() > 0) {
+                                            List<ProductModel> productModelList = new ArrayList<>();
+
+                                            for (SuggestionModel.Products products1 : suggestions.getProducts()) {
+                                                productModelList.add(products1.getProduct());
+                                            }
+
+                                            CategoryModel subCategoryModel = new CategoryModel(model.getId(), model.getDesc(), model.getImage(), model.getType(), model.getIs_final_level(), model.getParent_id(), model.getIs_in_compare(), model.getTrans_title(), new ArrayList<>(), productModelList,new ArrayList<>(productModelList));
+                                            allSubCategoryList.add(subCategoryModel);
+                                            suggestionModel.getSuggestions().setDefaultData(true);
+                                            products.addAll(suggestions.getProducts());
+
+                                            Log.e("ggg", model.getTrans_title() + "___" + list.size());
+
+                                        }
+
+                                    }
+
+                                    suggestionModel.setDefault_sub_categoryModel(new ArrayList<>(allSubCategoryList));
+                                    suggestionModel.setSub_categoryModel(new ArrayList<>(allSubCategoryList));
+
+                                    SuggestionModel.Suggestions suggestions = suggestionModel.getSuggestions();
+                                    if (suggestions != null) {
+                                        suggestions.setSelectedProducts(products);
+                                        suggestions.setDefaultSelectedProducts(new ArrayList<>(products));
+                                        suggestionModel.setSuggestions(suggestions);
+                                    }
+
+
+                                    int newIndex = index + 1;
+                                    categoryHasSubCategoryList.set(index, suggestionModel);
+
+                                    getSubCategory(newIndex);
+
+                                }
+
+                            }
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<SuggestionsDataModel> call, Throwable t) {
+                            try {
+                                Log.e("error", t.getMessage() + "__");
+
+
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    });
+        } else {
+            for (SuggestionModel model : categoryHasSubCategoryList) {
+                int pos = getCategoryHasSubCategoryPos(model);
+                if (pos != -1) {
+                    SuggestionModel suggestionModel = list.get(pos);
+                    suggestionModel.setSub_categoryModel(new ArrayList<>(model.getSub_categoryModel()));
+                    suggestionModel.setDefault_sub_categoryModel(new ArrayList<>(model.getDefault_sub_categoryModel()));
+                    SuggestionModel.Suggestions suggestions = suggestionModel.getSuggestions();
+                    if (suggestions != null) {
+                        suggestions.setDefaultData(true);
+                        suggestions.setSelectedProducts(model.getSuggestions().getSelectedProducts());
+                        suggestions.setDefaultSelectedProducts(new ArrayList<>(model.getSuggestions().getDefaultSelectedProducts()));
+                        suggestions.setProducts(model.getSuggestions().getProducts());
+                    }
+                    list.set(pos, suggestionModel);
+                }
+            }
+
+            binding.shimmer.stopShimmer();
+            binding.shimmer.setVisibility(View.GONE);
+            binding.llData.setVisibility(View.VISIBLE);
+            calculateTotal_Points();
+            adapter.notifyDataSetChanged();
+            binding.tvNoData.setVisibility(View.GONE);
+            binding.llTotal.setVisibility(View.VISIBLE);
+            binding.flCompare.setVisibility(View.VISIBLE);
+
+            if (hasSuggestions) {
+                canNext = true;
+                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
+                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
+
+            } else {
+                canNext = false;
+                binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
+                binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
+
+            }
+        }
     }
 
     private void compare(AddCompareModel model) {
@@ -293,30 +427,27 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
         dialog.show();
 
         Api.getService(Tags.base_url)
-                .compare(lang,model)
+                .compare(lang, model)
                 .enqueue(new Callback<SuggestionGameDataModel>() {
                     @Override
                     public void onResponse(Call<SuggestionGameDataModel> call, Response<SuggestionGameDataModel> response) {
                         dialog.dismiss();
                         if (response.isSuccessful()) {
-                            if (response.body() != null ) {
-                                if (response.body().getStatus() == 200)
-                                {
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 200) {
                                     Intent intent = new Intent(SeparatePcCategoriesActivity.this, GamesActivity.class);
-                                    Log.e("size", response.body().getData().size()+"__");
                                     intent.putExtra("data", (Serializable) response.body().getData());
                                     startActivity(intent);
 
-                                }else if(response.body().getStatus() == 403){
+                                } else if (response.body().getStatus() == 403) {
                                     Toast.makeText(SeparatePcCategoriesActivity.this, R.string.no_games, Toast.LENGTH_SHORT).show();
                                 }
-                            }else {
-                                binding.flDialog.setVisibility(View.VISIBLE);
+                            } else {
+                                dialog.dismiss();
                             }
 
                         } else {
                             dialog.dismiss();
-                            binding.flDialog.setVisibility(View.VISIBLE);
 
                             try {
                                 Log.e("error", response.code() + "__" + response.errorBody().string());
@@ -332,7 +463,6 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
                     public void onFailure(Call<SuggestionGameDataModel> call, Throwable t) {
                         try {
                             dialog.dismiss();
-                            binding.flDialog.setVisibility(View.VISIBLE);
 
                             if (t.getMessage() != null) {
                                 Log.e("error", t.getMessage() + "__");
@@ -347,6 +477,7 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
                     }
                 });
     }
+
     private void addToBuild(String name) {
         binding.flDialog.setVisibility(View.GONE);
         ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
@@ -354,43 +485,35 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
+        List<AddBuildModel> list = new ArrayList<>();
 
-
-
-        List<AddBuildModel> list=new ArrayList<>();
-
-        List<CategoryModel> categoryModelList = new ArrayList<>(getSelectedCategory());
-        for (CategoryModel categoryModel : categoryModelList){
-            Log.e("eee", categoryModel.getTrans_title());
-
-
-            if (categoryModel.getIs_final_level().equals("yes")){
+        List<SuggestionModel> selectedSuggestion = new ArrayList<>(getSelectedSuggestion());
+        for (SuggestionModel suggestionModel :selectedSuggestion){
+            if (suggestionModel.getIs_final_level().equals("yes")){
 
                 List<String> products_ids = new ArrayList<>();
                 List<ProductModel> productModelList = new ArrayList<>();
-                for (ProductModel model :categoryModel.getSelectedProduct()){
-                    products_ids.add(model.getId()+"");
-                    productModelList.add(model);
+                for (SuggestionModel.Products model :suggestionModel.getSuggestions().getSelectedProducts()){
+                    products_ids.add(model.getProduct().getId()+"");
+                    productModelList.add(model.getProduct());
                 }
 
-                AddBuildModel addBuildModel = new AddBuildModel(categoryModel.getId()+"",products_ids);
-                addBuildModel.setCategory_id(categoryModel.getId()+"");
-                addBuildModel.setCategory_name(categoryModel.getTrans_title());
-                addBuildModel.setCategory_image(categoryModel.getImage());
+                AddBuildModel addBuildModel = new AddBuildModel(suggestionModel.getId()+"",products_ids);
+                addBuildModel.setCategory_id(suggestionModel.getId()+"");
+                addBuildModel.setCategory_name(suggestionModel.getTrans_title());
+                addBuildModel.setCategory_image(suggestionModel.getImage());
                 addBuildModel.setProductModelList(productModelList);
                 list.add(addBuildModel);
 
             }else {
 
-
-                for (CategoryModel model:categoryModel.getSub_categories()){
-
+                for (CategoryModel model:suggestionModel.getSub_categoryModel()){
+                    Log.e("eee2", model.getTrans_title());
                     List<String> sub_products_ids = new ArrayList<>();
                     List<ProductModel> subProductModelList = new ArrayList<>();
-                    Log.e("eee2rr", model.getTrans_title());
 
                     for (ProductModel productModel:model.getSelectedProduct()){
-                        Log.e("titlevbvb", productModel.getTrans_title());
+                        Log.e("title", productModel.getTrans_title());
                         sub_products_ids.add(productModel.getId()+"");
                         subProductModelList.add(productModel);
                     }
@@ -407,23 +530,16 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
 
             }
 
-
-
-
         }
 
 
 
 
-
-
-        AddToBuildDataModel model = new AddToBuildDataModel(name,total,list);
-
-
+        AddToBuildDataModel model = new AddToBuildDataModel(name, total, list);
 
 
         Api.getService(Tags.base_url)
-                .addToBuild(lang,"Bearer " + userModel.getData().getToken(),model)
+                .addToBuild(lang, "Bearer " + userModel.getData().getToken(), model)
                 .enqueue(new Callback<StatusResponse>() {
                     @Override
                     public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
@@ -432,7 +548,7 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
                             if (response.body() != null && response.body().getStatus() == 200) {
                                 Toast.makeText(SeparatePcCategoriesActivity.this, R.string.suc, Toast.LENGTH_SHORT).show();
                                 finish();
-                            }else {
+                            } else {
                                 binding.flDialog.setVisibility(View.VISIBLE);
                             }
 
@@ -470,36 +586,38 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
                 });
 
     }
-    private void  addToCart(String name){
 
-        List<AddBuildModel> list=new ArrayList<>();
+    private void addToCart(String name) {
 
-        List<CategoryModel> categoryModelList = new ArrayList<>(getSelectedCategory());
-        for (CategoryModel categoryModel : categoryModelList){
+        List<AddBuildModel> list = new ArrayList<>();
 
-            List<String> products_ids = new ArrayList<>();
-            List<ProductModel> productModelList = new ArrayList<>();
-            for (ProductModel model :categoryModel.getSelectedProduct()){
-                products_ids.add(model.getId()+"");
-                productModelList.add(model);
-            }
+        List<SuggestionModel> selectedSuggestion = new ArrayList<>(getSelectedSuggestion());
+        for (SuggestionModel suggestionModel :selectedSuggestion){
+            if (suggestionModel.getIs_final_level().equals("yes")){
 
-            if (categoryModel.getIs_final_level().equals("yes")){
-                AddBuildModel addBuildModel = new AddBuildModel(categoryModel.getId()+"",products_ids);
-                addBuildModel.setCategory_id(categoryModel.getId()+"");
-                addBuildModel.setCategory_name(categoryModel.getTrans_title());
-                addBuildModel.setCategory_image(categoryModel.getImage());
+                List<String> products_ids = new ArrayList<>();
+                List<ProductModel> productModelList = new ArrayList<>();
+                for (SuggestionModel.Products model :suggestionModel.getSuggestions().getSelectedProducts()){
+                    products_ids.add(model.getProduct().getId()+"");
+                    productModelList.add(model.getProduct());
+                }
+
+                AddBuildModel addBuildModel = new AddBuildModel(suggestionModel.getId()+"",products_ids);
+                addBuildModel.setCategory_id(suggestionModel.getId()+"");
+                addBuildModel.setCategory_name(suggestionModel.getTrans_title());
+                addBuildModel.setCategory_image(suggestionModel.getImage());
                 addBuildModel.setProductModelList(productModelList);
                 list.add(addBuildModel);
 
             }else {
 
-                for (CategoryModel model:categoryModel.getSub_categories()){
+                for (CategoryModel model:suggestionModel.getSub_categoryModel()){
+                    Log.e("eee2", model.getTrans_title());
                     List<String> sub_products_ids = new ArrayList<>();
                     List<ProductModel> subProductModelList = new ArrayList<>();
 
-                    Log.e("tit", model.getTrans_title()+"__"+model.getSelectedProduct().size());
                     for (ProductModel productModel:model.getSelectedProduct()){
+                        Log.e("title", productModel.getTrans_title());
                         sub_products_ids.add(productModel.getId()+"");
                         subProductModelList.add(productModel);
                     }
@@ -516,146 +634,68 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
 
             }
 
-
-
-
         }
 
 
-        for (AddBuildModel addBuildModel:list){
-            Log.e("a1", addBuildModel.getCategory_id()+"__"+addBuildModel.getCategory_name());
-            List<ProductModel> productModelList = addBuildModel.getProductModelList();
-            for (ProductModel productModel:productModelList){
-                Log.e("b1", productModel.getTrans_title()+"__"+productModel.getPrice()+"__"+productModel.getCount());
-            }
-        }
 
-        manageCartModel.addBuildProduct(this,list,name, 1);
+
+
+
+
+        manageCartModel.addBuildProduct(this, list, name, 1);
         binding.flDialog.setVisibility(View.GONE);
         Toast.makeText(this, getString(R.string.suc), Toast.LENGTH_SHORT).show();
     }
-    private void getBuildings() {
-        Api.getService(Tags.base_url)
-                .getSeparateCategoryBuildingByBrandId(lang,brand_id)
-                .enqueue(new Callback<CategoryBuildingDataModel>() {
-                    @Override
-                    public void onResponse(Call<CategoryBuildingDataModel> call, Response<CategoryBuildingDataModel> response) {
-                        binding.shimmer.stopShimmer();
-                        binding.shimmer.setVisibility(View.GONE);
-                        binding.llData.setVisibility(View.VISIBLE);
-                        //Log.e("code", response.body().getStatus()+"__");
-
-                        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 200) {
-                            Log.e("yy", "yy");
-                            if (response.body().getData().size() > 0) {
-                                Log.e("ddd", "tt");
-                                list.clear();
-                                list.addAll(response.body().getData());
-                                adapter.notifyDataSetChanged();
-                                binding.tvNoData.setVisibility(View.GONE);
-                                binding.llTotal.setVisibility(View.VISIBLE);
-                                binding.flCompare.setVisibility(View.VISIBLE);
-                            } else {
-                                binding.tvNoData.setVisibility(View.VISIBLE);
-                                binding.llTotal.setVisibility(View.GONE);
-                                binding.flCompare.setVisibility(View.GONE);
-
-                            }
-
-                        } else {
-                            binding.shimmer.stopShimmer();
-                            binding.shimmer.setVisibility(View.GONE);
-                            try {
-                                Log.e("error", response.errorBody().string()+"__");
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
 
 
-                    }
-
-                    @Override
-                    public void onFailure(Call<CategoryBuildingDataModel> call, Throwable t) {
-                        try {
-                            Log.e("error", t.getMessage() + "__");
-                            binding.shimmer.stopShimmer();
-                            binding.shimmer.setVisibility(View.GONE);
-
-                        } catch (Exception e) {
-
-                        }
-                    }
-                });
-    }
-    public void setItemData(int adapterPosition, CategoryModel categoryModel) {
+    public void setItemData(int adapterPosition, SuggestionModel suggestionModel) {
         this.selectedPos = adapterPosition;
-        this.selectedMainCategoryModel = categoryModel;
-        if (categoryModel.getIs_final_level().equals("yes")) {
-            req = 100;
-            Intent intent = new Intent(this, ProductBuildingActivity.class);
-            intent.putExtra("data", categoryModel.getId() + "");
-            intent.putExtra("data2", (Serializable) categoryModel.getSelectedProduct());
+        this.suggestionModel = suggestionModel;
 
-            launcher.launch(intent);
-
-        } else {
-            req = 200;
-            Intent intent = new Intent(this, SeparatePcSubBuildingActivity.class);
-            intent.putExtra("data", categoryModel);
-            intent.putExtra("data2", brand_id);
-            launcher.launch(intent);
-
-        }
 
 
     }
 
-    public void deleteItemData(int adapterPosition, CategoryModel categoryModel) {
-        categoryModel.getSelectedProduct().clear();
-        categoryModel.getSub_categories().clear();
-        list.set(adapterPosition,categoryModel);
-        adapter.notifyItemChanged(adapterPosition);
 
-        if (isListHasData()){
-            canNext = true;
-            binding.btnNext.setBackgroundResource(R.drawable.small_rounded_primary);
-            binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_primary);
-
-        }else {
-            canNext = false;
-            binding.btnNext.setBackgroundResource(R.drawable.small_rounded_gray77);
-            binding.btnCompare.setBackgroundResource(R.drawable.small_rounded_gray77);
-
-        }
-        calculateTotal_Points();
-    }
 
     private void calculateTotal_Points() {
         total = 0;
         double points = 0;
+        for (SuggestionModel model : list) {
 
-        for (CategoryModel categoryModel:list){
-            if (categoryModel.getSelectedProduct().size()>0){
-                for (ProductModel productModel:categoryModel.getSelectedProduct()){
-                    total += productModel.getPrice();
-                    points += productModel.getPoints();
-                }
+            for (SuggestionModel.Products productModel : model.getSuggestions().getSelectedProducts()) {
+                Log.e("s", model.getTrans_title() + "___" + productModel.getProduct().getPrice() + "__");
+
+                total += productModel.getProduct().getPrice();
+                points += productModel.getProduct().getPoints();
+
             }
 
 
         }
 
-        binding.setTotal(total+"");
-        binding.setScore(points+"");
+
+        binding.setTotal(total + "");
+        binding.setScore(points + "");
+    }
+
+    private int getCategoryHasSubCategoryPos(SuggestionModel suggestionModel) {
+        int pos = -1;
+        for (int index = 0; index < list.size(); index++) {
+            SuggestionModel model = list.get(index);
+            if (model.getId() == suggestionModel.getId()) {
+                pos = index;
+                return pos;
+            }
+        }
+        return pos;
     }
 
     private boolean isListHasData(){
         boolean hasData = false;
-        for (CategoryModel model : list) {
+        for (SuggestionModel model : list) {
 
-            if (model.getSelectedProduct().size()>0){
+            for (SuggestionModel.Products productModel : model.getSuggestions().getSelectedProducts()) {
                 hasData = true;
             }
 
@@ -664,14 +704,14 @@ public class SeparatePcCategoriesActivity extends AppCompatActivity {
         return hasData;
     }
 
-    private List<CategoryModel> getSelectedCategory(){
-        List<CategoryModel> categoryModelList = new ArrayList<>();
-        for (CategoryModel categoryModel:list){
-            if (categoryModel.getSelectedProduct().size()>0){
-                categoryModelList.add(categoryModel);
+    private List<SuggestionModel> getSelectedSuggestion(){
+        List<SuggestionModel> categoryModelList = new ArrayList<>();
+        for (SuggestionModel suggestionModel:list){
+            if (suggestionModel.getSuggestions().getSelectedProducts().size()>0){
+                categoryModelList.add(suggestionModel);
             }
         }
-
         return categoryModelList;
     }
+
 }
