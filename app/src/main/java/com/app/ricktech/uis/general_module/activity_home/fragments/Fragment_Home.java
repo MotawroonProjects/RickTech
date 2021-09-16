@@ -1,11 +1,13 @@
 package com.app.ricktech.uis.general_module.activity_home.fragments;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +34,9 @@ import com.app.ricktech.uis.gaming_laptop_module.activity_categories.CategoriesA
 import com.app.ricktech.uis.accessory_module.activity_accessories.AccessoriesActivity;
 import com.app.ricktech.uis.general_module.activity_home.HomeActivity;
 import com.app.ricktech.uis.general_module.activity_product_detials.ProductDetialsActivity;
+import com.app.ricktech.uis.general_module.activity_search.SearchActivity;
 import com.app.ricktech.uis.pc_building_module.activity_building.BulidingActivity;
+import com.app.ricktech.uis.separate_not_book_module.separate_note_book_brand.SeparateNoteBookBrandActivity;
 import com.app.ricktech.uis.suggestions_module.activity_suggestions.SuggestionBrandActivity;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
@@ -101,6 +105,15 @@ public class Fragment_Home extends Fragment {
             startActivity(intent);
         });
 
+        binding.flParts.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, SearchActivity.class);
+            intent.putExtra("data", "part");
+            startActivity(intent);
+        });
+        binding.flNoteBooks.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, SeparateNoteBookBrandActivity.class);
+            startActivity(intent);
+        });
 
         binding.recView.setLayoutManager(new GridLayoutManager(activity, 2));
         adapter = new SuggestionBrandAdapter(activity, list, this);
@@ -117,6 +130,17 @@ public class Fragment_Home extends Fragment {
             getSlider();
             getBrands();
         });
+
+        binding.tvScroll.setOnClickListener(v -> {
+            int x = binding.horizontalScroll.getScrollX();
+            int childWidth = binding.flViewPc.getWidth()+(binding.space.getWidth()*3);
+            int total = x+childWidth;
+
+            binding.horizontalScroll.postDelayed(() -> {
+                binding.horizontalScroll.smoothScrollTo(total,binding.horizontalScroll.getScrollY());
+            },100);
+        });
+
         getSlider();
         getBrands();
     }

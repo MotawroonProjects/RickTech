@@ -42,6 +42,7 @@ import com.app.ricktech.uis.general_module.activity_language.LanguageActivity;
 import com.app.ricktech.uis.general_module.activity_login.LoginActivity;
 import com.app.ricktech.uis.general_module.activity_notifications.NotificationActivity;
 import com.app.ricktech.uis.general_module.activity_search.SearchActivity;
+import com.app.ricktech.uis.pc_building_module.activity_building.BulidingActivity;
 import com.app.ricktech.uis.separate_gaming_module.separate_gaming_brand.SeparateGamingBrandActivity;
 import com.app.ricktech.uis.separate_laptop_gaming_module.separate_laptop_gaming_brand.SeparateLaptopGamingBrandActivity;
 import com.app.ricktech.uis.separate_not_book_module.separate_note_book_brand.SeparateNoteBookBrandActivity;
@@ -160,6 +161,12 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
 
         });
+
+        binding.llBuildYourPc.setOnClickListener(v -> {
+            Intent intent = new Intent(this, BulidingActivity.class);
+            startActivity(intent);
+        });
+
         binding.bottomNavView.setOnNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             switch (id) {
@@ -187,6 +194,10 @@ public class HomeActivity extends AppCompatActivity {
             intent.putExtra("data", "part");
             startActivity(intent);
         });
+        binding.llNoteBook.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SeparateNoteBookBrandActivity.class);
+            startActivity(intent);
+        });
 
         binding.llRickTick.setOnClickListener(v -> {
             Intent intent = new Intent(this, SearchActivity.class);
@@ -209,10 +220,7 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.llNoteBook.setOnClickListener(v -> {
-            Intent intent = new Intent(this, SeparateNoteBookBrandActivity.class);
-            startActivity(intent);
-        });
+
 
 
     }

@@ -129,4 +129,6 @@
     <string name="note_books">Notizbücher</string>
     <string name="riktick">Riktick</string>
     <string name="most_search">Meiste Suche</string>
+    <string name="dark_mode">Donkere modus</string>
+
 </resources>

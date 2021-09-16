@@ -44,136 +44,274 @@
                         android:layout_gravity="center" />
                 </FrameLayout>
 
-                <LinearLayout
+                <HorizontalScrollView
+                    android:id="@+id/horizontalScroll"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:orientation="horizontal"
-                    android:padding="3dp"
-
+                    android:layout_height="wrap_content"
+                    android:fillViewport="true"
+                    android:scrollbars="none"
                     >
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="200dp"
+                        android:orientation="horizontal"
+                        android:padding="3dp"
 
+                        >
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
 
-                        <FrameLayout
-                            android:id="@+id/flViewLapTop"
-                            android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="80dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="5dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-
-                            >
-
-                            <com.makeramen.roundedimageview.RoundedImageView
+                            <FrameLayout
+                                android:id="@+id/flViewPc"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="8dp"
-                                android:background="@drawable/small_rounded_white"
-                                android:padding="1dp"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/lab_top_bg"
-                                app:riv_corner_radius="5dp"
-                                />
+                                android:layout_height="120dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="80dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginBottom="5dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="bottom|center_horizontal"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginBottom="20dp"
-                                android:text="@string/laptops_gaming"
-                                android:textColor="@color/txt_category"
-                                android:textSize="15sp" />
-                        </FrameLayout>
+                                >
 
+                                <com.makeramen.roundedimageview.RoundedImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginBottom="8dp"
+                                    android:background="@drawable/small_rounded_white"
+                                    android:padding="1dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/pc_bg"
+                                    app:riv_corner_radius="5dp"
 
-                        <ImageView
-                            android:layout_width="150dp"
-                            android:layout_height="124dp"
-                            android:src="@drawable/lab_top"
-                            app:layout_constraintBottom_toTopOf="@id/flViewLapTop"
-                            app:layout_constraintEnd_toEndOf="@id/flViewLapTop"
-                            app:layout_constraintStart_toStartOf="@id/flViewLapTop"
-                            app:layout_constraintTop_toTopOf="@id/flViewLapTop"
+                                    />
 
-                            />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <Space
-                        android:layout_width="5dp"
-                        android:layout_height="0dp" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom|center_horizontal"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/pc_building"
+                                    android:textColor="@color/txt_category"
+                                    android:textSize="15sp" />
+                            </FrameLayout>
 
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <FrameLayout
-                            android:id="@+id/flViewPc"
-                            android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="80dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="5dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-
-                            >
-
-                            <com.makeramen.roundedimageview.RoundedImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="8dp"
-                                android:background="@drawable/small_rounded_white"
-                                android:padding="1dp"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/pc_bg"
-                                app:riv_corner_radius="5dp"
+                            <ImageView
+                                android:layout_width="150dp"
+                                android:layout_height="124dp"
+                                android:src="@drawable/pc"
+                                app:layout_constraintBottom_toTopOf="@id/flViewPc"
+                                app:layout_constraintEnd_toEndOf="@id/flViewPc"
+                                app:layout_constraintStart_toStartOf="@id/flViewPc"
+                                app:layout_constraintTop_toTopOf="@id/flViewPc"
 
                                 />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="bottom|center_horizontal"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginBottom="20dp"
-                                android:text="@string/pc_building"
-                                android:textColor="@color/txt_category"
-                                android:textSize="15sp" />
-                        </FrameLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                        <Space
+                            android:id="@+id/space"
+                            android:layout_width="5dp"
+                            android:layout_height="0dp" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <FrameLayout
+                                android:id="@+id/flNoteBooks"
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="80dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginBottom="5dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+
+                                >
+
+                                <com.makeramen.roundedimageview.RoundedImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginBottom="8dp"
+                                    android:background="@drawable/small_rounded_white"
+                                    android:padding="1dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/lab_top_bg"
+                                    app:riv_corner_radius="5dp"
+                                    />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom|center_horizontal"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/note_books"
+                                    android:textColor="@color/txt_category"
+                                    android:textSize="15sp" />
+                            </FrameLayout>
 
 
-                        <ImageView
-                            android:layout_width="150dp"
-                            android:layout_height="124dp"
-                            android:src="@drawable/pc"
-                            app:layout_constraintBottom_toTopOf="@id/flViewPc"
-                            app:layout_constraintEnd_toEndOf="@id/flViewPc"
-                            app:layout_constraintStart_toStartOf="@id/flViewPc"
-                            app:layout_constraintTop_toTopOf="@id/flViewPc"
+                            <ImageView
+                                android:layout_width="150dp"
+                                android:layout_height="124dp"
+                                android:src="@drawable/lab_top"
+                                app:layout_constraintBottom_toTopOf="@id/flNoteBooks"
+                                app:layout_constraintEnd_toEndOf="@id/flNoteBooks"
+                                app:layout_constraintStart_toStartOf="@id/flNoteBooks"
+                                app:layout_constraintTop_toTopOf="@id/flNoteBooks"
 
-                            />
+                                />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                </LinearLayout>
+                        <Space
+                            android:layout_width="5dp"
+                            android:layout_height="0dp" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
 
+                            <FrameLayout
+                                android:id="@+id/flViewLapTop"
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="80dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginBottom="5dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+
+                                >
+
+                                <com.makeramen.roundedimageview.RoundedImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginBottom="8dp"
+                                    android:background="@drawable/small_rounded_white"
+                                    android:padding="1dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/lab_top_bg"
+                                    app:riv_corner_radius="5dp"
+                                    />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom|center_horizontal"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/laptops_gaming"
+                                    android:textColor="@color/txt_category"
+                                    android:textSize="15sp" />
+                            </FrameLayout>
+
+
+                            <ImageView
+                                android:layout_width="150dp"
+                                android:layout_height="124dp"
+                                android:src="@drawable/lab_top"
+                                app:layout_constraintBottom_toTopOf="@id/flViewLapTop"
+                                app:layout_constraintEnd_toEndOf="@id/flViewLapTop"
+                                app:layout_constraintStart_toStartOf="@id/flViewLapTop"
+                                app:layout_constraintTop_toTopOf="@id/flViewLapTop"
+
+                                />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                        <Space
+                            android:layout_width="5dp"
+                            android:layout_height="0dp" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <FrameLayout
+                                android:id="@+id/flParts"
+                                android:layout_width="match_parent"
+                                android:layout_height="120dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="80dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginBottom="5dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+
+                                >
+
+                                <com.makeramen.roundedimageview.RoundedImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginBottom="8dp"
+                                    android:background="@drawable/small_rounded_white"
+                                    android:padding="1dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/lab_top_bg"
+                                    app:riv_corner_radius="5dp"
+                                    />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom|center_horizontal"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:text="@string/parts"
+                                    android:textColor="@color/txt_category"
+                                    android:textSize="15sp" />
+                            </FrameLayout>
+
+
+                            <ImageView
+                                android:layout_width="150dp"
+                                android:layout_height="124dp"
+                                android:src="@drawable/lab_top"
+                                app:layout_constraintBottom_toTopOf="@id/flParts"
+                                app:layout_constraintEnd_toEndOf="@id/flParts"
+                                app:layout_constraintStart_toStartOf="@id/flParts"
+                                app:layout_constraintTop_toTopOf="@id/flParts"
+
+                                />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+                <TextView
+                    android:id="@+id/tvScroll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="14sp"
+                    android:text="@string/more"
+                    android:layout_gravity="end"
+                    />
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardAccessories"
                     android:layout_width="match_parent"
